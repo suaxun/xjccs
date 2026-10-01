@@ -369,58 +369,103 @@ function renderTutuFavorites() {
         return;
     }
 
+    /*
+     * 按角色名称分组
+     */
+    const groupedFavorites = new Map();
+
     favorites.forEach(item => {
-        const content = String(item.content || '');
         const characterName =
-            escapeHtml(item.characterName || 'AI');
+            String(item.characterName || 'AI').trim() || 'AI';
 
-        const time = escapeHtml(
-            formatTutuFavoriteTime(item.createdAt)
-        );
+        if (!groupedFavorites.has(characterName)) {
+            groupedFavorites.set(characterName, []);
+        }
 
-        const preview = isProbablyHtml(content)
-            ? '[HTML 小剧场]'
-            : content;
+        groupedFavorites.get(characterName).push(item);
+    });
 
-        const $card = $(`
+    /*
+     * 每个角色生成一个分类区域
+     */
+    groupedFavorites.forEach((items, characterName) => {
+        const safeCharacterName =
+            escapeHtml(characterName);
+
+        const $group = $(`
             <div
-                class="tutu-favorite-card"
-                data-id="${escapeHtml(item.id)}">
+                class="tutu-favorite-group"
+                data-character="${safeCharacterName}">
 
-                <div class="tutu-favorite-card-header">
-                    <div>
-                        <div class="tutu-favorite-character">
-                            <i class="fa-solid fa-user"></i>
-                            ${characterName}
-                        </div>
-
-                        <div class="tutu-favorite-time">
-                            ${time}
-                        </div>
+                <div class="tutu-favorite-group-header">
+                    <div class="tutu-favorite-group-title">
+                        <i class="fa-solid fa-user"></i>
+                        <span>${safeCharacterName}</span>
                     </div>
 
-                    <div class="tutu-favorite-actions">
-                        <div
-                            class="menu_button margin0 tutu-favorite-export-btn"
-                            title="导出">
-                            <i class="fa-solid fa-download"></i>
-                        </div>
-
-                        <div
-                            class="menu_button margin0 tutu-favorite-delete-btn"
-                            title="删除收藏">
-                            <i class="fa-solid fa-trash"></i>
-                        </div>
+                    <div class="tutu-favorite-group-count">
+                        ${items.length} 条收藏
                     </div>
                 </div>
 
-                <div class="tutu-favorite-preview">
-                    ${escapeHtml(preview)}
-                </div>
+                <div class="tutu-favorite-group-list"></div>
             </div>
         `);
 
-        $list.append($card);
+        const $groupList =
+            $group.find('.tutu-favorite-group-list');
+
+        items.forEach(item => {
+            const content =
+                String(item.content || '');
+
+            const time =
+                escapeHtml(
+                    formatTutuFavoriteTime(item.createdAt)
+                );
+
+            const preview =
+                isProbablyHtml(content)
+                    ? '[HTML 小剧场]'
+                    : content;
+
+            const $card = $(`
+                <div
+                    class="tutu-favorite-card"
+                    data-id="${escapeHtml(item.id)}">
+
+                    <div class="tutu-favorite-card-header">
+                        <div>
+                            <div class="tutu-favorite-time">
+                                ${time}
+                            </div>
+                        </div>
+
+                        <div class="tutu-favorite-actions">
+                            <div
+                                class="menu_button margin0 tutu-favorite-export-btn"
+                                title="导出">
+                                <i class="fa-solid fa-download"></i>
+                            </div>
+
+                            <div
+                                class="menu_button margin0 tutu-favorite-delete-btn"
+                                title="删除收藏">
+                                <i class="fa-solid fa-trash"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tutu-favorite-preview">
+                        ${escapeHtml(preview)}
+                    </div>
+                </div>
+            `);
+
+            $groupList.append($card);
+        });
+
+        $list.append($group);
     });
 }
 
@@ -779,14 +824,23 @@ localStorage.setItem(
     </div>
 
     <div class="tutu-result-toolbar-right">
-        <select
-            id="tutu_export_style"
-            class="text_pole tutu-export-style-select"
-            title="纯文字书摘样式">
-            <option value="classic">经典书摘</option>
-            <option value="dark">暗夜书摘</option>
-            <option value="paper">纸张书摘</option>
-        </select>
+<select
+    id="tutu_export_format"
+    class="text_pole tutu-export-format-select"
+    title="选择导出格式">
+    <option value="text">纯文本 TXT</option>
+    <option value="image">书摘图片 PNG</option>
+</select>
+
+<select
+    id="tutu_export_style"
+    class="text_pole tutu-export-style-select"
+    title="书摘图片样式">
+    <option value="classic">经典书摘</option>
+    <option value="dark">暗夜书摘</option>
+    <option value="paper">纸张书摘</option>
+</select>
+
 
         <div
             id="tutu_favorite_current_btn"
@@ -1453,10 +1507,13 @@ function updateTutuFavoriteButtonState() {
 
     const favorites = loadTutuFavorites();
 
-    const isFavorited = favorites.some(item =>
-        item.content === content &&
-        item.characterName === tutuCurrentResultCharacter
-    );
+const currentCharacterName =
+    getCurrentTutuCharacterName();
+
+const isFavorited = favorites.some(item =>
+    item.content === content &&
+    item.characterName === currentCharacterName
+);
 
     $button.toggleClass('active', isFavorited);
 
@@ -1769,11 +1826,28 @@ function exportCurrentTutuTheater() {
     const characterName =
         tutuCurrentResultCharacter || 'AI';
 
+    /*
+     * HTML 内容仍然自动导出为 HTML 文件。
+     */
     if (isProbablyHtml(content)) {
         exportTutuHtmlFile(content, characterName);
         return;
     }
 
+    const exportFormat =
+        $('#tutu_export_format').val() || 'text';
+
+    /*
+     * 纯文字导出为 TXT
+     */
+    if (exportFormat === 'text') {
+        exportTutuTextFile(content, characterName);
+        return;
+    }
+
+    /*
+     * 选择书摘图片时，才导出 PNG
+     */
     const styleName =
         $('#tutu_export_style').val() || 'classic';
 
@@ -3961,21 +4035,31 @@ $(document).on(
         const characterName =
             favorite.characterName || 'AI';
 
-        if (favorite.type === 'html') {
-            exportTutuHtmlFile(
-                favorite.content,
-                characterName
-            );
-        } else {
-            const styleName =
-                $('#tutu_export_style').val() || 'classic';
+if (favorite.type === 'html') {
+    exportTutuHtmlFile(
+        favorite.content,
+        characterName
+    );
+} else {
+    const exportFormat =
+        $('#tutu_export_format').val() || 'text';
 
-            exportTutuQuoteImage(
-                favorite.content,
-                characterName,
-                styleName
-            );
-        }
+    if (exportFormat === 'text') {
+        exportTutuTextFile(
+            favorite.content,
+            characterName
+        );
+    } else {
+        const styleName =
+            $('#tutu_export_style').val() || 'classic';
+
+        exportTutuQuoteImage(
+            favorite.content,
+            characterName,
+            styleName
+        );
+    }
+}
     }
 );
     // 输出方式切换
