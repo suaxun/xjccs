@@ -1633,9 +1633,6 @@
 /* 如果嵌入的是 HTML 内容，里面的 iframe */
 .tutu-theater-embed-body iframe {
     display: block;
-    width: 100%;
-    min-height: 300px;
-    border: none;
     border-radius: 6px;
     background: #fff;
     margin-top: 8px;
@@ -1718,14 +1715,36 @@
             font-size: 0.8rem;
         }
 
-        /*
-         * 小剧场正文中的 iframe
-         */
-        .tutu-theater-embed-body iframe {
-            width: 100%;
-            min-height: 300px;
-            border: none;
-        }
+/*
+ * 嵌入聊天楼层中的 HTML 小剧场
+ *
+ * HTML 内容位于 iframe 内部，
+ * 不会影响 SillyTavern 外部页面。
+ */
+.tutu-theater-embed-iframe {
+    display: block;
+    width: 100%;
+    height: 520px;
+    min-height: 300px;
+    max-width: 100%;
+
+    box-sizing: border-box;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+
+    background: #fff;
+}
+
+/*
+ * 手机端适当降低 iframe 高度
+ */
+@media (max-width: 600px) {
+    .tutu-theater-embed-iframe {
+        height: 420px;
+        min-height: 280px;
+    }
+}
+
 
         /*
          * 移动端适配
