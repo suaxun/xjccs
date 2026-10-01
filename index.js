@@ -576,10 +576,14 @@ function renderTutuFavorites() {
                         )
                     );
 
-                const preview =
-                    isProbablyHtml(content)
-                        ? '[HTML 小剧场]'
-                        : content;
+const isHtmlFavorite =
+    isProbablyHtml(content);
+
+const preview =
+    isHtmlFavorite
+        ? ''
+        : content;
+
 
                 const $card = $(`
                     <div
@@ -634,19 +638,57 @@ function renderTutuFavorites() {
                             </div>
                         </div>
 
-                        <div class="
-                            tutu-favorite-preview
-                        ">
-                            ${escapeHtml(preview)}
-                        </div>
+<div class="tutu-favorite-preview">
+    ${
+        isHtmlFavorite
+            ? `
+                <div class="tutu-favorite-html-actions">
+                    <button
+                        type="button"
+                        class="tutu-favorite-html-preview-btn">
+                        <i class="fa-solid fa-display"></i>
+                        预览 HTML 小剧场
+                    </button>
+
+                    <span class="tutu-favorite-html-tip">
+                        点击按钮展开预览
+                    </span>
+                </div>
+
+                <div
+                    class="tutu-favorite-html-container"
+                    style="display:none;">
+                    <iframe
+                        class="tutu-favorite-html-iframe"
+                        sandbox="allow-scripts allow-forms allow-modals">
+                    </iframe>
+                </div>
+            `
+            : escapeHtml(preview)
+    }
+</div>
+
                     </div>
                 `);
+$card
+    .find('.tutu-favorite-title')
+    .text(title);
 
-                $card
-                    .find('.tutu-favorite-title')
-                    .text(title);
+/*
+ * HTML 收藏不直接拼进模板，
+ * 而是使用 iframe.srcdoc 安全地设置预览内容。
+ */
+if (isHtmlFavorite) {
+    const iframe =
+        $card.find('.tutu-favorite-html-iframe')[0];
 
-                $groupList.append($card);
+    if (iframe) {
+        iframe.srcdoc = content;
+    }
+}
+
+$groupList.append($card);
+
             });
 
             $list.append($group);
@@ -4160,6 +4202,43 @@ catch (error) {
     // ==========================================
     // 4. 事件绑定
     // ==========================================
+    $(document).on(
+    'click',
+    '.tutu-favorite-html-preview-btn',
+    function (event) {
+        event.stopPropagation();
+
+        const $button = $(this);
+
+        const $card =
+            $button.closest('.tutu-favorite-card');
+
+        const $container =
+            $card.find(
+                '.tutu-favorite-html-container'
+            );
+
+        const isVisible =
+            $container.is(':visible');
+
+        if (isVisible) {
+            $container.stop(true, true).slideUp(180);
+
+            $button.html(`
+                <i class="fa-solid fa-display"></i>
+                预览 HTML 小剧场
+            `);
+        } else {
+            $container.stop(true, true).slideDown(180);
+
+            $button.html(`
+                <i class="fa-solid fa-eye-slash"></i>
+                收起 HTML 预览
+            `);
+        }
+    }
+);
+
     $(document).on(
     'click',
     '#tutu_favorite_current_btn',
