@@ -2269,8 +2269,9 @@ function appendTheaterToDOM(mesId, content) {
     // 先移除该楼层中已有的小剧场 DOM
     $mesText.find('.tutu-theater-embed').remove();
 
+    content = String(content || '').trim();
+
     /*
-     * 读取默认状态：
      * true  = 默认折叠
      * false = 默认展开
      */
@@ -2278,33 +2279,73 @@ function appendTheaterToDOM(mesId, content) {
         Boolean(tutuSettings.embedDefaultCollapsed);
 
     /*
-     * details 是浏览器原生的折叠展开组件。
-     *
-     * 有 open 属性：默认展开
-     * 没有 open 属性：默认折叠
+     * 不再使用 innerHTML 拼接 content。
+     * 整个结构使用 DOM API 创建，避免生成内容直接污染酒馆页面。
      */
-    const openAttribute =
-        isCollapsed ? '' : ' open';
+    const details = document.createElement('details');
+    details.className = 'tutu-theater-embed';
+    details.open = !isCollapsed;
 
-    const theaterHtml = `
-<details
-    class="tutu-theater-embed"${openAttribute}>
+    const summary = document.createElement('summary');
+    summary.className = 'tutu-theater-embed-header';
 
-    <summary class="tutu-theater-embed-header">
-        <span>🐰 兔兔小剧场</span>
-        <span class="tutu-theater-embed-toggle">
-            点击展开/折叠
-        </span>
-    </summary>
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = '🐰 兔兔小剧场';
 
-    <div class="tutu-theater-embed-body">
-        ${content}
-    </div>
-</details>`;
+    const toggleSpan = document.createElement('span');
+    toggleSpan.className = 'tutu-theater-embed-toggle';
+    toggleSpan.textContent = '点击展开/折叠';
 
-    // 追加到 .mes_text 的末尾
-    $mesText.append(theaterHtml);
+    summary.appendChild(titleSpan);
+    summary.appendChild(toggleSpan);
+
+    const body = document.createElement('div');
+    body.className = 'tutu-theater-embed-body';
+
+    /*
+     * HTML 内容必须放进 iframe.srcdoc。
+     *
+     * iframe 会建立独立的文档环境，
+     * 其中的 style、body、html、CSS 选择器不会影响
+     * SillyTavern 外部页面。
+     */
+    if (isProbablyHtml(content)) {
+        const iframe = document.createElement('iframe');
+
+        iframe.className = 'tutu-theater-embed-iframe';
+        iframe.title = '兔兔小剧场 HTML 内容';
+
+        /*
+         * 不允许 allow-same-origin，
+         * 这样 iframe 内的 HTML 无法访问酒馆页面的
+         * Cookie、LocalStorage、DOM 等内容。
+         *
+         * 如果你的 HTML 只需要显示，不需要 JavaScript，
+         * 可以直接使用 sandbox=""，安全性更高。
+         */
+        iframe.setAttribute(
+            'sandbox',
+            'allow-scripts allow-forms allow-modals'
+        );
+
+        iframe.srcdoc = content;
+
+        body.appendChild(iframe);
+    } else {
+        /*
+         * 纯文本使用 textContent，
+         * 不使用 innerHTML，避免文本被当成 HTML 执行。
+         */
+        body.textContent = content;
+    }
+
+    details.appendChild(summary);
+    details.appendChild(body);
+
+    // 使用 DOM 节点追加，不使用 HTML 字符串拼接
+    $mesText[0].appendChild(details);
 }
+
 
 
 
