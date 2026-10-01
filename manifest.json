@@ -1,7 +1,7 @@
 {
     "display_name": "兔兔小剧场",
     "author": "YourName",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "在输入菜单中注入一个可以生成外置小剧场的独立面板。",
     "js": "index.js",
     "css": "style.css",
