@@ -3555,6 +3555,13 @@ function getTutuLatestAiReplyInfo() {
     const latestIndex = chat.length - 1;
     const latestMessage = chat[latestIndex];
 
+    /*
+     * 第 0 层通常是角色开场白。
+     * 无论它是不是 AI 消息，都不允许自动生成小剧场。
+     */
+    if (latestIndex === 0) {
+        return null;
+    }
     if (!latestMessage) {
         return null;
     }
@@ -3678,11 +3685,22 @@ function initTutuAutoGenerationListener() {
                     return;
                 }
 
-                const {
-                    latestIndex,
-                    latestMessage,
-                } = replyInfo;
+const {
+    latestIndex,
+    latestMessage,
+} = replyInfo;
 
+/*
+ * 双重保险：
+ * 第 0 层永远不自动生成小剧场。
+ */
+if (latestIndex <= 0) {
+    console.log(
+        '[兔兔小剧场] 第 0 层是角色开场白，跳过自动生成'
+    );
+
+    return;
+}
                 /*
                  * 如果这一层已经有小剧场标记，
                  * 说明这一层以前已经生成过。
