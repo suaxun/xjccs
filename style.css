@@ -2096,3 +2096,66 @@
         word-break: break-word;
     }
 }
+/* ==========================================
+   收藏中的 HTML 小剧场预览
+   ========================================== */
+
+.tutu-favorite-html-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tutu-favorite-html-preview-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+
+    background: var(--SmartThemeQuoteColor);
+    color: #fff;
+
+    cursor: pointer;
+    font-size: 0.85em;
+
+    transition: filter 0.2s ease;
+}
+
+.tutu-favorite-html-preview-btn:hover {
+    filter: brightness(1.15);
+}
+
+.tutu-favorite-html-tip {
+    font-size: 0.8em;
+    opacity: 0.6;
+}
+
+.tutu-favorite-html-container {
+    margin-top: 10px;
+    width: 100%;
+}
+
+.tutu-favorite-html-iframe {
+    display: block;
+
+    width: 100%;
+    min-height: 420px;
+    height: 520px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 7px;
+
+    background: #fff;
+}
+@media (max-width: 600px) {
+    .tutu-favorite-html-iframe {
+        min-height: 320px;
+        height: 420px;
+    }
+}
+
