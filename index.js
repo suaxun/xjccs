@@ -8,6 +8,9 @@ import {
     extension_settings,
 } from "/scripts/extensions.js";
 import {
+    regex_placement,
+} from "/scripts/extensions/regex/engine.js";
+import {
     world_names,
     loadWorldInfo,
 } from "/scripts/world-info.js";
@@ -29,7 +32,9 @@ async function injectTutuRegex() {
     const tutuRegexScript = {
         scriptName: REGEX_SCRIPT_NAME,
 
-        // 删除聊天文本中的小剧场标记和内容
+        /*
+         * 删除发送给 AI 的 prompt 中的小剧场内容。
+         */
         findRegex:
             '<!--\\s*TUTU_THEATER_START\\s*-->[\\s\\S]*?<!--\\s*TUTU_THEATER_END\\s*-->',
 
@@ -38,18 +43,19 @@ async function injectTutuRegex() {
         trimStrings: [],
 
         /*
-         * SillyTavern 的正则位置：
-         * 1 = AI 输出
+         * AI 输出。
          */
-        placement: [1],
+        placement: [
+            regex_placement?.AI_OUTPUT ?? 1,
+        ],
 
         disabled: false,
 
         markdownOnly: false,
 
         /*
-         * 只影响发送给 AI 的内容，
-         * 不修改聊天页面显示。
+         * 只处理发送给 AI 的 prompt，
+         * 不删除聊天页面显示内容。
          */
         promptOnly: true,
 
@@ -63,9 +69,7 @@ async function injectTutuRegex() {
 
     try {
         /*
-         * 关键：
-         * 必须操作 SillyTavern 的 extension_settings，
-         * 不能使用 context.extensionSettings。
+         * 使用 SillyTavern 正则扩展真实使用的设置对象。
          */
         if (!extension_settings.regex) {
             extension_settings.regex = {};
@@ -73,25 +77,38 @@ async function injectTutuRegex() {
 
         const regexSettings = extension_settings.regex;
 
-        if (!Array.isArray(regexSettings.global_scripts)) {
-            regexSettings.global_scripts = [];
+        /*
+         * 关键：
+         * SillyTavern 正则扩展页面读取的是 scripts，
+         * 不是 global_scripts。
+         */
+        if (!Array.isArray(regexSettings.scripts)) {
+            regexSettings.scripts = [];
         }
 
         /*
-         * 删除之前可能错误写入普通 scripts 的同名正则。
+         * 如果之前已经错误写入了 global_scripts，
+         * 删除旧的错误字段，避免产生两套数据。
          */
-        if (Array.isArray(regexSettings.scripts)) {
-            regexSettings.scripts =
-                regexSettings.scripts.filter(script => {
+        if (Array.isArray(regexSettings.global_scripts)) {
+            regexSettings.global_scripts =
+                regexSettings.global_scripts.filter(script => {
                     return script?.scriptName !== REGEX_SCRIPT_NAME;
                 });
+
+            /*
+             * 如果 global_scripts 清空了，可以删除这个错误字段。
+             */
+            if (regexSettings.global_scripts.length === 0) {
+                delete regexSettings.global_scripts;
+            }
         }
 
         /*
-         * 查找 global_scripts 中是否已经存在同名正则。
+         * 查找 scripts 中是否已有同名正则。
          */
         const existingIndex =
-            regexSettings.global_scripts.findIndex(script => {
+            regexSettings.scripts.findIndex(script => {
                 return script?.scriptName === REGEX_SCRIPT_NAME;
             });
 
@@ -99,35 +116,39 @@ async function injectTutuRegex() {
             /*
              * 已存在则更新。
              */
-            regexSettings.global_scripts[existingIndex] = {
-                ...regexSettings.global_scripts[existingIndex],
+            regexSettings.scripts[existingIndex] = {
+                ...regexSettings.scripts[existingIndex],
                 ...tutuRegexScript,
             };
 
             console.log(
-                '[兔兔小剧场] 全局正则已存在，已更新配置'
+                '[兔兔小剧场] 全局正则已存在，已更新 scripts 中的配置'
             );
         } else {
             /*
-             * 不存在则新增。
+             * 不存在则写入 scripts。
              */
-            regexSettings.global_scripts.push(
-                tutuRegexScript
-            );
+            regexSettings.scripts.push(tutuRegexScript);
 
             console.log(
-                '[兔兔小剧场] 已注入 global_scripts'
+                '[兔兔小剧场] 已注入 extension_settings.regex.scripts'
             );
         }
 
         /*
-         * 使用 SillyTavern 真正的设置保存函数。
+         * 调试用：把实际数据暴露到 window。
+         */
+        window.tutuRegexDebug =
+            extension_settings.regex.scripts;
+
+        /*
+         * 使用 SillyTavern 正确的保存函数。
          */
         if (typeof saveSettingsDebounced === 'function') {
             saveSettingsDebounced();
 
             console.log(
-                '[兔兔小剧场] 已调用 saveSettingsDebounced() 保存设置'
+                '[兔兔小剧场] 已调用 saveSettingsDebounced()'
             );
         } else {
             console.warn(
@@ -136,8 +157,8 @@ async function injectTutuRegex() {
         }
 
         console.log(
-            '[兔兔小剧场] 当前 extension_settings.regex.global_scripts：',
-            extension_settings.regex.global_scripts
+            '[兔兔小剧场] 当前 scripts：',
+            extension_settings.regex.scripts
         );
 
     } catch (error) {
@@ -147,6 +168,7 @@ async function injectTutuRegex() {
         );
     }
 }
+
 
 
 
