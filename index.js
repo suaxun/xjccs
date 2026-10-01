@@ -95,6 +95,16 @@ async function injectTutuRegex() {
         }
 
         /*
+         * 删除之前错误注入到普通 scripts 中的同名正则。
+         */
+        if (Array.isArray(regexSettings.scripts)) {
+            regexSettings.scripts =
+                regexSettings.scripts.filter(script => {
+                    return script?.scriptName !== REGEX_SCRIPT_NAME;
+                });
+        }
+
+        /*
          * 查找全局正则。
          */
         const existingIndex =
@@ -102,23 +112,6 @@ async function injectTutuRegex() {
                 return script?.scriptName === REGEX_SCRIPT_NAME;
             });
 
-/*
- * 删除之前错误注入到普通 scripts 中的同名正则。
- */
-if (Array.isArray(regexSettings.scripts)) {
-    regexSettings.scripts =
-        regexSettings.scripts.filter(script => {
-            return script?.scriptName !== REGEX_SCRIPT_NAME;
-        });
-}
-
-/*
- * 查找全局正则。
- */
-const existingIndex =
-    regexSettings.global_scripts.findIndex(script => {
-        return script?.scriptName === REGEX_SCRIPT_NAME;
-    });
 
 if (existingIndex >= 0) {
     /*
@@ -3355,27 +3348,7 @@ function clearTutuDragOverState() {
 
 let tutuTouchDragState = null;
 
-function clearTutuTouchDragState() {
-    if (!tutuTouchDragState) {
-        return;
-    }
 
-    const state = tutuTouchDragState;
-
-    if (state.$card) {
-        state.$card.removeClass('tutu-touch-dragging');
-    }
-
-$('.tutu-category-drop-target')
-    .removeClass('tutu-touch-drag-over');
-
-
-    if (state.$ghost) {
-        state.$ghost.remove();
-    }
-
-    tutuTouchDragState = null;
-}
 
 function getTutuDropzoneFromTouch(touch) {
     const element = document.elementFromPoint(
