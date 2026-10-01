@@ -212,29 +212,120 @@ function loadLocalJson(key, defaultValue) {
         return defaultValue;
     }
 }
-function saveTutuTheaterContent(mesIndex, content) {
-    const stored = loadLocalJson(THEATER_CONTENT_KEY, {});
-    const context = SillyTavern.getContext();
-    const chatId = context.chatId || context.chat_metadata?.chat_id || 'default';
-    const key = `${chatId}::${mesIndex}`;
-    stored[key] = content;
+function getTutuTheaterStorageKey(mesIndex) {
+    const context =
+        SillyTavern.getContext();
 
-    // 限制存储大小，最多保留最近 50 条
+    const chatId =
+        context.chatId ||
+        context.chat_metadata?.chat_id ||
+        'default';
+
+    const characterId =
+        context.characterId !== undefined
+            ? String(context.characterId)
+            : 'none';
+
+    const character =
+        context.characterId !== undefined &&
+        context.characters?.[context.characterId]
+            ? context.characters[context.characterId]
+            : null;
+
+    const characterName =
+        character?.name ||
+        character?.data?.name ||
+        'AI';
+
+    const avatar =
+        character?.avatar ||
+        character?.data?.avatar ||
+        '';
+
+    return [
+        chatId,
+        characterId,
+        characterName,
+        avatar,
+        mesIndex,
+    ].join('::');
+}
+
+
+function saveTutuTheaterContent(mesIndex, content) {
+    const stored =
+        loadLocalJson(
+            THEATER_CONTENT_KEY,
+            {}
+        );
+
+    const key =
+        getTutuTheaterStorageKey(mesIndex);
+
+    stored[key] = {
+        content: String(content || ''),
+        characterName:
+            getCurrentTutuCharacterName(),
+        savedAt: Date.now(),
+    };
+
+    /*
+     * 只保留最近 100 条。
+     */
     const keys = Object.keys(stored);
-    if (keys.length > 50) {
-        keys.slice(0, keys.length - 50).forEach(k => delete stored[k]);
+
+    if (keys.length > 100) {
+        keys
+            .slice(0, keys.length - 100)
+            .forEach(key => {
+                delete stored[key];
+            });
     }
 
-    localStorage.setItem(THEATER_CONTENT_KEY, JSON.stringify(stored));
+    localStorage.setItem(
+        THEATER_CONTENT_KEY,
+        JSON.stringify(stored)
+    );
 }
 
+
 function getTutuStoredTheaterContent(mesIndex) {
-    const stored = loadLocalJson(THEATER_CONTENT_KEY, {});
-    const context = SillyTavern.getContext();
-    const chatId = context.chatId || context.chat_metadata?.chat_id || 'default';
-    const key = `${chatId}::${mesIndex}`;
-    return stored[key] || '';
+    const stored =
+        loadLocalJson(
+            THEATER_CONTENT_KEY,
+            {}
+        );
+
+    const key =
+        getTutuTheaterStorageKey(mesIndex);
+
+    const value = stored[key];
+
+    /*
+     * 兼容旧版本以前直接保存字符串的格式。
+     */
+    if (typeof value === 'string') {
+        return {
+            content: value,
+            characterName:
+                getCurrentTutuCharacterName(),
+        };
+    }
+
+    if (!value || typeof value !== 'object') {
+        return null;
+    }
+
+    return {
+        content: String(value.content || ''),
+        characterName:
+            String(
+                value.characterName ||
+                getCurrentTutuCharacterName()
+            ),
+    };
 }
+
 function loadTutuFavorites() {
     const data = loadLocalJson(FAVORITES_KEY, []);
     return Array.isArray(data) ? data : [];
@@ -320,15 +411,7 @@ function removeTutuFavorite(id) {
 }
 function renameTutuFavorite(id) {
     const favorites = loadTutuFavorites();
-const alreadyFavorited = favorites.some(item =>
-    item.content === text &&
-    item.characterName === finalCharacterName
-);
 
-if (alreadyFavorited) {
-    toastr.info('这个小剧场已经收藏过了');
-    return;
-}
 
     const favorite =
         favorites.find(item => item.id === id);
@@ -2139,7 +2222,11 @@ function stripTutuTheaterFromMessage(text) {
     return text.replace(regex, '').trimEnd();
 }
 
-async function embedTutuTheaterToChat(content) {
+async function embedTutuTheaterToChat(
+    content,
+    allowReplace = false
+) {
+
     content = String(content || '').trim();
 
     if (!content) {
@@ -2164,11 +2251,31 @@ async function embedTutuTheaterToChat(content) {
         toastr.warning('找不到 AI 回复消息，无法嵌入');
         return;
     }
+const message = chat[lastAiIndex];
 
-    const message = chat[lastAiIndex];
+/*
+ * 自动生成时：
+ * 如果这一层已经有小剧场，就不再重复生成。
+ *
+ * 手动生成时 allowReplace = true，
+ * 可以重新生成并替换这一层的小剧场。
+ */
+if (
+    !allowReplace &&
+    String(message.mes || '')
+        .includes(TUTU_THEATER_START)
+) {
+    toastr.info(
+        '这一层已经生成过小剧场，未重复嵌入'
+    );
 
-    // 先移除旧的小剧场内容
-    let originalMes = stripTutuTheaterFromMessage(message.mes);
+    return;
+}
+
+// 先移除旧的小剧场内容
+let originalMes =
+    stripTutuTheaterFromMessage(message.mes);
+
 
     // 构建小剧场块 —— 注意：不要用 HTML 标签，
     // 因为 SillyTavern 的消息格式化可能会破坏它。
@@ -2190,21 +2297,26 @@ async function embedTutuTheaterToChat(content) {
     try {
         const $messageBlock = $(`.mes[mesid="${lastAiIndex}"]`);
 
-        if (!$messageBlock.length) {
-            // 找不到 DOM，尝试重新加载聊天
-            await context.reloadCurrentChat?.();
-            // 保存小剧场内容，以便切换聊天后恢复
-saveTutuTheaterContent(lastAiIndex, content);
-            // reload 之后再找一次
-appendTheaterToDOM(
-    index,
-    storedContent,
-    getCurrentTutuCharacterName()
-);
+if (!$messageBlock.length) {
+    /*
+     * 找不到 DOM 时先保存内容。
+     * 聊天重新渲染后由 restoreAllTutuTheaterEmbeds()
+     * 自动恢复。
+     */
+    saveTutuTheaterContent(
+        lastAiIndex,
+        content
+    );
 
+    await context.reloadCurrentChat?.();
 
-            return;
-        }
+    setTimeout(() => {
+        restoreAllTutuTheaterEmbeds();
+    }, 300);
+
+    return;
+}
+
 // 保存小剧场内容，以便切换聊天后恢复
 saveTutuTheaterContent(lastAiIndex, content);
 
@@ -3299,17 +3411,15 @@ const aiPrompt =
         // ★ 根据输出方式决定结果去向
         const outputMode = tutuSettings.outputMode || 'panel';
 
-        if (outputMode === 'embed') {
-            // 嵌入到聊天楼层
-            await embedTutuTheaterToChat(result);
+if (outputMode === 'embed') {
+    await embedTutuTheaterToChat(
+        result,
+        !isAutomatic
+    );
 
-            // 同时在面板中也显示一份（方便查看）
-            showTutuResult(result);
-
-            $('#tutu_result_status').text(
-                '✅ 已嵌入到最新 AI 回复楼层底部'
-            );
-        } else {
+    showTutuResult(result);
+}
+else {
             // 外置面板预览
             showTutuResult(result);
         }
@@ -3382,6 +3492,143 @@ function getTutuLatestMessageKey() {
         lastMessage.name || '',
     ].join('::');
 }
+/**
+ * 获取当前聊天唯一标识
+ *
+ * 加入角色信息，避免不同角色之间复用同一个自动生成状态。
+ */
+function getTutuCurrentChatIdentity() {
+    const context = SillyTavern.getContext();
+
+    const chatId =
+        context.chatId ||
+        context.chat_metadata?.chat_id ||
+        'default';
+
+    const characterId =
+        context.characterId !== undefined
+            ? String(context.characterId)
+            : 'none';
+
+    const character =
+        context.characterId !== undefined &&
+        context.characters?.[context.characterId]
+            ? context.characters[context.characterId]
+            : null;
+
+    const characterName =
+        character?.name ||
+        character?.data?.name ||
+        'AI';
+
+    const avatar =
+        character?.avatar ||
+        character?.data?.avatar ||
+        '';
+
+    return [
+        chatId,
+        characterId,
+        characterName,
+        avatar,
+    ].join('::');
+}
+
+
+/**
+ * 判断最新 AI 消息是否确实是在回复用户。
+ *
+ * 角色开场白通常前面没有用户消息，所以不会触发。
+ * 只有聊天中出现用户消息后，后面的 AI 回复才允许自动生成。
+ */
+function getTutuLatestAiReplyInfo() {
+    const context = SillyTavern.getContext();
+
+    const chat = Array.isArray(context.chat)
+        ? context.chat
+        : [];
+
+    if (!chat.length) {
+        return null;
+    }
+
+    const latestIndex = chat.length - 1;
+    const latestMessage = chat[latestIndex];
+
+    if (!latestMessage) {
+        return null;
+    }
+
+    // 最新消息必须是 AI 消息
+    if (latestMessage.is_user) {
+        return null;
+    }
+
+    /*
+     * 从最新 AI 消息往前找最近一条用户消息。
+     *
+     * 如果找不到，说明这是角色开场白，
+     * 或者不是用户触发的回复。
+     */
+    let userIndex = -1;
+
+    for (let i = latestIndex - 1; i >= 0; i--) {
+        if (chat[i]?.is_user) {
+            userIndex = i;
+            break;
+        }
+
+        /*
+         * 如果中间又出现了另一条 AI 消息，
+         * 说明最新 AI 消息不是紧接着回复用户。
+         *
+         * 例如：
+         * AI
+         * AI
+         *
+         * 这种情况不自动生成。
+         */
+        if (!chat[i]?.is_user && chat[i]?.mes) {
+            break;
+        }
+    }
+
+    if (userIndex === -1) {
+        return null;
+    }
+
+    return {
+        latestIndex,
+        latestMessage,
+        userIndex,
+    };
+}
+
+
+/**
+ * 生成稳定的自动生成去重 Key。
+ *
+ * 不只使用 chat.length，
+ * 还加入聊天、角色、楼层、消息正文。
+ */
+function getTutuAutoMessageKey(messageIndex, message) {
+    const contextIdentity =
+        getTutuCurrentChatIdentity();
+
+    const messageText = String(
+        message?.mes ||
+        message?.content ||
+        ''
+    );
+
+    return [
+        contextIdentity,
+        messageIndex,
+        message?.name || '',
+        messageText,
+    ].join('::');
+}
+
 function initTutuAutoGenerationListener() {
     if (
         typeof eventSource === 'undefined' ||
@@ -3409,39 +3656,70 @@ function initTutuAutoGenerationListener() {
                     ...latestSettings,
                 };
 
+                if (!tutuSettings.autoGenerateEnabled) {
+                    return;
+                }
+
+                /*
+                 * 关键判断：
+                 * 最新 AI 消息必须是对用户消息的回复。
+                 *
+                 * 角色开场白前面没有用户消息，
+                 * 因此会直接 return。
+                 */
+                const replyInfo =
+                    getTutuLatestAiReplyInfo();
+
+                if (!replyInfo) {
+                    console.log(
+                        '[兔兔小剧场] 当前消息不是用户触发的 AI 回复，不自动生成'
+                    );
+
+                    return;
+                }
+
+                const {
+                    latestIndex,
+                    latestMessage,
+                } = replyInfo;
+
+                /*
+                 * 如果这一层已经有小剧场标记，
+                 * 说明这一层以前已经生成过。
+                 *
+                 * 自动模式下不再重复生成。
+                 */
+                const latestMesText = String(
+                    latestMessage.mes ||
+                    latestMessage.content ||
+                    ''
+                );
+
                 if (
-                    !tutuSettings.autoGenerateEnabled
+                    latestMesText.includes(
+                        TUTU_THEATER_START
+                    )
                 ) {
-                    return;
-                }
+                    console.log(
+                        '[兔兔小剧场] 当前 AI 楼层已经存在小剧场，跳过重复生成'
+                    );
 
-                const context =
-                    SillyTavern.getContext();
-
-                const chat = Array.isArray(context.chat)
-                    ? context.chat
-                    : [];
-
-                const latestMessage =
-                    chat[chat.length - 1];
-
-                if (!latestMessage) {
-                    return;
-                }
-
-                // 如果最后一条是用户消息，不触发
-                if (latestMessage.is_user) {
                     return;
                 }
 
                 const messageKey =
-                    getTutuLatestMessageKey();
+                    getTutuAutoMessageKey(
+                        latestIndex,
+                        latestMessage
+                    );
 
-                // 防止同一条 AI 消息重复触发
+                /*
+                 * 防止同一个 MESSAGE_RECEIVED 事件、
+                 * 消息更新事件重复触发。
+                 */
                 if (
                     messageKey &&
-                    messageKey ===
-                        tutuLastAutoMessageKey
+                    messageKey === tutuLastAutoMessageKey
                 ) {
                     return;
                 }
@@ -3449,17 +3727,16 @@ function initTutuAutoGenerationListener() {
                 tutuLastAutoMessageKey =
                     messageKey;
 
-const scenario =
-    getAutoGenerationScenario();
+                const scenario =
+                    getAutoGenerationScenario();
 
-if (!scenario) {
-    console.warn(
-        '兔兔小剧场：当前自动生成范围内没有可用剧本'
-    );
+                if (!scenario) {
+                    console.warn(
+                        '兔兔小剧场：当前自动生成范围内没有可用剧本'
+                    );
 
-    return;
-}
-
+                    return;
+                }
 
                 await runTutuGeneration({
                     scenario,
@@ -3475,6 +3752,7 @@ if (!scenario) {
         }
     );
 }
+
 // 监听聊天消息渲染完成，恢复嵌入的小剧场显示
 function initTutuEmbedRestorer() {
     // 使用 MutationObserver 监听 .mes_text 的变化
@@ -3491,48 +3769,96 @@ function initTutuEmbedRestorer() {
         event_types.CHARACTER_MESSAGE_RENDERED,
     ].filter(Boolean);
 
-    restoreEvents.forEach(eventType => {
-        eventSource.on(eventType, () => {
-            // 延迟一点执行，等 DOM 渲染完成
-            setTimeout(() => restoreAllTutuTheaterEmbeds(), 300);
-        });
+restoreEvents.forEach(eventType => {
+    eventSource.on(eventType, () => {
+        if (
+            eventType === event_types.CHAT_CHANGED
+        ) {
+            tutuLastAutoMessageKey = '';
+        }
+
+        setTimeout(() => {
+            restoreAllTutuTheaterEmbeds();
+        }, 300);
     });
+});
+
 }
 
 function restoreAllTutuTheaterEmbeds() {
-    const context = SillyTavern.getContext();
-    const chat = Array.isArray(context.chat) ? context.chat : [];
+    const context =
+        SillyTavern.getContext();
+
+    const chat =
+        Array.isArray(context.chat)
+            ? context.chat
+            : [];
 
     chat.forEach((message, index) => {
-        if (!message || message.is_user) return;
-
-        const mes = String(message.mes || '');
-
-        // 检查消息中是否有小剧场标记
-        if (!mes.includes(TUTU_THEATER_START)) return;
-
-        const $messageBlock = $(`.mes[mesid="${index}"]`);
-        if (!$messageBlock.length) return;
-
-        const $mesText = $messageBlock.find('.mes_text');
-        if (!$mesText.length) return;
-
-        // 如果 DOM 中已经有小剧场，跳过
-        if ($mesText.find('.tutu-theater-embed').length) return;
-
-        // 从 localStorage 或其他地方恢复内容
-        // 这里我们需要一个存储机制
-        const storedContent = getTutuStoredTheaterContent(index);
-        if (storedContent) {
-            appendTheaterToDOM(
-    index,
-    storedContent,
-    getCurrentTutuCharacterName()
-);
-
+        if (!message || message.is_user) {
+            return;
         }
+
+        const mes =
+            String(message.mes || '');
+
+        /*
+         * 没有标记就不恢复。
+         */
+        if (
+            !mes.includes(TUTU_THEATER_START)
+        ) {
+            return;
+        }
+
+        const $messageBlock =
+            $(`.mes[mesid="${index}"]`);
+
+        if (!$messageBlock.length) {
+            return;
+        }
+
+        const $mesText =
+            $messageBlock.find('.mes_text');
+
+        if (!$mesText.length) {
+            return;
+        }
+
+        /*
+         * 已经有 DOM 就不要重复添加。
+         */
+        if (
+            $mesText.find(
+                '.tutu-theater-embed'
+            ).length
+        ) {
+            return;
+        }
+
+        const storedTheater =
+            getTutuStoredTheaterContent(index);
+
+        if (
+            !storedTheater ||
+            !storedTheater.content
+        ) {
+            console.warn(
+                '[兔兔小剧场] 找不到对应楼层的小剧场内容：',
+                index
+            );
+
+            return;
+        }
+
+        appendTheaterToDOM(
+            index,
+            storedTheater.content,
+            storedTheater.characterName
+        );
     });
 }
+
 
 initTutuEmbedRestorer();
 
