@@ -267,6 +267,11 @@ tutuSettings = {
     model: '',
 
     autoGenerateEnabled: false,
+
+    // 嵌入 AI 回复楼层时的默认状态
+    // false = 默认展开
+    // true = 默认折叠
+    embedDefaultCollapsed: false,
     autoGenerateMode: 'current',
     autoGenerateScope: 'all',
     autoGenerateCategory: '',
@@ -280,6 +285,9 @@ tutuSettings = {
 
     ...tutuSettings,
 };
+if (typeof tutuSettings.embedDefaultCollapsed !== 'boolean') {
+    tutuSettings.embedDefaultCollapsed = false;
+}
 
 
 let tutuApiPresets = loadLocalJson(API_PRESETS_KEY, []);
@@ -740,6 +748,23 @@ localStorage.setItem(
         嵌入到最新 AI 回复楼层底部
     </option>
 </select>
+<label class="tutu-settings-label">
+    嵌入楼层默认状态
+</label>
+
+<select id="tutu_embed_default_state" class="text_pole">
+    <option value="expanded">
+        默认展开
+    </option>
+    <option value="collapsed">
+        默认折叠
+    </option>
+</select>
+
+<div class="tutu-api-help">
+    仅对“嵌入到最新 AI 回复楼层底部”生效。
+    嵌入后仍然可以点击标题手动展开或折叠。
+</div>
 
 <div class="tutu-api-help">
     <strong>面板预览</strong>：生成内容只在小剧场面板中显示。<br>
@@ -1306,9 +1331,6 @@ saveTutuTheaterContent(lastAiIndex, content);
     }
 }
 
-/**
- * 在指定消息的 DOM 中追加小剧场 HTML
- */
 function appendTheaterToDOM(mesId, content) {
     const $messageBlock = $(`.mes[mesid="${mesId}"]`);
 
@@ -1327,18 +1349,43 @@ function appendTheaterToDOM(mesId, content) {
     // 先移除该楼层中已有的小剧场 DOM
     $mesText.find('.tutu-theater-embed').remove();
 
-    // 构建小剧场 HTML 元素
+    /*
+     * 读取默认状态：
+     * true  = 默认折叠
+     * false = 默认展开
+     */
+    const isCollapsed =
+        Boolean(tutuSettings.embedDefaultCollapsed);
+
+    /*
+     * details 是浏览器原生的折叠展开组件。
+     *
+     * 有 open 属性：默认展开
+     * 没有 open 属性：默认折叠
+     */
+    const openAttribute =
+        isCollapsed ? '' : ' open';
+
     const theaterHtml = `
-<div class="tutu-theater-embed">
-    <div class="tutu-theater-embed-header">
+<details
+    class="tutu-theater-embed"${openAttribute}>
+
+    <summary class="tutu-theater-embed-header">
         <span>🐰 兔兔小剧场</span>
+        <span class="tutu-theater-embed-toggle">
+            点击展开/折叠
+        </span>
+    </summary>
+
+    <div class="tutu-theater-embed-body">
+        ${content}
     </div>
-    <div class="tutu-theater-embed-body">${content}</div>
-</div>`;
+</details>`;
 
     // 追加到 .mes_text 的末尾
     $mesText.append(theaterHtml);
 }
+
 
 
 function showTutuResultMode(mode) {
@@ -2465,10 +2512,12 @@ function saveTutuSettings() {
 
         autoSequenceIndexes:
             tutuSettings.autoSequenceIndexes || {},
+outputMode:
+    $('#tutu_output_mode').val() || 'panel',
 
-        // ★ 新增
-        outputMode:
-            $('#tutu_output_mode').val() || 'panel',
+embedDefaultCollapsed:
+    $('#tutu_embed_default_state').val() === 'collapsed',
+
     };
 
     localStorage.setItem(
@@ -2536,6 +2585,13 @@ function loadTutuSettingsToUI() {
     // ★ 新增
     $('#tutu_output_mode')
         .val(tutuSettings.outputMode || 'panel');
+    $('#tutu_embed_default_state')
+    .val(
+        tutuSettings.embedDefaultCollapsed
+            ? 'collapsed'
+            : 'expanded'
+    );
+
 
     updateSecondaryApiVisibility();
     renderApiPresetDropdown();
@@ -3223,14 +3279,23 @@ catch (error) {
     // 4. 事件绑定
     // ==========================================
     // 输出方式切换
-$(document).on('change', '#tutu_output_mode', function () {
-    tutuSettings.outputMode = $(this).val() || 'panel';
+$(document).on(
+    'change',
+    '#tutu_output_mode, #tutu_embed_default_state',
+    function () {
+        tutuSettings.outputMode =
+            $('#tutu_output_mode').val() || 'panel';
 
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(tutuSettings)
-    );
-});
+        tutuSettings.embedDefaultCollapsed =
+            $('#tutu_embed_default_state').val() === 'collapsed';
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+    }
+);
+
 
 $(document).on(
     'click',
