@@ -32,140 +32,90 @@ async function injectTutuRegex() {
     const tutuRegexScript = {
         scriptName: REGEX_SCRIPT_NAME,
 
-        /*
-         * 删除发送给 AI 的 prompt 中的小剧场内容。
-         */
         findRegex:
             '<!--\\s*TUTU_THEATER_START\\s*-->[\\s\\S]*?<!--\\s*TUTU_THEATER_END\\s*-->',
 
         replaceString: '',
-
         trimStrings: [],
 
-        /*
-         * AI 输出。
-         */
-        placement: [
-            regex_placement?.AI_OUTPUT ?? 1,
-        ],
-
+        placement: [1],
         disabled: false,
-
         markdownOnly: false,
-
-        /*
-         * 只处理发送给 AI 的 prompt，
-         * 不删除聊天页面显示内容。
-         */
         promptOnly: true,
-
         runOnEdit: true,
-
         substituteRegex: false,
-
         minDepth: null,
         maxDepth: null,
     };
 
-    try {
+    const context = SillyTavern.getContext();
+
+    console.log(
+        '[兔兔] 当前 context.extensionSettings.regex =',
+        context.extensionSettings?.regex
+    );
+
+    if (!context.extensionSettings) {
+        throw new Error('context.extensionSettings 不存在');
+    }
+
+    if (!context.extensionSettings.regex) {
+        context.extensionSettings.regex = {};
+    }
+
+    const regexSettings = context.extensionSettings.regex;
+
+    /*
+     * 根据当前版本实际存在的字段选择保存位置。
+     */
+    let listKey = null;
+
+    if (Array.isArray(regexSettings.global_scripts)) {
+        listKey = 'global_scripts';
+    } else if (Array.isArray(regexSettings.scripts)) {
+        listKey = 'scripts';
+    } else {
         /*
-         * 使用 SillyTavern 正则扩展真实使用的设置对象。
+         * 如果两个字段都不存在，优先使用 scripts。
+         * 但后面会把对象打印出来，方便确认版本结构。
          */
-        if (!extension_settings.regex) {
-            extension_settings.regex = {};
-        }
+        listKey = 'scripts';
+        regexSettings[listKey] = [];
+    }
 
-        const regexSettings = extension_settings.regex;
+    const scripts = regexSettings[listKey];
 
-        /*
-         * 关键：
-         * SillyTavern 正则扩展页面读取的是 scripts，
-         * 不是 global_scripts。
-         */
-        if (!Array.isArray(regexSettings.scripts)) {
-            regexSettings.scripts = [];
-        }
+    const existingIndex = scripts.findIndex(script =>
+        script?.scriptName === REGEX_SCRIPT_NAME
+    );
 
-        /*
-         * 如果之前已经错误写入了 global_scripts，
-         * 删除旧的错误字段，避免产生两套数据。
-         */
-        if (Array.isArray(regexSettings.global_scripts)) {
-            regexSettings.global_scripts =
-                regexSettings.global_scripts.filter(script => {
-                    return script?.scriptName !== REGEX_SCRIPT_NAME;
-                });
+    if (existingIndex >= 0) {
+        scripts[existingIndex] = {
+            ...scripts[existingIndex],
+            ...tutuRegexScript,
+        };
+    } else {
+        scripts.push(tutuRegexScript);
+    }
 
-            /*
-             * 如果 global_scripts 清空了，可以删除这个错误字段。
-             */
-            if (regexSettings.global_scripts.length === 0) {
-                delete regexSettings.global_scripts;
-            }
-        }
+    console.log('[兔兔] 使用字段：', listKey);
+    console.log('[兔兔] 注入后的 regex 设置：', regexSettings);
+    console.log('[兔兔] 注入后的正则数组：', scripts);
 
-        /*
-         * 查找 scripts 中是否已有同名正则。
-         */
-        const existingIndex =
-            regexSettings.scripts.findIndex(script => {
-                return script?.scriptName === REGEX_SCRIPT_NAME;
-            });
+    /*
+     * 这是 SillyTavern script.js 导出的真正保存函数。
+     */
+    if (typeof saveSettingsDebounced === 'function') {
+        saveSettingsDebounced();
+    } else {
+        console.warn('[兔兔] saveSettingsDebounced 不存在');
+    }
 
-        if (existingIndex >= 0) {
-            /*
-             * 已存在则更新。
-             */
-            regexSettings.scripts[existingIndex] = {
-                ...regexSettings.scripts[existingIndex],
-                ...tutuRegexScript,
-            };
-
-            console.log(
-                '[兔兔小剧场] 全局正则已存在，已更新 scripts 中的配置'
-            );
-        } else {
-            /*
-             * 不存在则写入 scripts。
-             */
-            regexSettings.scripts.push(tutuRegexScript);
-
-            console.log(
-                '[兔兔小剧场] 已注入 extension_settings.regex.scripts'
-            );
-        }
-
-        /*
-         * 调试用：把实际数据暴露到 window。
-         */
-        window.tutuRegexDebug =
-            extension_settings.regex.scripts;
-
-        /*
-         * 使用 SillyTavern 正确的保存函数。
-         */
-        if (typeof saveSettingsDebounced === 'function') {
-            saveSettingsDebounced();
-
-            console.log(
-                '[兔兔小剧场] 已调用 saveSettingsDebounced()'
-            );
-        } else {
-            console.warn(
-                '[兔兔小剧场] 找不到 saveSettingsDebounced()'
-            );
-        }
-
-        console.log(
-            '[兔兔小剧场] 当前 scripts：',
-            extension_settings.regex.scripts
-        );
-
-    } catch (error) {
-        console.error(
-            '[兔兔小剧场] 注入全局正则失败：',
-            error
-        );
+    /*
+     * 触发设置更新事件，某些版本的扩展界面会监听它。
+     */
+    if (eventSource && event_types?.SETTINGS_UPDATED) {
+        await eventSource.emit(event_types.SETTINGS_UPDATED);
     }
 }
 
