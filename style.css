@@ -1653,3 +1653,89 @@
     margin: 8px 0 4px 0;
     color: var(--SmartThemeQuoteColor, #7b68ee);
 }
+        .tutu-theater-embed {
+            margin-top: 12px;
+            padding: 0;
+            border: 1px solid var(--SmartThemeBorderColor);
+            border-radius: 8px;
+            background: var(--SmartThemeBlurTintColor);
+            overflow: hidden;
+        }
+
+        .tutu-theater-embed-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
+            color: var(--SmartThemeBodyColor);
+            background: var(--SmartThemeQuoteColor);
+        }
+
+        .tutu-theater-embed-header:hover {
+            filter: brightness(1.1);
+        }
+
+        .tutu-theater-embed-header::marker {
+            color: var(--SmartThemeBodyColor);
+        }
+
+        .tutu-theater-embed-toggle {
+            font-size: 0.8em;
+            opacity: 0.65;
+            font-weight: normal;
+        }
+
+        .tutu-theater-embed-body {
+            padding: 12px;
+            color: var(--SmartThemeBodyColor);
+        }
+
+        /*
+         * 展开时显示“点击折叠”，折叠时显示“点击展开”
+         */
+        .tutu-theater-embed[open]
+        .tutu-theater-embed-toggle::after {
+            content: '点击折叠';
+        }
+
+        .tutu-theater-embed:not([open])
+        .tutu-theater-embed-toggle::after {
+            content: '点击展开';
+        }
+
+        /*
+         * 防止原本的文字“点击展开/折叠”重复显示
+         */
+        .tutu-theater-embed-toggle {
+            font-size: 0;
+        }
+
+        .tutu-theater-embed-toggle::after {
+            font-size: 0.8rem;
+        }
+
+        /*
+         * 小剧场正文中的 iframe
+         */
+        .tutu-theater-embed-body iframe {
+            width: 100%;
+            min-height: 300px;
+            border: none;
+        }
+
+        /*
+         * 移动端适配
+         */
+        @media (max-width: 600px) {
+            .tutu-theater-embed-body {
+                padding: 8px;
+            }
+
+            .tutu-theater-embed-header {
+                padding: 9px 10px;
+            }
+        }
