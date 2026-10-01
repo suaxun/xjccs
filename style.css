@@ -1950,3 +1950,149 @@
         gap: 4px;
     }
 }
+/* ==========================================
+   收藏：按角色分组、折叠、标题和编辑
+   ========================================== */
+
+.tutu-favorite-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-bottom: 12px;
+    padding: 8px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.tutu-favorite-group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    padding: 9px 11px;
+
+    border-radius: 7px;
+    background: var(--SmartThemeQuoteColor);
+    color: #fff;
+
+    cursor: pointer;
+    user-select: none;
+
+    transition: filter 0.2s ease;
+}
+
+.tutu-favorite-group-header:hover {
+    filter: brightness(1.1);
+}
+
+.tutu-favorite-group-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    min-width: 0;
+    font-weight: bold;
+}
+
+.tutu-favorite-character-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tutu-favorite-group-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    flex-shrink: 0;
+}
+
+.tutu-favorite-group-count {
+    font-size: 0.82em;
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.tutu-favorite-group-arrow {
+    width: 16px;
+    text-align: center;
+}
+
+.tutu-favorite-group-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tutu-favorite-card {
+    margin: 0;
+}
+
+.tutu-favorite-card-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.tutu-favorite-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: var(--SmartThemeQuoteColor);
+    font-weight: bold;
+    font-size: 1em;
+}
+
+.tutu-favorite-time {
+    margin-top: 4px;
+    font-size: 0.78em;
+    opacity: 0.6;
+}
+
+.tutu-favorite-actions {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
+}
+
+.tutu-favorite-actions .menu_button {
+    min-width: 30px;
+    width: 30px;
+    height: 30px;
+
+    padding: 0;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 手机端 */
+@media (max-width: 600px) {
+    .tutu-favorite-group-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .tutu-favorite-group-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .tutu-favorite-card-header {
+        align-items: flex-start;
+    }
+
+    .tutu-favorite-title {
+        white-space: normal;
+        word-break: break-word;
+    }
+}
