@@ -21,44 +21,12 @@ jQuery(async () => {
     // ==========================================
     // 0. 数据存储管理 (LocalStorage)
     // ==========================================
-// ==========================================
-// -1. 注入正则：阻止 AI 读取小剧场内容
-// ==========================================
 async function injectTutuRegex() {
     const REGEX_SCRIPT_NAME = '🐰兔兔小剧场过滤';
 
     try {
         const context = SillyTavern.getContext();
 
-        // 读取当前正则列表
-        let regexScripts = [];
-        try {
-            const response = await fetch('/api/settings/get', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({}),
-            });
-            if (response.ok) {
-                const settings = await response.json();
-                regexScripts = settings?.regex_scripts || [];
-            }
-        } catch (e) {
-            // 如果无法读取，使用 context
-            regexScripts = context?.extensionSettings?.regex?.scripts || [];
-        }
-
-        // 检查是否已存在
-        const exists = regexScripts.some(
-            r => r.scriptName === REGEX_SCRIPT_NAME
-        );
-
-        if (exists) {
-            console.log('兔兔小剧场正则已存在，跳过注入');
-            return;
-        }
-
-        // 这条正则不存在，通过 context 的正则 API 添加
-        // SillyTavern 的正则系统通过 extensionSettings 管理
         if (!context.extensionSettings) {
             context.extensionSettings = {};
         }
@@ -74,7 +42,7 @@ async function injectTutuRegex() {
         );
 
         if (existsInContext) {
-            console.log('兔兔小剧场正则已存在于 context，跳过');
+            console.log('兔兔小剧场正则已存在，跳过注入');
             return;
         }
 
@@ -84,19 +52,26 @@ async function injectTutuRegex() {
             findRegex: '<!-- TUTU_THEATER_START -->[\\s\\S]*?<!-- TUTU_THEATER_END -->',
             replaceString: '',
             trimStrings: [],
-            placement: [
-                1, // AI_OUTPUT → 发送给 AI 前过滤（从 prompt 中移除）
-            ],
+            placement: [2], // 2 = SLASH_COMMAND 之前的用户输入过滤，实际上我们需要 1
             disabled: false,
             markdownOnly: false,
-            promptOnly: true, // 只在发送给 AI 的 prompt 中生效
+            promptOnly: true,
             runOnEdit: true,
             substituteRegex: false,
             minDepth: null,
             maxDepth: null,
         });
 
-        // 保存设置
+        // SillyTavern 正则的 placement 值：
+        // 0 = 用户输入, 1 = AI 输出, 2 = 斜杠命令
+        // 我们需要过滤的是发送给 AI 的内容
+        // 但实际上由于我们改成了只在 mes 中保存标记而不是完整内容，
+        // 正则过滤标记本身就够了
+        const lastScript = context.extensionSettings.regex.scripts[
+            context.extensionSettings.regex.scripts.length - 1
+        ];
+        lastScript.placement = [1]; // AI 输出过滤
+
         context.saveSettingsDebounced?.();
 
         console.log('兔兔小剧场正则已注入');
@@ -105,11 +80,14 @@ async function injectTutuRegex() {
     }
 }
 
+
 const STORAGE_KEY = 'tutu_theater_scenarios';
 const SETTINGS_KEY = 'tutu_theater_settings';
 const API_PRESETS_KEY = 'tutu_theater_api_presets';
 const CHARACTER_CONTEXT_KEY = 'tutu_theater_character_context';
 const CATEGORIES_KEY = 'tutu_theater_categories';
+const THEATER_CONTENT_KEY = 'tutu_theater_embed_contents';
+
 let tutuCategories = loadLocalJson(CATEGORIES_KEY, []);
 
 tutuCategories = Array.isArray(tutuCategories)
@@ -127,6 +105,29 @@ function loadLocalJson(key, defaultValue) {
         console.error(`读取 LocalStorage 失败：${key}`, error);
         return defaultValue;
     }
+}
+function saveTutuTheaterContent(mesIndex, content) {
+    const stored = loadLocalJson(THEATER_CONTENT_KEY, {});
+    const context = SillyTavern.getContext();
+    const chatId = context.chatId || context.chat_metadata?.chat_id || 'default';
+    const key = `${chatId}::${mesIndex}`;
+    stored[key] = content;
+
+    // 限制存储大小，最多保留最近 50 条
+    const keys = Object.keys(stored);
+    if (keys.length > 50) {
+        keys.slice(0, keys.length - 50).forEach(k => delete stored[k]);
+    }
+
+    localStorage.setItem(THEATER_CONTENT_KEY, JSON.stringify(stored));
+}
+
+function getTutuStoredTheaterContent(mesIndex) {
+    const stored = loadLocalJson(THEATER_CONTENT_KEY, {});
+    const context = SillyTavern.getContext();
+    const chatId = context.chatId || context.chat_metadata?.chat_id || 'default';
+    const key = `${chatId}::${mesIndex}`;
+    return stored[key] || '';
 }
 
 let tutuScenarios = loadLocalJson(STORAGE_KEY, []);
@@ -1135,9 +1136,6 @@ function stripTutuTheaterFromMessage(text) {
     return text.replace(regex, '').trimEnd();
 }
 
-/**
- * 将小剧场内容嵌入到最新 AI 回复的楼层底部
- */
 async function embedTutuTheaterToChat(content) {
     content = String(content || '').trim();
 
@@ -1169,64 +1167,39 @@ async function embedTutuTheaterToChat(content) {
     // 先移除旧的小剧场内容
     let originalMes = stripTutuTheaterFromMessage(message.mes);
 
-    // 构建小剧场 HTML 块
-    // 这个块会被正则在发送给 AI 时自动移除
-    const theaterBlock = `
+    // 构建小剧场块 —— 注意：不要用 HTML 标签，
+    // 因为 SillyTavern 的消息格式化可能会破坏它。
+    // 改用纯文本标记 + 在 DOM 层面追加渲染后的 HTML。
+    const theaterMarker = `\n\n${TUTU_THEATER_START}\n${TUTU_THEATER_END}`;
 
-${TUTU_THEATER_START}
-<div class="tutu-theater-embed">
-<div class="tutu-theater-embed-header">
-<span>🐰 兔兔小剧场</span>
-</div>
-<div class="tutu-theater-embed-body">
-${content}
-</div>
-</div>
-${TUTU_THEATER_END}`;
+    // 在 mes 字段中只保存标记（用于正则过滤）
+    // 实际显示内容通过 DOM 操作追加
+    message.mes = originalMes + theaterMarker;
 
-    // 拼接到原消息末尾
-    message.mes = originalMes + theaterBlock;
-
-    // 更新页面上的消息显示
-    // SillyTavern 提供了 addOneMessage 或直接修改 DOM
-    // 最稳妥的方式是使用 context 提供的方法
-
-    // 方法1：通过 context.saveChat 保存，然后刷新显示
+    // 保存聊天记录
     try {
-        // 重新渲染这条消息
+        await context.saveChat?.();
+    } catch (e) {
+        console.warn('保存聊天记录时出错：', e);
+    }
+
+    // 在 DOM 层面追加小剧场内容
+    try {
         const $messageBlock = $(`.mes[mesid="${lastAiIndex}"]`);
 
-        if ($messageBlock.length) {
-            const $mesText = $messageBlock.find('.mes_text');
-
-            if ($mesText.length) {
-                // 使用 SillyTavern 的消息格式化函数（如果有的话）
-                if (typeof context.formatMessageContent === 'function') {
-                    const formatted = context.formatMessageContent(
-                        message.mes
-                    );
-                    $mesText.html(formatted);
-                } else if (typeof messageFormatting === 'function') {
-                    const formatted = messageFormatting(
-                        message.mes,
-                        message.name,
-                        message.is_system,
-                        message.is_user,
-                        lastAiIndex
-                    );
-                    $mesText.html(formatted);
-                } else {
-                    // 回退：直接刷新整个聊天
-                    await context.reloadCurrentChat?.();
-                }
-            }
-        } else {
-            // 找不到 DOM 元素，刷新聊天
+        if (!$messageBlock.length) {
+            // 找不到 DOM，尝试重新加载聊天
             await context.reloadCurrentChat?.();
+            // 保存小剧场内容，以便切换聊天后恢复
+saveTutuTheaterContent(lastAiIndex, content);
+            // reload 之后再找一次
+            appendTheaterToDOM(lastAiIndex, content);
+            return;
         }
+// 保存小剧场内容，以便切换聊天后恢复
+saveTutuTheaterContent(lastAiIndex, content);
 
-        // 保存聊天记录
-        await context.saveChat?.();
+        appendTheaterToDOM(lastAiIndex, content);
 
         toastr.success('小剧场已嵌入聊天楼层', '兔兔小剧场');
     } catch (error) {
@@ -1234,6 +1207,41 @@ ${TUTU_THEATER_END}`;
         toastr.error('嵌入失败：' + (error.message || error));
     }
 }
+
+/**
+ * 在指定消息的 DOM 中追加小剧场 HTML
+ */
+function appendTheaterToDOM(mesId, content) {
+    const $messageBlock = $(`.mes[mesid="${mesId}"]`);
+
+    if (!$messageBlock.length) {
+        console.warn('找不到消息 DOM 元素：', mesId);
+        return;
+    }
+
+    const $mesText = $messageBlock.find('.mes_text');
+
+    if (!$mesText.length) {
+        console.warn('找不到 .mes_text 元素');
+        return;
+    }
+
+    // 先移除该楼层中已有的小剧场 DOM
+    $mesText.find('.tutu-theater-embed').remove();
+
+    // 构建小剧场 HTML 元素
+    const theaterHtml = `
+<div class="tutu-theater-embed">
+    <div class="tutu-theater-embed-header">
+        <span>🐰 兔兔小剧场</span>
+    </div>
+    <div class="tutu-theater-embed-body">${content}</div>
+</div>`;
+
+    // 追加到 .mes_text 的末尾
+    $mesText.append(theaterHtml);
+}
+
 
 function showTutuResultMode(mode) {
     if (mode === 'source') {
@@ -2027,6 +2035,62 @@ if (!scenario) {
         }
     );
 }
+// 监听聊天消息渲染完成，恢复嵌入的小剧场显示
+function initTutuEmbedRestorer() {
+    // 使用 MutationObserver 监听 .mes_text 的变化
+    // 当 SillyTavern 重新渲染消息时，恢复小剧场 DOM
+
+    if (typeof eventSource === 'undefined') {
+        return;
+    }
+
+    // 聊天加载完成时恢复
+    const restoreEvents = [
+        event_types.CHAT_CHANGED,
+        event_types.MESSAGE_UPDATED,
+        event_types.CHARACTER_MESSAGE_RENDERED,
+    ].filter(Boolean);
+
+    restoreEvents.forEach(eventType => {
+        eventSource.on(eventType, () => {
+            // 延迟一点执行，等 DOM 渲染完成
+            setTimeout(() => restoreAllTutuTheaterEmbeds(), 300);
+        });
+    });
+}
+
+function restoreAllTutuTheaterEmbeds() {
+    const context = SillyTavern.getContext();
+    const chat = Array.isArray(context.chat) ? context.chat : [];
+
+    chat.forEach((message, index) => {
+        if (!message || message.is_user) return;
+
+        const mes = String(message.mes || '');
+
+        // 检查消息中是否有小剧场标记
+        if (!mes.includes(TUTU_THEATER_START)) return;
+
+        const $messageBlock = $(`.mes[mesid="${index}"]`);
+        if (!$messageBlock.length) return;
+
+        const $mesText = $messageBlock.find('.mes_text');
+        if (!$mesText.length) return;
+
+        // 如果 DOM 中已经有小剧场，跳过
+        if ($mesText.find('.tutu-theater-embed').length) return;
+
+        // 从 localStorage 或其他地方恢复内容
+        // 这里我们需要一个存储机制
+        const storedContent = getTutuStoredTheaterContent(index);
+        if (storedContent) {
+            appendTheaterToDOM(index, storedContent);
+        }
+    });
+}
+
+initTutuEmbedRestorer();
+
 function normalizeSecondaryApiBase(endpoint) {
     endpoint = String(endpoint || '')
         .trim()
