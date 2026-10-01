@@ -680,25 +680,36 @@ const preview =
                                     <i class="fa-solid fa-pen"></i>
                                 </div>
 
-                                <div
-                                    class="
-                                        menu_button
-                                        margin0
-                                        tutu-favorite-export-btn
-                                    "
-                                    title="导出">
-                                    <i class="fa-solid fa-download"></i>
-                                </div>
+<div
+    class="
+        menu_button
+        margin0
+        tutu-favorite-export-btn
+    "
+    title="导出">
+    <i class="fa-solid fa-download"></i>
+</div>
 
-                                <div
-                                    class="
-                                        menu_button
-                                        margin0
-                                        tutu-favorite-delete-btn
-                                    "
-                                    title="删除收藏">
-                                    <i class="fa-solid fa-trash"></i>
-                                </div>
+<div
+    class="
+        menu_button
+        margin0
+        tutu-favorite-fullscreen-btn
+    "
+    title="全屏查看">
+    <i class="fa-solid fa-expand"></i>
+</div>
+
+<div
+    class="
+        menu_button
+        margin0
+        tutu-favorite-delete-btn
+    "
+    title="删除收藏">
+    <i class="fa-solid fa-trash"></i>
+</div>
+
                             </div>
                         </div>
 
@@ -5147,6 +5158,46 @@ $(document).on(
                 );
             }
         }
+    }
+);
+$(document).on(
+    'click',
+    '.tutu-favorite-fullscreen-btn',
+    function (event) {
+        event.stopPropagation();
+
+        const id = String(
+            $(this)
+                .closest('.tutu-favorite-card')
+                .data('id')
+        );
+
+        const favorite =
+            loadTutuFavorites()
+                .find(item => String(item.id) === id);
+
+        if (!favorite) {
+            toastr.error('找不到这条收藏');
+            return;
+        }
+
+        const content =
+            String(favorite.content || '').trim();
+
+        if (!content) {
+            toastr.warning('这条收藏没有内容');
+            return;
+        }
+
+        const characterName =
+            String(
+                favorite.characterName || 'AI'
+            ).trim() || 'AI';
+
+        openTutuTheaterFullscreen(
+            content,
+            characterName
+        );
     }
 );
 
