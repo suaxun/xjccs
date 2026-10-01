@@ -2177,4 +2177,269 @@
         height: 420px;
     }
 }
+/* ==========================================
+   聊天楼层小剧场标题栏按钮
+   ========================================== */
+
+.tutu-theater-embed-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tutu-theater-embed-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tutu-theater-embed-toggle {
+    flex-shrink: 0;
+}
+
+.tutu-theater-embed-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.tutu-theater-embed-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 28px;
+    height: 28px;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 5px;
+
+    background: rgba(0, 0, 0, 0.16);
+    color: #fff;
+
+    cursor: pointer;
+    font-size: 0.82em;
+
+    transition:
+        background 0.18s ease,
+        transform 0.18s ease,
+        filter 0.18s ease;
+}
+
+.tutu-theater-embed-action:hover {
+    background: rgba(255, 255, 255, 0.2);
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+
+.tutu-theater-embed-action:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 600px) {
+    .tutu-theater-embed-header {
+        flex-wrap: wrap;
+    }
+
+    .tutu-theater-embed-title {
+        flex: 1 1 auto;
+    }
+
+    .tutu-theater-embed-toggle {
+        display: none;
+    }
+
+    .tutu-theater-embed-actions {
+        width: 100%;
+        justify-content: flex-end;
+        margin-top: 3px;
+    }
+}
+/* ==========================================
+   小剧场全屏查看页面
+   ========================================== */
+
+#tutu_theater_fullscreen {
+    position: fixed;
+    inset: 0;
+
+    z-index: 2147483000;
+
+    display: flex;
+    flex-direction: column;
+
+    background: var(
+        --SmartThemeBlurTintColor,
+        #1e1e1e
+    );
+
+    color: var(
+        --SmartThemeBodyColor,
+        #eee
+    );
+}
+
+body.tutu-fullscreen-open {
+    overflow: hidden;
+}
+
+.tutu-fullscreen-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    min-height: 54px;
+    padding: 8px 14px;
+
+    box-sizing: border-box;
+
+    background: var(
+        --SmartThemeQuoteColor,
+        #6557c7
+    );
+
+    color: #fff;
+
+    box-shadow:
+        0 2px 12px rgba(0, 0, 0, 0.35);
+
+    flex-shrink: 0;
+}
+
+.tutu-fullscreen-title {
+    flex: 1;
+    min-width: 0;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 1.05em;
+    font-weight: bold;
+}
+
+.tutu-fullscreen-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.tutu-fullscreen-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 34px;
+    height: 34px;
+    padding: 0;
+
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+
+    background: rgba(0, 0, 0, 0.18);
+    color: #fff;
+
+    cursor: pointer;
+    font-size: 0.95em;
+
+    transition:
+        background 0.18s ease,
+        filter 0.18s ease,
+        transform 0.18s ease;
+}
+
+.tutu-fullscreen-action-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+}
+
+.tutu-fullscreen-close-btn {
+    background: rgba(180, 40, 60, 0.65);
+}
+
+.tutu-fullscreen-body {
+    flex: 1;
+    min-height: 0;
+
+    overflow: auto;
+
+    box-sizing: border-box;
+    padding: 20px;
+
+    background:
+        var(
+            --SmartThemeBlurTintColor,
+            rgba(20, 20, 20, 0.96)
+        );
+}
+
+.tutu-fullscreen-plain {
+    width: min(1100px, 100%);
+    min-height: 100%;
+
+    margin: 0 auto;
+    box-sizing: border-box;
+
+    padding: 24px;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    font-size: 1.08em;
+    line-height: 1.8;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px;
+
+    background: rgba(0, 0, 0, 0.12);
+}
+
+.tutu-fullscreen-iframe {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+    min-height: calc(100vh - 94px);
+
+    border: 0;
+    border-radius: 8px;
+
+    background: #fff;
+}
+
+@media (max-width: 600px) {
+    .tutu-fullscreen-header {
+        min-height: 50px;
+        padding: 7px 9px;
+    }
+
+    .tutu-fullscreen-title {
+        font-size: 0.92em;
+    }
+
+    .tutu-fullscreen-action-btn {
+        width: 31px;
+        height: 31px;
+    }
+
+    .tutu-fullscreen-body {
+        padding: 8px;
+    }
+
+    .tutu-fullscreen-plain {
+        padding: 15px;
+        font-size: 1em;
+        line-height: 1.65;
+    }
+
+    .tutu-fullscreen-iframe {
+        min-height: calc(100vh - 72px);
+    }
+}
 
