@@ -1878,6 +1878,76 @@ function escapeHtml(value) {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;');
 }
+/**
+ * 尽可能提取 API 返回的详细错误原因
+ */
+function getTutuErrorMessage(error) {
+    if (!error) {
+        return '未知错误';
+    }
+
+    // 普通 Error
+    if (error instanceof Error && error.message) {
+        return String(error.message).trim();
+    }
+
+    // fetch 或自定义 API 可能挂载了 response
+    if (error.response) {
+        const response = error.response;
+
+        if (typeof response === 'string') {
+            return response;
+        }
+
+        if (response.data) {
+            try {
+                return JSON.stringify(response.data, null, 2);
+            } catch {
+                return String(response.data);
+            }
+        }
+
+        if (response.status || response.statusText) {
+            return [
+                response.status
+                    ? `HTTP ${response.status}`
+                    : '',
+                response.statusText || '',
+            ]
+                .filter(Boolean)
+                .join(' ');
+        }
+    }
+
+    // 自定义错误对象可能有 responseText
+    if (error.responseText) {
+        return String(error.responseText);
+    }
+
+    // OpenAI 兼容接口常见错误格式
+    if (error.error) {
+        if (typeof error.error === 'string') {
+            return error.error;
+        }
+
+        try {
+            return JSON.stringify(error.error, null, 2);
+        } catch {
+            return String(error.error);
+        }
+    }
+
+    if (typeof error === 'string') {
+        return error;
+    }
+
+    try {
+        return JSON.stringify(error, null, 2);
+    } catch {
+        return String(error);
+    }
+}
+
 function isProbablyHtml(text) {
     if (!text || typeof text !== 'string') {
         return false;
@@ -2462,9 +2532,6 @@ saveTutuTheaterContent(lastAiIndex, content);
     content,
     getCurrentTutuCharacterName()
 );
-
-
-        toastr.success('小剧场已嵌入聊天楼层', '兔兔小剧场');
     } catch (error) {
         console.error('嵌入小剧场到聊天失败：', error);
         toastr.error('嵌入失败：' + (error.message || error));
@@ -3555,50 +3622,79 @@ if (outputMode === 'embed') {
     );
 
     showTutuResult(result);
+} else {
+    // 外置面板预览
+    showTutuResult(result);
 }
-else {
-            // 外置面板预览
-            showTutuResult(result);
-        }
 
-        if (isAutomatic) {
-            if (outputMode === 'embed') {
-                toastr.success(
-                    '已将小剧场嵌入最新 AI 回复',
-                    '兔兔小剧场'
-                );
-            } else {
-                toastr.success(
-                    '已根据最新 AI 回复生成小剧场',
-                    '兔兔小剧场'
-                );
-            }
-        }
+/*
+ * 生成完成提示
+ */
+$('#tutu_result_status').text(
+    outputMode === 'embed'
+        ? '生成完成，已嵌入最新 AI 回复楼层。'
+        : '生成完成。'
+);
 
+if (outputMode === 'embed') {
+    toastr.success(
+        isAutomatic
+            ? '已根据最新 AI 回复生成并嵌入小剧场'
+            : '小剧场生成完成，并已嵌入聊天楼层',
+        '兔兔小剧场'
+    );
+} else {
+    toastr.success(
+        isAutomatic
+            ? '已根据最新 AI 回复生成小剧场'
+            : '小剧场生成完成',
+        '兔兔小剧场'
+    );
+}
+} catch (error) {
+    console.error(
+        '小剧场生成失败：',
+        error
+    );
 
-    } catch (error) {
-        console.error(
-            '小剧场生成失败：',
-            error
-        );
+    const errorMessage =
+        getTutuErrorMessage(error) ||
+        '生成失败，请检查 API 配置';
 
-        $('#tutu_result_status')
-            .text('❌ 生成失败');
+    const displayError =
+        `❌ 小剧场生成失败\n\n${errorMessage}`;
 
-        $('#tutu_result_preview').html(`
-            <div class="tutu-result-placeholder" style="color:red;">
-                ❌ 生成失败：
-                ${escapeHtml(error.message || error)}
-            </div>
-        `);
+    $('#tutu_result_status')
+        .text('❌ 生成失败，点击源码可查看详细原因');
 
-        if (!isAutomatic) {
-            toastr.error(
-                error.message || '生成失败，请检查 API 配置'
-            );
-        }
+    /*
+     * 预览区显示错误原因
+     */
+    const $errorBox = $('<div>')
+        .addClass('tutu-result-error')
+        .text(displayError);
 
-    } finally {
+    $('#tutu_result_preview')
+        .empty()
+        .append($errorBox);
+
+    /*
+     * 源码区域也显示完整错误
+     */
+    $('#tutu_result_source')
+        .text(displayError);
+
+    /*
+     * 手动生成和自动生成都提示错误
+     */
+    toastr.error(
+        errorMessage,
+        isAutomatic
+            ? '兔兔小剧场自动生成失败'
+            : '兔兔小剧场生成失败'
+    );
+
+} finally {
         tutuIsGenerating = false;
 
         $('#tutu_generate_btn')
@@ -4077,9 +4173,34 @@ async function fetchSecondaryModels() {
         const responseText = await response.text();
 
         if (!response.ok) {
-            throw new Error(
-                `拉取模型失败：HTTP ${response.status}\n${responseText}`
-            );
+if (!response.ok) {
+    let detail = responseText;
+
+    try {
+        const errorData = JSON.parse(responseText);
+
+        detail =
+            errorData?.error?.message ||
+            errorData?.error ||
+            errorData?.message ||
+            errorData?.detail ||
+            JSON.stringify(errorData, null, 2);
+    } catch {
+        detail = responseText;
+    }
+
+    throw new Error(
+        [
+            `拉取模型失败`,
+            `HTTP 状态码：${response.status}`,
+            detail
+                ? `错误原因：${String(detail)}`
+                : '',
+        ]
+            .filter(Boolean)
+            .join('\n')
+    );
+}
         }
 
         let data;
@@ -4216,12 +4337,36 @@ const model = String($('#tutu_secondary_model').val() || '').trim();
     });
 
     const responseText = await response.text();
+if (!response.ok) {
+    let detail = responseText;
 
-    if (!response.ok) {
-        throw new Error(
-            `副 API 请求失败：HTTP ${response.status}\n${responseText}`
-        );
+    try {
+        const errorData = JSON.parse(responseText);
+
+        detail =
+            errorData?.error?.message ||
+            errorData?.error ||
+            errorData?.message ||
+            errorData?.detail ||
+            JSON.stringify(errorData, null, 2);
+    } catch {
+        // 返回的不是 JSON，直接使用原始文本
+        detail = responseText;
     }
+
+    throw new Error(
+        [
+            `副 API 请求失败`,
+            `HTTP 状态码：${response.status}`,
+            detail
+                ? `错误原因：${String(detail)}`
+                : '',
+        ]
+            .filter(Boolean)
+            .join('\n')
+    );
+}
+
 
     let data;
 
