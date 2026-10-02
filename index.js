@@ -388,12 +388,18 @@ function favoriteCurrentTutuTheater() {
         return;
     }
 
-favoriteTutuContent(
-    content,
-    getCurrentTutuCharacterName()
-);
+    favoriteTutuContent(
+        content,
+        getCurrentTutuCharacterName()
+    );
 
-updateTutuFavoriteButtonState();
+    $('#tutu_favorite_current_btn')
+        .addClass('active')
+        .find('i')
+        .attr(
+            'class',
+            'fa-solid fa-heart'
+        );
 }
 
 
@@ -904,6 +910,16 @@ localStorage.setItem(
     CATEGORIES_KEY,
     JSON.stringify(tutuCategories)
 );
+
+    // ==========================================
+    // 1. 注入 CSS 样式
+    // ==========================================
+    const tutuStyle = `
+        <style>
+        </style>
+    `;
+    $('head').append(tutuStyle);
+
 
 
     // ==========================================
@@ -2330,17 +2346,14 @@ function showTutuResult(content) {
     const $preview = $('#tutu_result_preview');
     $preview.empty();
 
-if (!content.trim()) {
-    $preview.html(`
-        <div class="tutu-result-placeholder">
-            没有生成内容。
-        </div>
-    `);
-
-    updateTutuFavoriteButtonState();
-    return;
-}
-
+    if (!content.trim()) {
+        $preview.html(`
+            <div class="tutu-result-placeholder">
+                没有生成内容。
+            </div>
+        `);
+        return;
+    }
 
     if (isProbablyHtml(content)) {
         const iframe = document.createElement('iframe');
@@ -2725,10 +2738,27 @@ function favoriteTutuContent(content, characterName, title = '') {
 
     const favorites = loadTutuFavorites();
 
-const record = {
-    ...createTutuFavoriteRecord(text, finalTitle),
-    characterName: finalCharacterName,
-};
+    const record = {
+        id:
+            typeof crypto?.randomUUID === 'function'
+                ? crypto.randomUUID()
+                : `favorite-${Date.now()}-${Math.random()
+                    .toString(16)
+                    .slice(2)}`,
+
+        title: finalTitle,
+
+        content: text,
+
+        type: isProbablyHtml(text)
+            ? 'html'
+            : 'text',
+
+        characterName: finalCharacterName,
+
+        createdAt: Date.now(),
+    };
+
     favorites.unshift(record);
 
     saveTutuFavorites(favorites);
@@ -3398,6 +3428,7 @@ ${userScenario}
 【用户选择读取的世界书条目】
 ${worldBookText}
 
+要求：
 要求：
 1. 这是独立于正文对话之外的番外内容。
 2. 必须符合角色描述中的性格、身份、背景和说话方式。
@@ -4129,6 +4160,7 @@ async function fetchSecondaryModels() {
 
         const responseText = await response.text();
 
+        if (!response.ok) {
 if (!response.ok) {
     let detail = responseText;
 
@@ -4147,7 +4179,7 @@ if (!response.ok) {
 
     throw new Error(
         [
-            '拉取模型失败',
+            `拉取模型失败`,
             `HTTP 状态码：${response.status}`,
             detail
                 ? `错误原因：${String(detail)}`
@@ -4157,7 +4189,7 @@ if (!response.ok) {
             .join('\n')
     );
 }
-
+        }
 
         let data;
 
@@ -4445,29 +4477,9 @@ function loadTutuSettingsToUI() {
 
     $('#tutu_secondary_api_key')
         .val(tutuSettings.apiKey || '');
-const $modelSelect = $('#tutu_secondary_model');
-const savedModel = String(tutuSettings.model || '').trim();
 
-$modelSelect.empty();
-
-if (savedModel) {
-    $modelSelect.append(
-        $('<option>', {
-            value: savedModel,
-            text: `${savedModel}（已保存）`,
-        })
-    );
-
-    $modelSelect.val(savedModel);
-} else {
-    $modelSelect.append(
-        $('<option>', {
-            value: '',
-            text: '请先拉取模型',
-        })
-    );
-}
-
+    $('#tutu_secondary_model')
+        .val(tutuSettings.model || '');
 
     $('#tutu_auto_generate_enabled')
         .prop(
@@ -5793,37 +5805,35 @@ catch (error) {
             const name = p.name || "未命名";
             const promptText = p.prompt;
 
-const $card = $(`
-    <div class="tutu-preset-card tutu-native-prompt-card">
-        <div class="tutu-native-prompt-header">
-            <input
-                type="checkbox"
-                class="tutu-import-checkbox"
-                value="${index}">
+            const $card = $(`
+                <div class="tutu-preset-card" style="display: flex; flex-direction: column; gap: 5px;">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <input type="checkbox" class="tutu-import-checkbox" value="${index}" style="width: 18px; height: 18px; cursor: pointer;">
+                        <div class="tutu-preset-name" style="flex:1; margin:0; cursor: pointer;">${name}</div>
+                        <!-- 查看按钮 -->
+                        <div class="menu_button margin0 tutu-view-btn" data-index="${index}" style="font-size:0.8em; padding: 5px 10px; min-width: 60px; justify-content: center;">
+                            <i class="fa-solid fa-eye"></i> 查看
+                        </div>
+                    </div>
+                    <!-- 隐藏的正文内容 -->
+                    <div
+    class="tutu-preset-text tutu-hidden-content-${index}"
+    style="
+        display:none;
+        margin-top:5px;
+        background:var(--SmartThemeBlurTintColor);
+        color:var(--SmartThemeBodyColor);
+        padding:8px;
+        border-radius:5px;
+        white-space:pre-wrap;
+        word-break:break-all;
+        max-height:150px;
+        overflow-y:auto;
+    "
+>${promptText}</div>
 
-            <div class="tutu-preset-name"></div>
-
-            <div
-                class="menu_button margin0 tutu-view-btn"
-                data-index="${index}">
-                <i class="fa-solid fa-eye"></i>
-                查看
-            </div>
-        </div>
-
-        <div class="tutu-preset-text tutu-native-prompt-text">
-        </div>
-    </div>
-`);
-
-$card
-    .find('.tutu-preset-name')
-    .text(name);
-
-$card
-    .find('.tutu-preset-text')
-    .text(promptText);
-
+                </div>
+            `);
             $list.append($card);
         });
 
