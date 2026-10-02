@@ -1769,7 +1769,6 @@
     flex-wrap: wrap;
 }
 
-.tutu-export-style-select,
 .tutu-export-format-select {
     width: auto;
     min-width: 105px;
@@ -2565,11 +2564,13 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
    ========================================== */
 
 #tutu_quote_editor_overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    width: 100vw;
+    height: 100vh;
     z-index: 2147483100;
 
     display: flex;
