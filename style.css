@@ -2845,5 +2845,17 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         font-size: 0.8em;
     }
 }
+.tutu-custom-css-group {
+    margin-top: 8px;
+}
+
+.tutu-custom-css-textarea {
+    min-height: 180px !important;
+    max-height: 300px;
+    resize: vertical;
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace !important;
+    font-size: 0.85em !important;
+    line-height: 1.5;
+}
 
 
