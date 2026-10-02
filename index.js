@@ -4021,36 +4021,8 @@ function renderTutuQuotePreview() {
 
     ctx.font = `${fontSize}px ${style.font}`;
 
-    // 换行计算
-    const lines = [];
-    const paragraphs = text.split(/\r?\n/);
-    const indent = options.textIndent > 0
-        ? '\u3000'.repeat(options.textIndent)
-        : '';
-
-    paragraphs.forEach(paragraph => {
-        if (!paragraph.trim()) {
-            lines.push('');
-            return;
-        }
-
-        let currentLine = '';
-        let isFirstLine = true;
-        const fullText = indent ? indent + paragraph : paragraph;
-
-        for (const char of fullText) {
-            const testLine = currentLine + char;
-            if (ctx.measureText(testLine).width > contentWidth && currentLine) {
-                lines.push(currentLine);
-                currentLine = char;
-                isFirstLine = false;
-            } else {
-                currentLine = testLine;
-            }
-        }
-
-        if (currentLine) lines.push(currentLine);
-    });
+    // 换行计算 (直接调用封装好的换行函数)
+    const lines = wrapTutuCanvasText(ctx, text, contentWidth, options.textIndent);
 
     const headerHeight = 160;
     const footerHeight = options.showDate ? 100 : 50;
@@ -4070,66 +4042,26 @@ function renderTutuQuotePreview() {
     canvas.style.width = `${Math.round(width * scale)}px`;
     canvas.style.height = `${Math.round(height * scale)}px`;
 
-    // 背景
-    ctx.fillStyle = style.background;
-    ctx.fillRect(0, 0, width, height);
-
-    let currentY = paddingV;
-
-    // 装饰线
-    if (options.showDecoLine) {
-        ctx.fillStyle = style.accent;
-        ctx.fillRect(paddingH, currentY, contentWidth, 4);
-        currentY += 30;
-    }
-
-    // 引号
-    if (options.showQuoteMark) {
-        ctx.fillStyle = style.quote;
-        ctx.font = 'bold 150px Georgia, serif';
-        ctx.fillText('\u201C', paddingH - 20, currentY + 110);
-    }
-
-    // 标题
-    ctx.fillStyle = style.accent;
-    ctx.font = `bold 42px ${style.font}`;
-    ctx.fillText(options.titleText, paddingH, currentY + 65);
-
-    // 副标题
-    ctx.fillStyle = style.text;
-    ctx.font = `24px ${style.font}`;
-    ctx.fillText(options.subtitleText, paddingH, currentY + 120);
-
-    currentY += headerHeight;
-
-    // 正文
-    ctx.fillStyle = style.text;
-    ctx.font = `${fontSize}px ${style.font}`;
-    ctx.textAlign = options.textAlign === 'center' ? 'center' : 'left';
-
-    lines.forEach(line => {
-        const x = options.textAlign === 'center' ? width / 2 : paddingH;
-        ctx.fillText(line, x, currentY);
-        currentY += lineHeight;
+    // 【关键修复】：这里不再写死画背景和文字，而是调用统一的渲染引擎！
+    renderQuoteStyle(ctx, {
+        style,
+        width,
+        height,
+        contentWidth,
+        paddingH,
+        paddingV,
+        text, // 把原始文本传进去，古风卷轴需要用到
+        lines,
+        lineHeight,
+        fontSize: options.fontSize,
+        textAlign: options.textAlign,
+        titleText: options.titleText,
+        subtitleText: options.subtitleText,
+        showDate: options.showDate,
+        showQuoteMark: options.showQuoteMark,
+        showDecoLine: options.showDecoLine,
+        characterName: tutuQuoteEditorCharacter,
     });
-
-    ctx.textAlign = 'left';
-
-    // 底部
-    if (options.showDecoLine) {
-        ctx.fillStyle = style.accent;
-        ctx.fillRect(paddingH, height - paddingV - 40, contentWidth, 3);
-    }
-
-    if (options.showDate) {
-        ctx.fillStyle = style.text;
-        ctx.font = `22px ${style.font}`;
-        ctx.fillText(
-            new Date().toLocaleDateString(),
-            paddingH,
-            height - paddingV
-        );
-    }
 }
 
 
