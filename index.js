@@ -2230,10 +2230,11 @@ function getTutuQuoteStyle(styleName) {
 }
 
 
+// ✅ 保留这个正确的版本
 function getAllTutuQuoteStyles() {
     const styleNames = [
-        'classic', 'dark', 'paper', 'ink', 'ocean',
-        'rose', 'forest', 'sunset', 'minimal', 'vintage',
+        'classic', 'polaroid', 'newspaper', 'neon', 'handwritten',
+        'manga', 'blueprint', 'watercolor', 'terminal', 'scroll', 'custom_css',
     ];
 
     return styleNames.map(name => ({
@@ -2241,6 +2242,7 @@ function getAllTutuQuoteStyles() {
         ...getTutuQuoteStyle(name),
     }));
 }
+
 
 
 async function exportTutuQuoteImage(
