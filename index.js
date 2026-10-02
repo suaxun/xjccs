@@ -1169,20 +1169,13 @@ localStorage.setItem(
 </div>
 
 <div class="tutu-result-mode-buttons">
-            <div
-                id="tutu_show_preview_btn"
-                class="tutu-result-mode-btn active"
-                title="预览">
-                <i class="fa-solid fa-display"></i>
-            </div>
-
-            <div
-                id="tutu_show_source_btn"
-                class="tutu-result-mode-btn"
-                title="源码">
-                <i class="fa-solid fa-code"></i>
-            </div>
-        </div>
+    <div id="tutu_show_preview_btn" class="tutu-result-mode-btn active" title="预览">
+        <i class="fa-solid fa-display"></i>
+    </div>
+    <div id="tutu_show_source_btn" class="tutu-result-mode-btn" title="源码">
+        <i class="fa-solid fa-code"></i>
+    </div>
+</div>
     </div>
 </div>
 
@@ -1226,15 +1219,10 @@ localStorage.setItem(
             <i class="fa-solid fa-folder-plus"></i>
         </div>
 
-        <div
-            id="tutu_new_script_btn"
-            class="tutu-icon-action primary"
-            role="button"
-            tabindex="0"
-            aria-label="新建剧本"
-            title="新建剧本">
-            <i class="fa-solid fa-plus"></i>
-        </div>
+<div id="tutu_new_script_btn" class="tutu-icon-action primary" role="button" tabindex="0" aria-label="新建剧本" title="新建剧本">
+    <i class="fa-solid fa-plus"></i>
+</div>
+
 
         <!-- 打开导入导出面板 -->
         <div
