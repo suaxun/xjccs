@@ -1135,22 +1135,6 @@ localStorage.setItem(
     <option value="image">书摘图片 PNG</option>
 </select>
 
-<select
-    id="tutu_export_style"
-    class="text_pole tutu-export-style-select"
-    title="书摘图片样式">
-    <option value="classic">经典书摘</option>
-    <option value="dark">暗夜书摘</option>
-    <option value="paper">纸张书摘</option>
-    <option value="ink">水墨书摘</option>
-    <option value="ocean">深海书摘</option>
-    <option value="rose">玫瑰书摘</option>
-    <option value="forest">森林书摘</option>
-    <option value="sunset">日落书摘</option>
-    <option value="minimal">极简书摘</option>
-    <option value="vintage">复古书摘</option>
-</select>
-
 
 
         <div
@@ -2245,18 +2229,6 @@ function getTutuQuoteStyle(styleName) {
     return styles[styleName] || styles.classic;
 }
 
-function getAllTutuQuoteStyles() {
-    const styleNames = [
-        'classic', 'polaroid', 'newspaper', 'neon', 'handwritten',
-        'manga', 'blueprint', 'watercolor', 'terminal', 'scroll', 'custom_css',
-    ];
-
-    return styleNames.map(name => ({
-        value: name,
-        ...getTutuQuoteStyle(name),
-    }));
-}
-
 
 function getAllTutuQuoteStyles() {
     const styleNames = [
@@ -2269,6 +2241,7 @@ function getAllTutuQuoteStyles() {
         ...getTutuQuoteStyle(name),
     }));
 }
+
 
 async function exportTutuQuoteImage(
     content,
@@ -3655,20 +3628,21 @@ function exportTutuContent(
         return;
     }
 
-    const exportFormat =
-        $('#tutu_export_format').val() || 'text';
+const exportFormat =
+    $('#tutu_export_format').val() || 'text';
 
-    if (exportFormat === 'text') {
-        exportTutuTextFile(
-            text,
-            finalCharacterName
-        );
+if (exportFormat === 'text') {
+    exportTutuTextFile(
+        text,
+        finalCharacterName
+    );
 
-        return;
-    }
+    return;
+}
 
-    // 打开书摘编辑器
-    openTutuQuoteEditor(text, finalCharacterName);
+// 打开书摘编辑器
+openTutuQuoteEditor(text, finalCharacterName);
+
 }
 // ==========================================
 // 书摘图片编辑器
