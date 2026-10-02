@@ -1142,7 +1142,15 @@ localStorage.setItem(
     <option value="classic">经典书摘</option>
     <option value="dark">暗夜书摘</option>
     <option value="paper">纸张书摘</option>
+    <option value="ink">水墨书摘</option>
+    <option value="ocean">深海书摘</option>
+    <option value="rose">玫瑰书摘</option>
+    <option value="forest">森林书摘</option>
+    <option value="sunset">日落书摘</option>
+    <option value="minimal">极简书摘</option>
+    <option value="vintage">复古书摘</option>
 </select>
+
 
 
         <div
@@ -2127,37 +2135,107 @@ function wrapTutuCanvasText(ctx, text, maxWidth) {
 function getTutuQuoteStyle(styleName) {
     const styles = {
         classic: {
+            name: '经典书摘',
             background: '#f6efe2',
             text: '#3b3028',
             accent: '#9d7655',
             quote: '#d3b18b',
             font: '"Noto Serif SC", "Source Han Serif SC", serif',
         },
-
         dark: {
+            name: '暗夜书摘',
             background: '#171923',
             text: '#f2e9dc',
             accent: '#e0a96d',
             quote: '#755b43',
             font: '"Noto Serif SC", "Source Han Serif SC", serif',
         },
-
         paper: {
+            name: '纸张书摘',
             background: '#fffdf5',
             text: '#403b35',
             accent: '#71806a',
             quote: '#dce4d7',
             font: '"Noto Serif SC", "Source Han Serif SC", serif',
         },
+        ink: {
+            name: '水墨书摘',
+            background: '#f5f0e8',
+            text: '#2c2c2c',
+            accent: '#5a5a5a',
+            quote: '#c8c0b0',
+            font: '"Noto Serif SC", "Source Han Serif SC", "SimSun", serif',
+        },
+        ocean: {
+            name: '深海书摘',
+            background: '#0d1b2a',
+            text: '#e0e8f0',
+            accent: '#48a9c5',
+            quote: '#1b3a4b',
+            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
+        },
+        rose: {
+            name: '玫瑰书摘',
+            background: '#fff0f3',
+            text: '#4a2c3d',
+            accent: '#c2607e',
+            quote: '#f0c4d0',
+            font: '"Noto Serif SC", "Source Han Serif SC", serif',
+        },
+        forest: {
+            name: '森林书摘',
+            background: '#1a2e1a',
+            text: '#d4e8c8',
+            accent: '#7db870',
+            quote: '#2d4a2d',
+            font: '"Noto Serif SC", "Source Han Serif SC", serif',
+        },
+        sunset: {
+            name: '日落书摘',
+            background: '#2d1b00',
+            text: '#ffe8c8',
+            accent: '#ff9a3c',
+            quote: '#5c3d1a',
+            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
+        },
+        minimal: {
+            name: '极简书摘',
+            background: '#ffffff',
+            text: '#333333',
+            accent: '#000000',
+            quote: '#e0e0e0',
+            font: '"Noto Sans SC", "Source Han Sans SC", "Helvetica Neue", sans-serif',
+        },
+        vintage: {
+            name: '复古书摘',
+            background: '#f0e5d0',
+            text: '#443322',
+            accent: '#8b6f4e',
+            quote: '#d4bc94',
+            font: '"Noto Serif SC", "Source Han Serif SC", Georgia, serif',
+        },
     };
 
     return styles[styleName] || styles.classic;
 }
 
+function getAllTutuQuoteStyles() {
+    const styleNames = [
+        'classic', 'dark', 'paper', 'ink', 'ocean',
+        'rose', 'forest', 'sunset', 'minimal', 'vintage',
+    ];
+
+    return styleNames.map(name => ({
+        value: name,
+        ...getTutuQuoteStyle(name),
+    }));
+}
+
 async function exportTutuQuoteImage(
     content,
     characterName,
-    styleName = 'classic'
+    styleName = 'classic',
+    options = {}
 ) {
     const text = String(content || '').trim();
 
@@ -2168,36 +2246,88 @@ async function exportTutuQuoteImage(
 
     const style = getTutuQuoteStyle(styleName);
 
+    const fontSize = Number(options.fontSize) || 32;
+    const lineHeightRatio = Number(options.lineHeight) || 1.8;
+    const lineHeight = Math.round(fontSize * lineHeightRatio);
+    const textIndent = Number(options.textIndent) || 0;
+    const textAlign = options.textAlign || 'left';
+    const paddingH = Number(options.paddingH) || 90;
+    const paddingV = Number(options.paddingV) || 90;
+    const imageWidth = Number(options.imageWidth) || 1200;
+    const showDate = options.showDate !== false;
+    const showQuoteMark = options.showQuoteMark !== false;
+    const showDecoLine = options.showDecoLine !== false;
+    const titleText = String(options.titleText || '兔兔小剧场').trim();
+    const subtitleText = String(
+        options.subtitleText || `来自：${characterName}`
+    ).trim();
+
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
 
-    const width = 1200;
-    const padding = 90;
-    const contentWidth = width - padding * 2;
+    const width = imageWidth;
+    const contentWidth = width - paddingH * 2;
 
-    const title = '兔兔小剧场';
-    const subtitle = `来自：${characterName}`;
+    const bodyFontSize = fontSize;
 
-    const bodyFontSize = 32;
-    const lineHeight = 58;
+    ctx.font = `${bodyFontSize}px ${style.font}`;
 
-    ctx.font =
-        `${bodyFontSize}px ${style.font}`;
+    const indentWidth = textIndent > 0
+        ? ctx.measureText('\u3000'.repeat(textIndent)).width
+        : 0;
 
-    const lines = wrapTutuCanvasText(
-        ctx,
-        text,
-        contentWidth
-    );
+    const lines = [];
+    const paragraphs = text.split(/\r?\n/);
+
+    paragraphs.forEach((paragraph, pIndex) => {
+        if (!paragraph.trim()) {
+            lines.push({ text: '', isFirst: false });
+            return;
+        }
+
+        const effectiveWidth = contentWidth;
+        let currentLine = '';
+        let isFirstLine = true;
+        const indent = textIndent > 0
+            ? '\u3000'.repeat(textIndent)
+            : '';
+
+        const fullText = isFirstLine && indent
+            ? indent + paragraph
+            : paragraph;
+
+        for (const char of fullText) {
+            const testLine = currentLine + char;
+            const testWidth = ctx.measureText(testLine).width;
+
+            if (testWidth > effectiveWidth && currentLine) {
+                lines.push({
+                    text: currentLine,
+                    isFirst: isFirstLine,
+                });
+                currentLine = char;
+                isFirstLine = false;
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (currentLine) {
+            lines.push({
+                text: currentLine,
+                isFirst: isFirstLine,
+            });
+        }
+    });
 
     const bodyHeight = lines.length * lineHeight;
 
+    const headerHeight = 160;
+    const footerHeight = showDate ? 100 : 50;
+
     const height = Math.max(
-        720,
-        padding * 2 +
-        150 +
-        bodyHeight +
-        100
+        600,
+        paddingV + headerHeight + bodyHeight + footerHeight + paddingV
     );
 
     canvas.width = width;
@@ -2207,76 +2337,93 @@ async function exportTutuQuoteImage(
     ctx.fillStyle = style.background;
     ctx.fillRect(0, 0, width, height);
 
+    let currentY = paddingV;
+
     // 上方装饰线
-    ctx.fillStyle = style.accent;
-    ctx.fillRect(padding, 65, width - padding * 2, 4);
+    if (showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(paddingH, currentY, contentWidth, 4);
+        currentY += 30;
+    }
 
     // 大引号
-    ctx.fillStyle = style.quote;
-    ctx.font = `bold 150px Georgia, serif`;
-    ctx.fillText('“', padding - 20, 205);
+    if (showQuoteMark) {
+        ctx.fillStyle = style.quote;
+        ctx.font = 'bold 150px Georgia, serif';
+        ctx.fillText('\u201C', paddingH - 20, currentY + 110);
+    }
 
     // 标题
     ctx.fillStyle = style.accent;
-    ctx.font =
-        `bold 42px ${style.font}`;
+    ctx.font = `bold 42px ${style.font}`;
+    ctx.fillText(titleText, paddingH, currentY + 65);
 
-    ctx.fillText(title, padding, 155);
-
-    // 角色名
+    // 副标题
     ctx.fillStyle = style.text;
-    ctx.font =
-        `24px ${style.font}`;
+    ctx.font = `24px ${style.font}`;
+    ctx.fillText(subtitleText, paddingH, currentY + 120);
 
-    ctx.fillText(subtitle, padding, 215);
+    currentY += headerHeight;
 
     // 正文
     ctx.fillStyle = style.text;
-    ctx.font =
-        `${bodyFontSize}px ${style.font}`;
-
-    let y = 310;
+    ctx.font = `${bodyFontSize}px ${style.font}`;
+    ctx.textAlign = textAlign === 'center' ? 'center' : 'left';
 
     lines.forEach(line => {
-        ctx.fillText(line, padding, y);
-        y += lineHeight;
+        const x = textAlign === 'center'
+            ? width / 2
+            : paddingH;
+
+        ctx.fillText(line.text, x, currentY);
+        currentY += lineHeight;
     });
 
+    ctx.textAlign = 'left';
+
     // 底部装饰
-    ctx.fillStyle = style.accent;
-    ctx.fillRect(
-        padding,
-        height - 80,
-        width - padding * 2,
-        3
-    );
+    if (showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(
+            paddingH,
+            height - paddingV - 40,
+            contentWidth,
+            3
+        );
+    }
 
-    ctx.fillStyle = style.text;
-    ctx.font =
-        `22px ${style.font}`;
+    if (showDate) {
+        ctx.fillStyle = style.text;
+        ctx.font = `22px ${style.font}`;
+        ctx.fillText(
+            new Date().toLocaleDateString(),
+            paddingH,
+            height - paddingV
+        );
+    }
 
-    ctx.fillText(
-        new Date().toLocaleDateString(),
-        padding,
-        height - 40
-    );
+    return new Promise((resolve) => {
+        canvas.toBlob(blob => {
+            if (!blob) {
+                toastr.error('生成书摘图片失败');
+                resolve();
+                return;
+            }
 
-    canvas.toBlob(blob => {
-        if (!blob) {
-            toastr.error('生成书摘图片失败');
-            return;
-        }
+            const filename =
+                `${sanitizeTutuFilename(
+                    `兔兔小剧场-${characterName}`
+                )}.png`;
 
-        const filename =
-            `${sanitizeTutuFilename(
-                `兔兔小剧场-${characterName}`
-            )}.png`;
+            downloadTutuBlob(blob, filename);
 
-        downloadTutuBlob(blob, filename);
-
-        toastr.success('书摘图片已导出');
-    }, 'image/png');
+            toastr.success('书摘图片已导出');
+            resolve();
+        }, 'image/png');
+    });
 }
+
+
 function exportTutuHtmlFile(content, characterName) {
     const htmlContent = String(content || '').trim();
 
@@ -2826,14 +2973,387 @@ function exportTutuContent(
         return;
     }
 
-    const styleName =
-        $('#tutu_export_style').val() || 'classic';
+    // 打开书摘编辑器
+    openTutuQuoteEditor(text, finalCharacterName);
+}
+// ==========================================
+// 书摘图片编辑器
+// ==========================================
 
-    exportTutuQuoteImage(
-        text,
-        finalCharacterName,
-        styleName
+let tutuQuoteEditorContent = '';
+let tutuQuoteEditorCharacter = 'AI';
+
+function openTutuQuoteEditor(content, characterName) {
+    tutuQuoteEditorContent = String(content || '').trim();
+    tutuQuoteEditorCharacter = String(characterName || 'AI').trim() || 'AI';
+
+    // 如果编辑器已存在，先移除
+    closeTutuQuoteEditor();
+
+    const allStyles = getAllTutuQuoteStyles();
+
+    const styleOptionsHtml = allStyles.map(s =>
+        `<option value="${s.value}">${escapeHtml(s.name)}</option>`
+    ).join('');
+
+    const overlay = document.createElement('div');
+    overlay.id = 'tutu_quote_editor_overlay';
+    overlay.innerHTML = `
+        <div class="tutu-quote-editor">
+            <div class="tutu-quote-editor-header">
+                <div class="tutu-quote-editor-title">
+                    <i class="fa-solid fa-image"></i>
+                    书摘图片设置
+                </div>
+                <button type="button" id="tutu_quote_editor_close"
+                    class="tutu-fullscreen-action-btn tutu-fullscreen-close-btn"
+                    title="关闭">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="tutu-quote-editor-body">
+                <div class="tutu-quote-editor-controls">
+
+                    <div class="tutu-quote-control-group">
+                        <label class="tutu-quote-control-label">
+                            书摘样式
+                        </label>
+                        <select id="tutu_qe_style" class="text_pole">
+                            ${styleOptionsHtml}
+                        </select>
+                    </div>
+
+                    <div class="tutu-quote-control-row">
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                正文字号 (px)
+                            </label>
+                            <input id="tutu_qe_font_size" class="text_pole"
+                                type="number" min="16" max="72" value="32">
+                        </div>
+
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                行高倍数
+                            </label>
+                            <input id="tutu_qe_line_height" class="text_pole"
+                                type="number" min="1" max="4" step="0.1" value="1.8">
+                        </div>
+                    </div>
+
+                    <div class="tutu-quote-control-row">
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                段落缩进 (字数)
+                            </label>
+                            <input id="tutu_qe_text_indent" class="text_pole"
+                                type="number" min="0" max="8" value="2">
+                        </div>
+
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                文字对齐
+                            </label>
+                            <select id="tutu_qe_text_align" class="text_pole">
+                                <option value="left" selected>左对齐</option>
+                                <option value="center">居中</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="tutu-quote-control-row">
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                水平边距 (px)
+                            </label>
+                            <input id="tutu_qe_padding_h" class="text_pole"
+                                type="number" min="20" max="200" value="90">
+                        </div>
+
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                垂直边距 (px)
+                            </label>
+                            <input id="tutu_qe_padding_v" class="text_pole"
+                                type="number" min="20" max="200" value="90">
+                        </div>
+                    </div>
+
+                    <div class="tutu-quote-control-group">
+                        <label class="tutu-quote-control-label">
+                            图片宽度 (px)
+                        </label>
+                        <input id="tutu_qe_image_width" class="text_pole"
+                            type="number" min="600" max="3000" step="100" value="1200">
+                    </div>
+
+                    <div class="tutu-quote-control-row">
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                标题文字
+                            </label>
+                            <input id="tutu_qe_title" class="text_pole"
+                                type="text" value="兔兔小剧场">
+                        </div>
+
+                        <div class="tutu-quote-control-group">
+                            <label class="tutu-quote-control-label">
+                                副标题
+                            </label>
+                            <input id="tutu_qe_subtitle" class="text_pole"
+                                type="text" value="来自：${escapeHtml(tutuQuoteEditorCharacter)}">
+                        </div>
+                    </div>
+
+                    <div class="tutu-quote-control-row tutu-quote-checkboxes">
+                        <label class="tutu-quote-checkbox-label">
+                            <input type="checkbox" id="tutu_qe_show_date" checked>
+                            显示日期
+                        </label>
+
+                        <label class="tutu-quote-checkbox-label">
+                            <input type="checkbox" id="tutu_qe_show_quote_mark" checked>
+                            显示引号装饰
+                        </label>
+
+                        <label class="tutu-quote-checkbox-label">
+                            <input type="checkbox" id="tutu_qe_show_deco_line" checked>
+                            显示装饰线
+                        </label>
+                    </div>
+
+                </div>
+
+                <div class="tutu-quote-editor-preview-area">
+                    <div class="tutu-quote-preview-title">
+                        实时预览
+                    </div>
+                    <div class="tutu-quote-preview-scroll">
+                        <canvas id="tutu_qe_preview_canvas"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tutu-quote-editor-footer">
+                <button type="button" id="tutu_qe_refresh_btn"
+                    class="menu_button">
+                    <i class="fa-solid fa-rotate"></i>
+                    刷新预览
+                </button>
+
+                <button type="button" id="tutu_qe_export_btn"
+                    class="menu_button" style="background:var(--SmartThemeQuoteColor);color:#fff;">
+                    <i class="fa-solid fa-download"></i>
+                    导出图片
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+
+    // 绑定事件
+    $('#tutu_quote_editor_close').on('click', closeTutuQuoteEditor);
+
+    // 实时预览：控件变化时自动刷新
+    $(overlay).on(
+        'input change',
+        '#tutu_qe_style, #tutu_qe_font_size, #tutu_qe_line_height, ' +
+        '#tutu_qe_text_indent, #tutu_qe_text_align, #tutu_qe_padding_h, ' +
+        '#tutu_qe_padding_v, #tutu_qe_image_width, #tutu_qe_title, ' +
+        '#tutu_qe_subtitle, #tutu_qe_show_date, #tutu_qe_show_quote_mark, ' +
+        '#tutu_qe_show_deco_line',
+        debounceQuotePreview
     );
+
+    $('#tutu_qe_refresh_btn').on('click', renderTutuQuotePreview);
+
+    $('#tutu_qe_export_btn').on('click', async () => {
+        const options = getTutuQuoteEditorOptions();
+        await exportTutuQuoteImage(
+            tutuQuoteEditorContent,
+            tutuQuoteEditorCharacter,
+            options.styleName,
+            options
+        );
+    });
+
+    // ESC 关闭
+    overlay._tutuEscHandler = (e) => {
+        if (e.key === 'Escape') closeTutuQuoteEditor();
+    };
+    document.addEventListener('keydown', overlay._tutuEscHandler);
+
+    // 首次渲染预览
+    setTimeout(renderTutuQuotePreview, 100);
+}
+
+function closeTutuQuoteEditor() {
+    const overlay = document.getElementById('tutu_quote_editor_overlay');
+    if (overlay) {
+        if (overlay._tutuEscHandler) {
+            document.removeEventListener('keydown', overlay._tutuEscHandler);
+        }
+        overlay.remove();
+    }
+}
+
+function getTutuQuoteEditorOptions() {
+    return {
+        styleName: $('#tutu_qe_style').val() || 'classic',
+        fontSize: Number($('#tutu_qe_font_size').val()) || 32,
+        lineHeight: Number($('#tutu_qe_line_height').val()) || 1.8,
+        textIndent: Number($('#tutu_qe_text_indent').val()) || 0,
+        textAlign: $('#tutu_qe_text_align').val() || 'left',
+        paddingH: Number($('#tutu_qe_padding_h').val()) || 90,
+        paddingV: Number($('#tutu_qe_padding_v').val()) || 90,
+        imageWidth: Number($('#tutu_qe_image_width').val()) || 1200,
+        titleText: $('#tutu_qe_title').val() || '兔兔小剧场',
+        subtitleText: $('#tutu_qe_subtitle').val() || `来自：${tutuQuoteEditorCharacter}`,
+        showDate: $('#tutu_qe_show_date').is(':checked'),
+        showQuoteMark: $('#tutu_qe_show_quote_mark').is(':checked'),
+        showDecoLine: $('#tutu_qe_show_deco_line').is(':checked'),
+    };
+}
+
+let tutuQuotePreviewTimer = null;
+
+function debounceQuotePreview() {
+    if (tutuQuotePreviewTimer) {
+        clearTimeout(tutuQuotePreviewTimer);
+    }
+    tutuQuotePreviewTimer = setTimeout(renderTutuQuotePreview, 200);
+}
+
+function renderTutuQuotePreview() {
+    const canvas = document.getElementById('tutu_qe_preview_canvas');
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d');
+    const options = getTutuQuoteEditorOptions();
+    const style = getTutuQuoteStyle(options.styleName);
+    const text = tutuQuoteEditorContent;
+
+    const fontSize = options.fontSize;
+    const lineHeightRatio = options.lineHeight;
+    const lineHeight = Math.round(fontSize * lineHeightRatio);
+    const paddingH = options.paddingH;
+    const paddingV = options.paddingV;
+    const width = options.imageWidth;
+    const contentWidth = width - paddingH * 2;
+
+    ctx.font = `${fontSize}px ${style.font}`;
+
+    // 换行计算
+    const lines = [];
+    const paragraphs = text.split(/\r?\n/);
+    const indent = options.textIndent > 0
+        ? '\u3000'.repeat(options.textIndent)
+        : '';
+
+    paragraphs.forEach(paragraph => {
+        if (!paragraph.trim()) {
+            lines.push('');
+            return;
+        }
+
+        let currentLine = '';
+        let isFirstLine = true;
+        const fullText = indent ? indent + paragraph : paragraph;
+
+        for (const char of fullText) {
+            const testLine = currentLine + char;
+            if (ctx.measureText(testLine).width > contentWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = char;
+                isFirstLine = false;
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (currentLine) lines.push(currentLine);
+    });
+
+    const headerHeight = 160;
+    const footerHeight = options.showDate ? 100 : 50;
+    const bodyHeight = lines.length * lineHeight;
+    const height = Math.max(
+        500,
+        paddingV + headerHeight + bodyHeight + footerHeight + paddingV
+    );
+
+    // 预览用缩放比例
+    const maxPreviewWidth = 560;
+    const scale = Math.min(1, maxPreviewWidth / width);
+
+    canvas.width = width;
+    canvas.height = height;
+
+    canvas.style.width = `${Math.round(width * scale)}px`;
+    canvas.style.height = `${Math.round(height * scale)}px`;
+
+    // 背景
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    let currentY = paddingV;
+
+    // 装饰线
+    if (options.showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(paddingH, currentY, contentWidth, 4);
+        currentY += 30;
+    }
+
+    // 引号
+    if (options.showQuoteMark) {
+        ctx.fillStyle = style.quote;
+        ctx.font = 'bold 150px Georgia, serif';
+        ctx.fillText('\u201C', paddingH - 20, currentY + 110);
+    }
+
+    // 标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold 42px ${style.font}`;
+    ctx.fillText(options.titleText, paddingH, currentY + 65);
+
+    // 副标题
+    ctx.fillStyle = style.text;
+    ctx.font = `24px ${style.font}`;
+    ctx.fillText(options.subtitleText, paddingH, currentY + 120);
+
+    currentY += headerHeight;
+
+    // 正文
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = options.textAlign === 'center' ? 'center' : 'left';
+
+    lines.forEach(line => {
+        const x = options.textAlign === 'center' ? width / 2 : paddingH;
+        ctx.fillText(line, x, currentY);
+        currentY += lineHeight;
+    });
+
+    ctx.textAlign = 'left';
+
+    // 底部
+    if (options.showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(paddingH, height - paddingV - 40, contentWidth, 3);
+    }
+
+    if (options.showDate) {
+        ctx.fillStyle = style.text;
+        ctx.font = `22px ${style.font}`;
+        ctx.fillText(
+            new Date().toLocaleDateString(),
+            paddingH,
+            height - paddingV
+        );
+    }
 }
 
 
