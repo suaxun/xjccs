@@ -2135,89 +2135,128 @@ function wrapTutuCanvasText(ctx, text, maxWidth) {
 function getTutuQuoteStyle(styleName) {
     const styles = {
         classic: {
-            name: '经典书摘',
+            name: '📖 经典书摘',
+            type: 'canvas',
             background: '#f6efe2',
             text: '#3b3028',
             accent: '#9d7655',
             quote: '#d3b18b',
             font: '"Noto Serif SC", "Source Han Serif SC", serif',
+            renderMode: 'classic',
         },
-        dark: {
-            name: '暗夜书摘',
-            background: '#171923',
-            text: '#f2e9dc',
-            accent: '#e0a96d',
-            quote: '#755b43',
-            font: '"Noto Serif SC", "Source Han Serif SC", serif',
-        },
-        paper: {
-            name: '纸张书摘',
-            background: '#fffdf5',
-            text: '#403b35',
-            accent: '#71806a',
-            quote: '#dce4d7',
-            font: '"Noto Serif SC", "Source Han Serif SC", serif',
-        },
-        ink: {
-            name: '水墨书摘',
-            background: '#f5f0e8',
-            text: '#2c2c2c',
-            accent: '#5a5a5a',
-            quote: '#c8c0b0',
-            font: '"Noto Serif SC", "Source Han Serif SC", "SimSun", serif',
-        },
-        ocean: {
-            name: '深海书摘',
-            background: '#0d1b2a',
-            text: '#e0e8f0',
-            accent: '#48a9c5',
-            quote: '#1b3a4b',
-            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
-        },
-        rose: {
-            name: '玫瑰书摘',
-            background: '#fff0f3',
-            text: '#4a2c3d',
-            accent: '#c2607e',
-            quote: '#f0c4d0',
-            font: '"Noto Serif SC", "Source Han Serif SC", serif',
-        },
-        forest: {
-            name: '森林书摘',
-            background: '#1a2e1a',
-            text: '#d4e8c8',
-            accent: '#7db870',
-            quote: '#2d4a2d',
-            font: '"Noto Serif SC", "Source Han Serif SC", serif',
-        },
-        sunset: {
-            name: '日落书摘',
-            background: '#2d1b00',
-            text: '#ffe8c8',
-            accent: '#ff9a3c',
-            quote: '#5c3d1a',
-            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
-        },
-        minimal: {
-            name: '极简书摘',
+        polaroid: {
+            name: '📷 宝丽来照片',
+            type: 'canvas',
             background: '#ffffff',
-            text: '#333333',
-            accent: '#000000',
-            quote: '#e0e0e0',
-            font: '"Noto Sans SC", "Source Han Sans SC", "Helvetica Neue", sans-serif',
+            text: '#2c2c2c',
+            accent: '#888888',
+            quote: '#f0f0f0',
+            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
+            renderMode: 'polaroid',
         },
-        vintage: {
-            name: '复古书摘',
-            background: '#f0e5d0',
-            text: '#443322',
-            accent: '#8b6f4e',
-            quote: '#d4bc94',
+        newspaper: {
+            name: '📰 报纸专栏',
+            type: 'canvas',
+            background: '#f5f0e8',
+            text: '#1a1a1a',
+            accent: '#000000',
+            quote: '#cccccc',
             font: '"Noto Serif SC", "Source Han Serif SC", Georgia, serif',
+            renderMode: 'newspaper',
+        },
+        neon: {
+            name: '🌃 霓虹夜景',
+            type: 'canvas',
+            background: '#0a0a0a',
+            text: '#ffffff',
+            accent: '#ff006e',
+            quote: '#8338ec',
+            secondaryAccent: '#3a86ff',
+            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif',
+            renderMode: 'neon',
+        },
+        handwritten: {
+            name: '✍️ 手写便签',
+            type: 'canvas',
+            background: '#fffef0',
+            text: '#2d2d2d',
+            accent: '#ff6b6b',
+            quote: '#f0e68c',
+            font: '"Ma Shan Zheng", "Zhi Mang Xing", cursive, "Noto Serif SC", serif',
+            renderMode: 'handwritten',
+        },
+        manga: {
+            name: '💭 漫画对话框',
+            type: 'canvas',
+            background: '#ffffff',
+            text: '#000000',
+            accent: '#ff1744',
+            quote: '#ffeb3b',
+            font: '"Noto Sans SC", "Source Han Sans SC", "Comic Sans MS", sans-serif',
+            renderMode: 'manga',
+        },
+        blueprint: {
+            name: '📐 蓝图设计',
+            type: 'canvas',
+            background: '#0d47a1',
+            text: '#ffffff',
+            accent: '#64b5f6',
+            quote: '#1976d2',
+            font: '"Roboto Mono", "Noto Sans SC", monospace',
+            renderMode: 'blueprint',
+        },
+        watercolor: {
+            name: '🎨 水彩艺术',
+            type: 'canvas',
+            background: '#fef9f3',
+            text: '#4a4a4a',
+            accent: '#d4a574',
+            quote: '#e8d4c0',
+            font: '"Noto Serif SC", "Source Han Serif SC", serif',
+            renderMode: 'watercolor',
+        },
+        terminal: {
+            name: '💻 终端命令行',
+            type: 'canvas',
+            background: '#0c0c0c',
+            text: '#00ff00',
+            accent: '#00ff00',
+            quote: '#004400',
+            font: '"Consolas", "Monaco", "Courier New", monospace',
+            renderMode: 'terminal',
+        },
+        scroll: {
+            name: '📜 古风卷轴',
+            type: 'canvas',
+            background: '#f5e6d3',
+            text: '#3d2817',
+            accent: '#8b4513',
+            quote: '#d4a574',
+            font: '"Noto Serif SC", "Source Han Serif SC", "SimSun", serif',
+            renderMode: 'scroll',
+        },
+        custom_css: {
+            name: '🎨 自定义 CSS',
+            type: 'html',
+            renderMode: 'custom_css',
         },
     };
 
     return styles[styleName] || styles.classic;
 }
+
+function getAllTutuQuoteStyles() {
+    const styleNames = [
+        'classic', 'polaroid', 'newspaper', 'neon', 'handwritten',
+        'manga', 'blueprint', 'watercolor', 'terminal', 'scroll', 'custom_css',
+    ];
+
+    return styleNames.map(name => ({
+        value: name,
+        ...getTutuQuoteStyle(name),
+    }));
+}
+
 
 function getAllTutuQuoteStyles() {
     const styleNames = [
@@ -2246,6 +2285,12 @@ async function exportTutuQuoteImage(
 
     const style = getTutuQuoteStyle(styleName);
 
+    // 如果是自定义 CSS 书摘，使用 HTML 导出
+    if (style.type === 'html' || styleName === 'custom_css') {
+        await exportTutuCustomCssQuote(text, characterName, options);
+        return;
+    }
+
     const fontSize = Number(options.fontSize) || 32;
     const lineHeightRatio = Number(options.lineHeight) || 1.8;
     const lineHeight = Math.round(fontSize * lineHeightRatio);
@@ -2268,58 +2313,9 @@ async function exportTutuQuoteImage(
     const width = imageWidth;
     const contentWidth = width - paddingH * 2;
 
-    const bodyFontSize = fontSize;
+    ctx.font = `${fontSize}px ${style.font}`;
 
-    ctx.font = `${bodyFontSize}px ${style.font}`;
-
-    const indentWidth = textIndent > 0
-        ? ctx.measureText('\u3000'.repeat(textIndent)).width
-        : 0;
-
-    const lines = [];
-    const paragraphs = text.split(/\r?\n/);
-
-    paragraphs.forEach((paragraph, pIndex) => {
-        if (!paragraph.trim()) {
-            lines.push({ text: '', isFirst: false });
-            return;
-        }
-
-        const effectiveWidth = contentWidth;
-        let currentLine = '';
-        let isFirstLine = true;
-        const indent = textIndent > 0
-            ? '\u3000'.repeat(textIndent)
-            : '';
-
-        const fullText = isFirstLine && indent
-            ? indent + paragraph
-            : paragraph;
-
-        for (const char of fullText) {
-            const testLine = currentLine + char;
-            const testWidth = ctx.measureText(testLine).width;
-
-            if (testWidth > effectiveWidth && currentLine) {
-                lines.push({
-                    text: currentLine,
-                    isFirst: isFirstLine,
-                });
-                currentLine = char;
-                isFirstLine = false;
-            } else {
-                currentLine = testLine;
-            }
-        }
-
-        if (currentLine) {
-            lines.push({
-                text: currentLine,
-                isFirst: isFirstLine,
-            });
-        }
-    });
-
+    const lines = wrapTutuCanvasText(ctx, text, contentWidth, textIndent);
     const bodyHeight = lines.length * lineHeight;
 
     const headerHeight = 160;
@@ -2333,74 +2329,27 @@ async function exportTutuQuoteImage(
     canvas.width = width;
     canvas.height = height;
 
-    // 背景
-    ctx.fillStyle = style.background;
-    ctx.fillRect(0, 0, width, height);
-
-    let currentY = paddingV;
-
-    // 上方装饰线
-    if (showDecoLine) {
-        ctx.fillStyle = style.accent;
-        ctx.fillRect(paddingH, currentY, contentWidth, 4);
-        currentY += 30;
-    }
-
-    // 大引号
-    if (showQuoteMark) {
-        ctx.fillStyle = style.quote;
-        ctx.font = 'bold 150px Georgia, serif';
-        ctx.fillText('\u201C', paddingH - 20, currentY + 110);
-    }
-
-    // 标题
-    ctx.fillStyle = style.accent;
-    ctx.font = `bold 42px ${style.font}`;
-    ctx.fillText(titleText, paddingH, currentY + 65);
-
-    // 副标题
-    ctx.fillStyle = style.text;
-    ctx.font = `24px ${style.font}`;
-    ctx.fillText(subtitleText, paddingH, currentY + 120);
-
-    currentY += headerHeight;
-
-    // 正文
-    ctx.fillStyle = style.text;
-    ctx.font = `${bodyFontSize}px ${style.font}`;
-    ctx.textAlign = textAlign === 'center' ? 'center' : 'left';
-
-    lines.forEach(line => {
-        const x = textAlign === 'center'
-            ? width / 2
-            : paddingH;
-
-        ctx.fillText(line.text, x, currentY);
-        currentY += lineHeight;
+    // 使用统一渲染接口
+    renderQuoteStyle(ctx, {
+        style,
+        width,
+        height,
+        contentWidth: width - paddingH * 2,
+        paddingH,
+        paddingV,
+        text,
+        lines,
+        lineHeight,
+        fontSize: options.fontSize,
+        textAlign: options.textAlign,
+        titleText: options.titleText,
+        subtitleText: options.subtitleText,
+        showDate: options.showDate,
+        showQuoteMark: options.showQuoteMark,
+        showDecoLine: options.showDecoLine,
+        characterName: tutuQuoteEditorCharacter,
     });
 
-    ctx.textAlign = 'left';
-
-    // 底部装饰
-    if (showDecoLine) {
-        ctx.fillStyle = style.accent;
-        ctx.fillRect(
-            paddingH,
-            height - paddingV - 40,
-            contentWidth,
-            3
-        );
-    }
-
-    if (showDate) {
-        ctx.fillStyle = style.text;
-        ctx.font = `22px ${style.font}`;
-        ctx.fillText(
-            new Date().toLocaleDateString(),
-            paddingH,
-            height - paddingV
-        );
-    }
 
     return new Promise((resolve) => {
         canvas.toBlob(blob => {
@@ -2422,6 +2371,751 @@ async function exportTutuQuoteImage(
         }, 'image/png');
     });
 }
+
+// 文本换行辅助函数
+function wrapTutuCanvasText(ctx, text, maxWidth, textIndent = 0) {
+    const lines = [];
+    const paragraphs = text.split(/\r?\n/);
+    const indent = textIndent > 0 ? '\u3000'.repeat(textIndent) : '';
+
+    paragraphs.forEach(paragraph => {
+        if (!paragraph.trim()) {
+            lines.push('');
+            return;
+        }
+
+        let currentLine = '';
+        const fullText = indent ? indent + paragraph : paragraph;
+
+        for (const char of fullText) {
+            const testLine = currentLine + char;
+            if (ctx.measureText(testLine).width > maxWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = char;
+            } else {
+                currentLine = testLine;
+            }
+        }
+
+        if (currentLine) lines.push(currentLine);
+    });
+
+    return lines;
+}
+
+// 统一渲染入口
+function renderQuoteStyle(ctx, params) {
+    const { style } = params;
+
+    switch (style.renderMode) {
+        case 'polaroid':
+            renderPolaroidStyle(ctx, params);
+            break;
+        case 'newspaper':
+            renderNewspaperStyle(ctx, params);
+            break;
+        case 'neon':
+            renderNeonStyle(ctx, params);
+            break;
+        case 'handwritten':
+            renderHandwrittenStyle(ctx, params);
+            break;
+        case 'manga':
+            renderMangaStyle(ctx, params);
+            break;
+        case 'blueprint':
+            renderBlueprintStyle(ctx, params);
+            break;
+        case 'watercolor':
+            renderWatercolorStyle(ctx, params);
+            break;
+        case 'terminal':
+            renderTerminalStyle(ctx, params);
+            break;
+        case 'scroll':
+            renderScrollStyle(ctx, params);
+            break;
+        default:
+            renderClassicStyle(ctx, params);
+    }
+}
+
+// 经典书摘风格
+function renderClassicStyle(ctx, params) {
+    const { style, width, height, contentWidth, paddingH, paddingV, lines,
+            lineHeight, fontSize, textAlign, titleText, subtitleText,
+            showDate, showQuoteMark, showDecoLine } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    let currentY = paddingV;
+
+    if (showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(paddingH, currentY, contentWidth, 4);
+        currentY += 30;
+    }
+
+    if (showQuoteMark) {
+        ctx.fillStyle = style.quote;
+        ctx.font = 'bold 150px Georgia, serif';
+        ctx.fillText('\u201C', paddingH - 20, currentY + 110);
+    }
+
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold 42px ${style.font}`;
+    ctx.fillText(titleText, paddingH, currentY + 65);
+
+    ctx.fillStyle = style.text;
+    ctx.font = `24px ${style.font}`;
+    ctx.fillText(subtitleText, paddingH, currentY + 120);
+
+    currentY += 160;
+
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = textAlign === 'center' ? 'center' : 'left';
+
+    lines.forEach(line => {
+        const x = textAlign === 'center' ? width / 2 : paddingH;
+        ctx.fillText(line, x, currentY);
+        currentY += lineHeight;
+    });
+
+    ctx.textAlign = 'left';
+
+    if (showDecoLine) {
+        ctx.fillStyle = style.accent;
+        ctx.fillRect(paddingH, height - paddingV - 40, contentWidth, 3);
+    }
+
+    if (showDate) {
+        ctx.fillStyle = style.text;
+        ctx.font = `22px ${style.font}`;
+        ctx.fillText(new Date().toLocaleDateString(), paddingH, height - paddingV);
+    }
+}
+
+// 宝丽来照片风格
+function renderPolaroidStyle(ctx, params) {
+    const { style, width, height, lines, lineHeight, fontSize, titleText } = params;
+
+    const polaroidW = width * 0.8;
+    const polaroidH = height * 0.75;
+    const polaroidX = (width - polaroidW) / 2;
+    const polaroidY = 60;
+    const bottomStrip = 120;
+
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, width, height);
+
+    // 宝丽来白框
+    ctx.fillStyle = style.background;
+    ctx.fillRect(polaroidX, polaroidY, polaroidW, polaroidH + bottomStrip);
+
+    // 照片区域
+    ctx.fillStyle = '#f8f8f8';
+    ctx.fillRect(polaroidX + 15, polaroidY + 15, polaroidW - 30, polaroidH - 15);
+
+    // 文字区域
+    ctx.save();
+    ctx.rect(polaroidX + 35, polaroidY + 40, polaroidW - 70, polaroidH - 80);
+    ctx.clip();
+
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    let y = polaroidY + 80;
+    lines.forEach((line, i) => {
+        if (i < 12) {
+            ctx.fillText(line, polaroidX + 35, y);
+            y += lineHeight;
+        }
+    });
+
+    ctx.restore();
+
+    // 底部手写标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `italic 36px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, polaroidY + polaroidH + 70);
+}
+
+// 报纸专栏风格
+function renderNewspaperStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight, fontSize,
+            titleText, subtitleText, showDate } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 顶部报头
+    ctx.fillStyle = style.accent;
+    ctx.fillRect(0, 0, width, 8);
+    ctx.fillRect(0, 12, width, 2);
+
+    let y = paddingV;
+
+    // 标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold 56px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, y);
+
+    y += 50;
+
+    // 副标题
+    ctx.fillStyle = style.text;
+    ctx.font = `italic 24px ${style.font}`;
+    ctx.fillText(subtitleText, width / 2, y);
+
+    y += 40;
+
+    // 分栏线
+    ctx.strokeStyle = style.accent;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(paddingH, y);
+    ctx.lineTo(width - paddingH, y);
+    ctx.stroke();
+
+    y += 50;
+
+    // 正文分栏
+    ctx.textAlign = 'left';
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+
+    const columnWidth = (width - paddingH * 2 - 30) / 2;
+    let currentColumn = 0;
+    let columnY = y;
+
+    lines.forEach(line => {
+        const x = paddingH + currentColumn * (columnWidth + 30);
+        ctx.fillText(line, x, columnY);
+        columnY += lineHeight;
+
+        if (columnY > height - 120) {
+            currentColumn++;
+            columnY = y;
+        }
+    });
+
+    // 底部日期
+    if (showDate) {
+        ctx.fillStyle = style.text;
+        ctx.font = `18px ${style.font}`;
+        ctx.textAlign = 'right';
+        ctx.fillText(new Date().toLocaleDateString(), width - paddingH, height - 40);
+    }
+}
+
+// 霓虹夜景风格
+function renderNeonStyle(ctx, params) {
+    const { style, width, height, lines, lineHeight, fontSize, titleText } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 背景城市剪影
+    ctx.fillStyle = '#1a1a1a';
+    for (let i = 0; i < 15; i++) {
+        const bh = 100 + Math.random() * 200;
+        const bw = 40 + Math.random() * 60;
+        const bx = i * 80;
+        ctx.fillRect(bx, height - bh, bw, bh);
+    }
+
+    // 霓虹标题
+    ctx.shadowColor = style.accent;
+    ctx.shadowBlur = 25;
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold 64px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, 120);
+
+    ctx.shadowBlur = 15;
+    ctx.fillStyle = style.secondaryAccent;
+    ctx.font = `bold 64px ${style.font}`;
+    ctx.fillText(titleText, width / 2, 122);
+
+    // 正文
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    let y = 220;
+    lines.forEach(line => {
+        ctx.fillText(line, (width - 800) / 2, y);
+        y += lineHeight;
+    });
+
+    ctx.shadowBlur = 0;
+}
+
+// 手写便签风格
+function renderHandwrittenStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight,
+            fontSize, titleText } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 便签纸纹理
+    for (let i = 0; i < height; i += 4) {
+        ctx.fillStyle = `rgba(0,0,0,${0.005 + Math.random() * 0.01})`;
+        ctx.fillRect(0, i, width, 2);
+    }
+
+    // 便签顶部胶带
+    ctx.save();
+    ctx.translate(width / 2, 30);
+    ctx.rotate(-0.05);
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.fillRect(-80, -15, 160, 30);
+    ctx.restore();
+
+    // 手写标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold ${fontSize + 12}px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, paddingV + 40);
+
+    // 下划线
+    ctx.strokeStyle = style.accent;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(width / 2 - 150, paddingV + 55);
+    ctx.lineTo(width / 2 + 150, paddingV + 52);
+    ctx.stroke();
+
+    // 正文
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    let y = paddingV + 120;
+    lines.forEach((line, i) => {
+        ctx.save();
+        ctx.translate(paddingH, y);
+        ctx.rotate((Math.random() - 0.5) * 0.01);
+        ctx.fillText(line, 0, 0);
+        ctx.restore();
+        y += lineHeight;
+    });
+
+    // 随机涂鸦
+    ctx.strokeStyle = style.accent;
+    ctx.lineWidth = 2;
+    ctx.globalAlpha = 0.3;
+    ctx.beginPath();
+    ctx.arc(width - 100, height - 100, 40, 0, Math.PI * 2);
+    ctx.stroke();
+}
+
+// 漫画对话框风格
+function renderMangaStyle(ctx, params) {
+    const { style, width, height, lines, lineHeight, fontSize, characterName } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 背景网点效果
+    ctx.fillStyle = '#f0f0f0';
+    for (let i = 0; i < width; i += 8) {
+        for (let j = 0; j < height; j += 8) {
+            ctx.beginPath();
+            ctx.arc(i, j, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    // 对话框
+    const bubbleX = width * 0.1;
+    const bubbleY = height * 0.15;
+    const bubbleW = width * 0.8;
+    const bubbleH = height * 0.7;
+
+    ctx.fillStyle = style.background;
+    ctx.strokeStyle = style.text;
+    ctx.lineWidth = 5;
+
+    // 圆角矩形对话框
+    ctx.beginPath();
+    ctx.moveTo(bubbleX + 30, bubbleY);
+    ctx.lineTo(bubbleX + bubbleW - 30, bubbleY);
+    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + 30);
+    ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - 30);
+    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - 30, bubbleY + bubbleH);
+    ctx.lineTo(bubbleX + 30, bubbleY + bubbleH);
+    ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - 30);
+    ctx.lineTo(bubbleX, bubbleY + 30);
+    ctx.quadraticCurveTo(bubbleX, bubbleY, bubbleX + 30, bubbleY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 对话框尾巴
+    ctx.beginPath();
+    ctx.moveTo(bubbleX + 100, bubbleY + bubbleH);
+    ctx.lineTo(bubbleX + 80, bubbleY + bubbleH + 40);
+    ctx.lineTo(bubbleX + 150, bubbleY + bubbleH);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+
+    // 文字
+    ctx.fillStyle = style.text;
+    ctx.font = `bold ${fontSize}px ${style.font}`;
+    ctx.textAlign = 'center';
+
+    let y = bubbleY + 80;
+    lines.forEach((line, i) => {
+        if (i < 10) {
+            ctx.fillText(line, width / 2, y);
+            y += lineHeight;
+        }
+    });
+
+    // 角色名标签
+    ctx.fillStyle = style.accent;
+    ctx.fillRect(bubbleX, bubbleY - 40, 200, 35);
+    ctx.fillStyle = style.background;
+    ctx.font = `bold 24px ${style.font}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(characterName, bubbleX + 10, bubbleY - 15);
+}
+
+// 蓝图设计风格
+function renderBlueprintStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight,
+            fontSize, titleText, subtitleText, showDate } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 网格
+    ctx.strokeStyle = style.quote;
+    ctx.lineWidth = 1;
+    for (let i = 0; i < width; i += 40) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, height);
+        ctx.stroke();
+    }
+    for (let j = 0; j < height; j += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, j);
+        ctx.lineTo(width, j);
+        ctx.stroke();
+    }
+
+    // 标题框
+    ctx.strokeStyle = style.accent;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(paddingH, paddingV, width - paddingH * 2, 100);
+
+    ctx.fillStyle = style.text;
+    ctx.font = `bold 42px ${style.font}`;
+    ctx.textAlign = 'left';
+    ctx.fillText(titleText, paddingH + 20, paddingV + 50);
+
+    ctx.font = `20px ${style.font}`;
+    ctx.fillText(subtitleText, paddingH + 20, paddingV + 80);
+
+    // 正文
+    ctx.font = `${fontSize}px ${style.font}`;
+    let y = paddingV + 160;
+
+    lines.forEach(line => {
+        ctx.fillText(line, paddingH + 20, y);
+        y += lineHeight;
+    });
+
+    // 图纸标记
+    if (showDate) {
+        ctx.strokeStyle = style.accent;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(width - 250, height - 100, 200, 60);
+        ctx.font = `16px ${style.font}`;
+        ctx.fillText('DATE: ' + new Date().toLocaleDateString(), width - 240, height - 70);
+        ctx.fillText('REV: 1.0', width - 240, height - 50);
+    }
+}
+
+// 水彩艺术风格
+function renderWatercolorStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight,
+            fontSize, titleText } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 水彩渐变背景
+    const gradient = ctx.createLinearGradient(0, 0, width, height);
+    gradient.addColorStop(0, 'rgba(244, 213, 141, 0.3)');
+    gradient.addColorStop(0.5, 'rgba(232, 168, 124, 0.2)');
+    gradient.addColorStop(1, 'rgba(209, 139, 116, 0.3)');
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, width, height);
+
+    // 水彩斑点
+    for (let i = 0; i < 30; i++) {
+        const x = Math.random() * width;
+        const y = Math.random() * height;
+        const r = 20 + Math.random() * 80;
+        const grad = ctx.createRadialGradient(x, y, 0, x, y, r);
+        grad.addColorStop(0, 'rgba(212, 165, 116, 0.15)');
+        grad.addColorStop(1, 'rgba(212, 165, 116, 0)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(x, y, r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    // 手写标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `italic bold ${fontSize + 8}px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, paddingV + 60);
+
+    // 正文
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    let y = paddingV + 140;
+    lines.forEach(line => {
+        ctx.fillText(line, paddingH, y);
+        y += lineHeight;
+    });
+}
+
+// 终端命令行风格
+function renderTerminalStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight,
+            fontSize, characterName, showDate } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 终端顶栏
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, width, 40);
+
+    // 终端按钮
+    ['#ff5f56', '#ffbd2e', '#27c93f'].forEach((color, i) => {
+        ctx.fillStyle = color;
+        ctx.beginPath();
+        ctx.arc(20 + i * 25, 20, 8, 0, Math.PI * 2);
+        ctx.fill();
+    });
+
+    // 终端标题
+    ctx.fillStyle = '#888';
+    ctx.font = '16px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`terminal — ${characterName}`, width / 2, 25);
+
+    // 命令提示符
+    let y = paddingV + 40;
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    ctx.fillText('$ cat theater.txt', paddingH, y);
+    y += lineHeight + 20;
+
+    // 输出内容
+    lines.forEach(line => {
+        // 光标闪烁效果（静态）
+        const displayLine = line + (lines.indexOf(line) === lines.length - 1 ? '█' : '');
+        ctx.fillText(displayLine, paddingH, y);
+        y += lineHeight;
+    });
+
+    // 底部状态栏
+    if (showDate) {
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, height - 35, width, 35);
+        ctx.fillStyle = style.text;
+        ctx.font = '16px monospace';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Lines: ${lines.length}`, paddingH, height - 12);
+        ctx.textAlign = 'right';
+        ctx.fillText(new Date().toLocaleString(), width - paddingH, height - 12);
+    }
+}
+
+// 古风卷轴风格
+function renderScrollStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight,
+            fontSize, titleText, subtitleText } = params;
+
+    ctx.fillStyle = style.background;
+    ctx.fillRect(0, 0, width, height);
+
+    // 卷轴纹理
+    for (let i = 0; i < height; i += 3) {
+        ctx.fillStyle = `rgba(139, 69, 19, ${0.02 + Math.random() * 0.03})`;
+        ctx.fillRect(0, i, width, 1);
+    }
+
+    // 卷轴边缘
+    const edgeGrad = ctx.createLinearGradient(0, 0, 80, 0);
+    edgeGrad.addColorStop(0, 'rgba(139, 69, 19, 0.3)');
+    edgeGrad.addColorStop(1, 'rgba(139, 69, 19, 0)');
+    ctx.fillStyle = edgeGrad;
+    ctx.fillRect(0, 0, 80, height);
+
+    const edgeGradR = ctx.createLinearGradient(width, 0, width - 80, 0);
+    edgeGradR.addColorStop(0, 'rgba(139, 69, 19, 0.3)');
+    edgeGradR.addColorStop(1, 'rgba(139, 69, 19, 0)');
+    ctx.fillStyle = edgeGradR;
+    ctx.fillRect(width - 80, 0, 80, height);
+
+    // 印章（右上角）
+    ctx.save();
+    ctx.translate(width - 150, 100);
+    ctx.rotate(0.1);
+    ctx.strokeStyle = style.accent;
+    ctx.fillStyle = 'rgba(139, 69, 19, 0.1)';
+    ctx.lineWidth = 4;
+    ctx.beginPath();
+    ctx.arc(0, 0, 50, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = style.accent;
+    ctx.font = '20px serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('兔兔', 0, 5);
+    ctx.restore();
+
+    // 标题
+    ctx.fillStyle = style.accent;
+    ctx.font = `bold ${fontSize + 16}px ${style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, paddingV + 60);
+
+    // 副标题
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize - 4}px ${style.font}`;
+    ctx.fillText(subtitleText, width / 2, paddingV + 100);
+
+    // 正文（竖排）
+    ctx.fillStyle = style.text;
+    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.textAlign = 'left';
+
+    let y = paddingV + 160;
+    lines.forEach(line => {
+        ctx.fillText(line, paddingH + 60, y);
+        y += lineHeight;
+    });
+}
+// ==========================================
+// 自定义 CSS 书摘
+// ==========================================
+
+async function exportTutuCustomCssQuote(content, characterName, options) {
+    const customCss = String(options.customCss || '').trim();
+
+    if (!customCss) {
+        toastr.warning('请先输入自定义 CSS 样式');
+        return;
+    }
+
+    const text = String(content || '').trim();
+    const titleText = String(options.titleText || '兔兔小剧场').trim();
+    const subtitleText = String(
+        options.subtitleText || `来自：${characterName}`
+    ).trim();
+    const showDate = options.showDate !== false;
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>${escapeHtml(titleText)}</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Noto Serif SC", "Source Han Serif SC", serif;
+    line-height: 1.8;
+}
+
+.quote-container {
+    width: ${Number(options.imageWidth) || 1200}px;
+    padding: ${Number(options.paddingV) || 90}px ${Number(options.paddingH) || 90}px;
+}
+
+.quote-title {
+    font-size: 42px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.quote-subtitle {
+    font-size: 24px;
+    margin-bottom: 40px;
+}
+
+.quote-content {
+    font-size: ${Number(options.fontSize) || 32}px;
+    line-height: ${Number(options.lineHeight) || 1.8};
+    text-align: ${options.textAlign || 'left'};
+    text-indent: ${Number(options.textIndent) || 0}em;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.quote-date {
+    margin-top: 40px;
+    font-size: 22px;
+    opacity: 0.7;
+}
+
+/* 用户自定义样式 */
+${customCss}
+</style>
+</head>
+<body>
+<div class="quote-container">
+    <div class="quote-title">${escapeHtml(titleText)}</div>
+    <div class="quote-subtitle">${escapeHtml(subtitleText)}</div>
+    <div class="quote-content">${escapeHtml(text)}</div>
+    ${showDate ? `<div class="quote-date">${new Date().toLocaleDateString()}</div>` : ''}
+</div>
+</body>
+</html>
+    `.trim();
+
+    // 使用 html2canvas 或截图方式导出
+    // 这里先导出为 HTML 文件
+    const blob = new Blob([htmlContent], {
+        type: 'text/html;charset=utf-8',
+    });
+
+    const filename = `${sanitizeTutuFilename(
+        `兔兔小剧场-CSS-${characterName}`
+    )}.html`;
+
+    downloadTutuBlob(blob, filename);
+
+    toastr.success('自定义 CSS 书摘已导出为 HTML');
+}
+
 
 
 function exportTutuHtmlFile(content, characterName) {
@@ -3123,7 +3817,20 @@ function openTutuQuoteEditor(content, characterName) {
                         </label>
                     </div>
 
+                    <div class="tutu-quote-control-group tutu-custom-css-group" style="display:none;">
+                        <label class="tutu-quote-control-label">
+                            自定义 CSS 样式
+                        </label>
+                        <textarea id="tutu_qe_custom_css" class="text_pole tutu-custom-css-textarea"
+                            rows="8"
+                            placeholder=".quote-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }&#10;.quote-title { color: white; }&#10;.quote-content { color: #f0f0f0; }"></textarea>
+                        <div class="tutu-api-help">
+                            你可以覆盖 .quote-container、.quote-title、.quote-subtitle、.quote-content、.quote-date 的样式
+                        </div>
+                    </div>
+
                 </div>
+
 
                 <div class="tutu-quote-editor-preview-area">
                     <div class="tutu-quote-preview-title">
@@ -3155,6 +3862,24 @@ function openTutuQuoteEditor(content, characterName) {
 
     // 绑定事件
     $('#tutu_quote_editor_close').on('click', closeTutuQuoteEditor);
+    // 样式切换时显示/隐藏自定义 CSS
+    $(overlay).on('change', '#tutu_qe_style', function() {
+        const selectedStyle = $(this).val();
+        if (selectedStyle === 'custom_css') {
+            $('.tutu-custom-css-group').slideDown(200);
+            $('#tutu_qe_preview_canvas').hide();
+            $('.tutu-quote-preview-scroll').html(`
+                <div style="padding:20px;text-align:center;opacity:0.7;">
+                    自定义 CSS 书摘将导出为 HTML 文件<br>
+                    请直接点击"导出图片"按钮
+                </div>
+            `);
+        } else {
+            $('.tutu-custom-css-group').slideUp(200);
+            $('#tutu_qe_preview_canvas').show();
+            renderTutuQuotePreview();
+        }
+    });
 
     // 实时预览：控件变化时自动刷新
     $(overlay).on(
@@ -3214,6 +3939,8 @@ function getTutuQuoteEditorOptions() {
         showDate: $('#tutu_qe_show_date').is(':checked'),
         showQuoteMark: $('#tutu_qe_show_quote_mark').is(':checked'),
         showDecoLine: $('#tutu_qe_show_deco_line').is(':checked'),
+        customCss: $('#tutu_qe_custom_css').val() || '',
+
     };
 }
 
@@ -3229,9 +3956,14 @@ function debounceQuotePreview() {
 function renderTutuQuotePreview() {
     const canvas = document.getElementById('tutu_qe_preview_canvas');
     if (!canvas) return;
+    const options = getTutuQuoteEditorOptions();
+    
+    // 自定义 CSS 不显示预览
+    if (options.styleName === 'custom_css') {
+        return;
+    }
 
     const ctx = canvas.getContext('2d');
-    const options = getTutuQuoteEditorOptions();
     const style = getTutuQuoteStyle(options.styleName);
     const text = tutuQuoteEditorContent;
 
