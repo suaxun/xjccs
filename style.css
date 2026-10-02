@@ -2941,150 +2941,119 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     background: rgba(0, 0, 0, 0.15) !important;
     padding: 8px 15px !important;
 }
-/* =========================================================
-   兔兔小剧场：极致 Ins 风 / 清爽净化补丁
-   （放在最底部用于覆盖默认样式）
-   ========================================================= */
+/* ==========================================
+   全新 Ins 风：小剧场导入导出面板
+   ========================================== */
 
-/* 1. 主面板：大圆角、去线化、毛玻璃果冻质感 */
-#tutu_theater_panel {
-    border: none !important;
-    border-radius: 24px !important;
-    background-color: var(--SmartThemeBlurTintColor, rgba(25, 25, 25, 0.75)) !important;
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.1) !important;
-    padding: 24px !important;
-    gap: 16px !important;
+/* 面板外框：悬浮玻璃卡片质感 */
+.tutu-transfer-panel {
+    background: rgba(0, 0, 0, 0.15); /* 微透明深色背景 */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* 2. 优化顶部关闭按钮：变成圆滑的悬浮按钮 */
-#tutu_close {
-    width: 32px;
-    height: 32px;
+/* 顶部标题栏 */
+.tutu-transfer-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding-bottom: 10px;
+}
+
+.tutu-transfer-panel-title {
+    font-weight: bold;
+    font-size: 1.05em;
+    color: var(--SmartThemeQuoteColor);
     display: flex;
     align-items: center;
+    gap: 8px;
+}
+
+/* 每一行表单（范围、分类、格式） */
+.tutu-transfer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.tutu-transfer-row .tutu-settings-label {
+    font-size: 0.85em;
+    opacity: 0.8;
+    margin: 0;
+}
+
+/* 圆润的下拉选择框 */
+.tutu-transfer-row select.text_pole {
+    border-radius: 12px !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    padding: 8px 12px;
+    width: 100%;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* ==========================================
+   核心修改：底部操作按钮并排（各占一半）
+   ========================================== */
+.tutu-transfer-actions {
+    display: flex;
+    flex-direction: row; /* 水平排列 */
+    gap: 12px;           /* 按钮之间的间距 */
+    margin-top: 8px;
+}
+
+/* 统一胶囊按钮基础样式 */
+.tutu-transfer-actions .menu_button {
+    flex: 1; /* 两个按钮平分宽度 */
+    margin: 0;
+    display: flex;
     justify-content: center;
-    background: rgba(255, 255, 255, 0.04);
-    border-radius: 50%;
-    font-size: 14px !important;
-    opacity: 0.6;
-    transition: all 0.25s ease;
-}
-#tutu_close:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.15);
-    transform: rotate(90deg); /* 悬浮时轻微旋转 */
+    align-items: center;
+    gap: 6px;
+    border-radius: 20px; /* 胶囊形状 */
+    padding: 10px 0;
+    font-size: 0.9em;
+    font-weight: bold;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+    border: none;
 }
 
-/* 3. 消灭死板的边框，所有区块变成柔和底色 + 16px 大圆角 */
-.tutu-result-box,
-.tutu-context-box,
-.tutu-script-editor,
-.tutu-favorite-card,
-.tutu-favorite-group,
-.tutu-preset-card {
-    border: none !important;
-    border-radius: 16px !important;
-    background: rgba(0, 0, 0, 0.18) !important;
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
-    padding: 16px !important;
+/* 导出按钮：强调色（主操作） */
+#tutu_export_library_btn {
+    background: var(--SmartThemeQuoteColor);
+    color: #fff;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--SmartThemeQuoteColor) 40%, transparent);
 }
-
-/* 4. 剧本卡片：悬浮浮动效果，操作按钮自动隐藏 */
-.tutu-script-card {
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
-}
-.tutu-script-card:hover {
-    background: rgba(255, 255, 255, 0.05) !important;
+#tutu_export_library_btn:hover {
+    filter: brightness(1.15);
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-}
-/* 操作按钮平时变暗，鼠标移上去才变清晰，减少视觉噪音 */
-.tutu-script-actions {
-    opacity: 0.15;
-    transition: opacity 0.3s ease;
-}
-.tutu-script-card:hover .tutu-script-actions {
-    opacity: 1;
-}
-.tutu-script-actions .tutu-icon-btn {
-    background: transparent !important;
-    box-shadow: none !important;
-}
-.tutu-script-actions .tutu-icon-btn:hover {
-    background: rgba(255,255,255,0.1) !important;
-    transform: scale(1.15) !important;
 }
 
-/* 5. 分类标题极简处理：去掉大色块，变成优雅的文字+线条 */
-.tutu-category-section {
-    border: none !important;
-    background: transparent !important;
+/* 导入按钮：次要色（毛玻璃质感） */
+#tutu_import_library_btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--SmartThemeBodyColor);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.tutu-category-header {
-    background: transparent !important;
-    color: var(--SmartThemeBodyColor) !important;
-    padding: 12px 4px !important;
-    font-size: 1.1em;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-.tutu-category-header i.fa-folder {
-    color: var(--SmartThemeQuoteColor);
-    opacity: 0.9;
-}
-/* 右侧的数量角标变成果冻胶囊 */
-.tutu-category-count {
-    background: rgba(255, 255, 255, 0.08);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.75em !important;
-    font-weight: 500;
+#tutu_import_library_btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    transform: translateY(-2px);
 }
 
-/* 6. 工具栏去线化留白 */
-.tutu-result-toolbar,
-.tutu-library-toolbar {
-    border-bottom: none !important;
-    padding-bottom: 0 !important;
+/* 底部小字提示信息 */
+.tutu-transfer-panel .tutu-api-help {
+    font-size: 0.75em;
+    opacity: 0.5;
+    text-align: center;
+    margin-top: 4px;
+    line-height: 1.4;
 }
-
-/* 7. 所有输入框彻底变身果冻圆角 */
-textarea.text_pole,
-input.text_pole,
-select.text_pole {
-    border: none !important;
-    background: rgba(255, 255, 255, 0.06) !important;
-    border-radius: 20px !important;
-    padding: 12px 18px !important;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1) !important;
-    transition: all 0.25s ease !important;
-}
-textarea.text_pole:focus,
-input.text_pole:focus,
-select.text_pole:focus {
-    background: rgba(255, 255, 255, 0.1) !important;
-    box-shadow: 0 0 0 3px color-mix(in srgb, var(--SmartThemeQuoteColor) 30%, transparent), inset 0 1px 2px rgba(0,0,0,0.1) !important;
-    outline: none !important;
-}
-
-/* 8. 彻底弱化滚动条（像 macOS 一样的细线滚动条） */
-::-webkit-scrollbar {
-    width: 4px !important;
-    height: 4px !important;
-}
-::-webkit-scrollbar-track {
-    background: transparent !important;
-}
-::-webkit-scrollbar-thumb {
-    background: transparent !important;
-    border-radius: 10px !important;
-    transition: background 0.3s ease;
-}
-/* 只有鼠标滑过容器时，滚动条才显示出来 */
-:hover::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.15) !important;
-}
-:hover::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3) !important;
-}
-
 
