@@ -706,7 +706,7 @@
  */
 .tutu-icon-toolbar {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 6px;
 
     width: 100%;
@@ -2515,4 +2515,75 @@ body.tutu-fullscreen-open {
     }
 }
 
+/* ==========================================
+   我的剧本：导入导出面板
+   ========================================== */
+
+.tutu-transfer-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 12px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+.tutu-transfer-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.tutu-transfer-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    color: var(--SmartThemeQuoteColor);
+    font-weight: bold;
+}
+
+.tutu-transfer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tutu-transfer-row .tutu-settings-label {
+    margin-top: 0;
+}
+
+.tutu-transfer-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tutu-transfer-actions .menu_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+@media (max-width: 600px) {
+    .tutu-transfer-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .tutu-transfer-actions .menu_button {
+        width: 100%;
+    }
+}
 
