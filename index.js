@@ -2472,121 +2472,142 @@ function renderClassicStyle(ctx, params) {
     }
 }
 
-// 宝丽来照片风格
+// 宝丽来照片风格（带阴影、倾斜和胶带贴纸）
 function renderPolaroidStyle(ctx, params) {
-    const { style, width, height, lines, lineHeight, fontSize, titleText } = params;
+    const { style, width, height, lines, lineHeight, fontSize, titleText, subtitleText } = params;
 
-    const polaroidW = width * 0.8;
-    const polaroidH = height * 0.75;
-    const polaroidX = (width - polaroidW) / 2;
-    const polaroidY = 60;
-    const bottomStrip = 120;
-
-    ctx.fillStyle = '#1a1a1a';
+    // 背景：木纹色或深灰色桌面
+    ctx.fillStyle = '#2c3e50';
     ctx.fillRect(0, 0, width, height);
 
-    // 宝丽来白框
-    ctx.fillStyle = style.background;
-    ctx.fillRect(polaroidX, polaroidY, polaroidW, polaroidH + bottomStrip);
+    const polaroidW = width * 0.75;
+    const polaroidH = height * 0.8;
+    const polaroidX = -polaroidW / 2; // 用于旋转中心
+    const polaroidY = -polaroidH / 2;
 
-    // 照片区域
-    ctx.fillStyle = '#f8f8f8';
-    ctx.fillRect(polaroidX + 15, polaroidY + 15, polaroidW - 30, polaroidH - 15);
-
-    // 文字区域
     ctx.save();
-    ctx.rect(polaroidX + 35, polaroidY + 40, polaroidW - 70, polaroidH - 80);
-    ctx.clip();
+    // 移到画面中心并稍微旋转，营造随意摆放的感觉
+    ctx.translate(width / 2, height / 2);
+    ctx.rotate(-0.04); // 逆时针倾斜一点点
 
-    ctx.fillStyle = style.text;
+    // 绘制照片底部的投影
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.4)';
+    ctx.shadowBlur = 30;
+    ctx.shadowOffsetX = 10;
+    ctx.shadowOffsetY = 15;
+
+    // 宝丽来相纸白框
+    ctx.fillStyle = '#fdfdfd';
+    ctx.fillRect(polaroidX, polaroidY, polaroidW, polaroidH);
+
+    // 关闭阴影画内部
+    ctx.shadowColor = 'transparent';
+
+    // 内部“照片”区域（深灰色底）
+    const photoW = polaroidW * 0.9;
+    const photoH = polaroidH * 0.7;
+    const photoX = polaroidX + (polaroidW - photoW) / 2;
+    const photoY = polaroidY + (polaroidW - photoW) / 2;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(photoX, photoY, photoW, photoH);
+
+    // 正文（在深色照片区显示为白色文字）
+    ctx.fillStyle = '#ffffff';
     ctx.font = `${fontSize}px ${style.font}`;
     ctx.textAlign = 'left';
-
-    let y = polaroidY + 80;
+    let y = photoY + 60;
     lines.forEach((line, i) => {
-        if (i < 12) {
-            ctx.fillText(line, polaroidX + 35, y);
+        if (y < photoY + photoH - 20) { // 防止文字超出照片框
+            ctx.fillText(line, photoX + 40, y);
             y += lineHeight;
         }
     });
 
-    ctx.restore();
-
-    // 底部手写标题
-    ctx.fillStyle = style.accent;
-    ctx.font = `italic 36px ${style.font}`;
+    // 底部大片留白处的手写标题（黑色）
+    ctx.fillStyle = '#2c2c2c';
+    ctx.font = `bold ${fontSize + 12}px "Ma Shan Zheng", "Zhi Mang Xing", cursive, ${style.font}`;
     ctx.textAlign = 'center';
-    ctx.fillText(titleText, width / 2, polaroidY + polaroidH + 70);
+    ctx.fillText(titleText, 0, polaroidY + photoH + 70);
+    ctx.font = `italic ${fontSize - 8}px ${style.font}`;
+    ctx.fillText(subtitleText, 0, polaroidY + photoH + 110);
+
+    // 顶部贴一个半透明的“胶带”
+    ctx.fillStyle = 'rgba(255, 255, 220, 0.6)';
+    ctx.rotate(0.08); // 胶带歪一点
+    ctx.fillRect(-100, polaroidY - 20, 200, 45);
+    ctx.restore();
 }
 
-// 报纸专栏风格
-function renderNewspaperStyle(ctx, params) {
-    const { style, width, height, paddingH, paddingV, lines, lineHeight, fontSize,
-            titleText, subtitleText, showDate } = params;
 
-    ctx.fillStyle = style.background;
+// 报纸专栏风格（首字下沉 + 真正的双栏排版）
+function renderNewspaperStyle(ctx, params) {
+    const { style, width, height, paddingH, paddingV, lines, lineHeight, fontSize, titleText, subtitleText, showDate } = params;
+
+    // 复古报纸底色
+    ctx.fillStyle = '#f4ecd8';
     ctx.fillRect(0, 0, width, height);
 
-    // 顶部报头
-    ctx.fillStyle = style.accent;
-    ctx.fillRect(0, 0, width, 8);
-    ctx.fillRect(0, 12, width, 2);
+    // 报头黑线
+    ctx.fillStyle = '#222';
+    ctx.fillRect(paddingH, paddingV, width - paddingH * 2, 8);
+    ctx.fillRect(paddingH, paddingV + 12, width - paddingH * 2, 2);
 
-    let y = paddingV;
+    let y = paddingV + 70;
 
-    // 标题
-    ctx.fillStyle = style.accent;
-    ctx.font = `bold 56px ${style.font}`;
+    // 巨大、夸张的报纸标题
+    ctx.fillStyle = '#111';
+    ctx.font = `bold 64px "Times New Roman", ${style.font}`;
     ctx.textAlign = 'center';
-    ctx.fillText(titleText, width / 2, y);
-
+    ctx.fillText(titleText.toUpperCase(), width / 2, y);
+    
     y += 50;
-
-    // 副标题
-    ctx.fillStyle = style.text;
-    ctx.font = `italic 24px ${style.font}`;
+    ctx.font = `italic 22px "Times New Roman", ${style.font}`;
     ctx.fillText(subtitleText, width / 2, y);
 
+    y += 30;
+    // 分割线
+    ctx.fillRect(paddingH, y, width - paddingH * 2, 1);
     y += 40;
 
-    // 分栏线
-    ctx.strokeStyle = style.accent;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(paddingH, y);
-    ctx.lineTo(width - paddingH, y);
-    ctx.stroke();
-
-    y += 50;
-
-    // 正文分栏
+    // 双栏排版算法
+    const colGap = 40;
+    const colWidth = (width - paddingH * 2 - colGap) / 2;
     ctx.textAlign = 'left';
-    ctx.fillStyle = style.text;
-    ctx.font = `${fontSize}px ${style.font}`;
+    ctx.fillStyle = '#1a1a1a';
+    ctx.font = `${fontSize}px "Times New Roman", ${style.font}`;
 
-    const columnWidth = (width - paddingH * 2 - 30) / 2;
-    let currentColumn = 0;
-    let columnY = y;
+    let colY = y;
+    let currentCol = 0;
 
-    lines.forEach(line => {
-        const x = paddingH + currentColumn * (columnWidth + 30);
-        ctx.fillText(line, x, columnY);
-        columnY += lineHeight;
+    lines.forEach((line, index) => {
+        let drawX = paddingH + currentCol * (colWidth + colGap);
+        
+        // 【首字下沉】处理 (首段首行)
+        if (index === 0 && line.length > 0) {
+            const firstChar = line.charAt(0);
+            const restLine = line.slice(1);
+            
+            ctx.font = `bold ${fontSize * 3.5}px "Times New Roman", ${style.font}`;
+            ctx.fillText(firstChar, drawX, colY + fontSize * 1.5);
+            
+            // 剩下的字往后挪
+            ctx.font = `${fontSize}px "Times New Roman", ${style.font}`;
+            const offset = ctx.measureText(firstChar).width + 10;
+            ctx.fillText(restLine, drawX + offset, colY);
+        } else {
+            ctx.fillText(line, drawX, colY);
+        }
 
-        if (columnY > height - 120) {
-            currentColumn++;
-            columnY = y;
+        colY += lineHeight;
+
+        // 如果当前列快画到底部了，换到第二列
+        if (colY > height - paddingV - 50 && currentCol === 0) {
+            currentCol = 1;
+            colY = y; // 重置 Y 坐标
         }
     });
-
-    // 底部日期
-    if (showDate) {
-        ctx.fillStyle = style.text;
-        ctx.font = `18px ${style.font}`;
-        ctx.textAlign = 'right';
-        ctx.fillText(new Date().toLocaleDateString(), width - paddingH, height - 40);
-    }
 }
+
 
 // 霓虹夜景风格
 function renderNeonStyle(ctx, params) {
@@ -2692,78 +2713,82 @@ function renderHandwrittenStyle(ctx, params) {
     ctx.stroke();
 }
 
-// 漫画对话框风格
+// 漫画风格（爆炸效果框 + 网点背景）
 function renderMangaStyle(ctx, params) {
-    const { style, width, height, lines, lineHeight, fontSize, characterName } = params;
+    const { style, width, height, lines, lineHeight, fontSize, titleText } = params;
 
-    ctx.fillStyle = style.background;
+    // 画白色背景
+    ctx.fillStyle = '#ffffff';
     ctx.fillRect(0, 0, width, height);
 
-    // 背景网点效果
-    ctx.fillStyle = '#f0f0f0';
-    for (let i = 0; i < width; i += 8) {
-        for (let j = 0; j < height; j += 8) {
+    // 生成漫画常见的 halftone（半调网点）背景
+    ctx.fillStyle = '#dcdcdc';
+    for (let x = 0; x < width; x += 15) {
+        for (let y = 0; y < height; y += 15) {
             ctx.beginPath();
-            ctx.arc(i, j, 2, 0, Math.PI * 2);
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
             ctx.fill();
         }
     }
 
-    // 对话框
-    const bubbleX = width * 0.1;
-    const bubbleY = height * 0.15;
-    const bubbleW = width * 0.8;
-    const bubbleH = height * 0.7;
+    // 画爆炸或者锐利的对话框边缘 (用多边形模拟)
+    const centerX = width / 2;
+    const centerY = height / 2;
+    const radiusX = width * 0.4;
+    const radiusY = height * 0.35;
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.strokeStyle = '#000000';
+    ctx.lineWidth = 8;
+    ctx.lineJoin = 'miter';
 
-    ctx.fillStyle = style.background;
-    ctx.strokeStyle = style.text;
-    ctx.lineWidth = 5;
-
-    // 圆角矩形对话框
     ctx.beginPath();
-    ctx.moveTo(bubbleX + 30, bubbleY);
-    ctx.lineTo(bubbleX + bubbleW - 30, bubbleY);
-    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + 30);
-    ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - 30);
-    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - 30, bubbleY + bubbleH);
-    ctx.lineTo(bubbleX + 30, bubbleY + bubbleH);
-    ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - 30);
-    ctx.lineTo(bubbleX, bubbleY + 30);
-    ctx.quadraticCurveTo(bubbleX, bubbleY, bubbleX + 30, bubbleY);
+    for (let i = 0; i < 360; i += 15) {
+        // 随机凸起，制造爆炸效果
+        const radiusSpike = (i % 30 === 0) ? 1.15 : 0.95; 
+        const rad = (i * Math.PI) / 180;
+        const x = centerX + Math.cos(rad) * radiusX * radiusSpike;
+        const y = centerY + Math.sin(rad) * radiusY * radiusSpike;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+    }
     ctx.closePath();
     ctx.fill();
     ctx.stroke();
 
-    // 对话框尾巴
+    // 漫画对话框尾巴
     ctx.beginPath();
-    ctx.moveTo(bubbleX + 100, bubbleY + bubbleH);
-    ctx.lineTo(bubbleX + 80, bubbleY + bubbleH + 40);
-    ctx.lineTo(bubbleX + 150, bubbleY + bubbleH);
-    ctx.closePath();
+    ctx.moveTo(centerX - 50, centerY + radiusY * 0.9);
+    ctx.lineTo(centerX - 120, centerY + radiusY * 1.5); // 尾巴尖
+    ctx.lineTo(centerX + 20, centerY + radiusY * 0.95);
+    ctx.fillStyle = '#ffffff';
     ctx.fill();
     ctx.stroke();
 
-    // 文字
-    ctx.fillStyle = style.text;
-    ctx.font = `bold ${fontSize}px ${style.font}`;
+    // 正文
+    ctx.fillStyle = '#000000';
+    // 强制使用无衬线粗体，类似漫画字体
+    ctx.font = `bold ${fontSize + 4}px "Comic Sans MS", "Noto Sans SC", sans-serif`; 
     ctx.textAlign = 'center';
 
-    let y = bubbleY + 80;
-    lines.forEach((line, i) => {
-        if (i < 10) {
-            ctx.fillText(line, width / 2, y);
-            y += lineHeight;
-        }
+    // 垂直居中算法
+    const totalTextHeight = lines.length * lineHeight;
+    let textY = centerY - totalTextHeight / 2 + fontSize;
+
+    lines.forEach(line => {
+        ctx.fillText(line, centerX, textY);
+        textY += lineHeight;
     });
 
-    // 角色名标签
-    ctx.fillStyle = style.accent;
-    ctx.fillRect(bubbleX, bubbleY - 40, 200, 35);
-    ctx.fillStyle = style.background;
-    ctx.font = `bold 24px ${style.font}`;
-    ctx.textAlign = 'left';
-    ctx.fillText(characterName, bubbleX + 10, bubbleY - 15);
+    // 顶部角色提示框 (黑底白字)
+    ctx.fillStyle = '#000';
+    ctx.fillRect(40, 40, 300, 60);
+    ctx.fillStyle = '#fff';
+    ctx.font = `bold 28px "Noto Sans SC", sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, 190, 80);
 }
+
 
 // 蓝图设计风格
 function renderBlueprintStyle(ctx, params) {
@@ -2870,128 +2895,171 @@ function renderWatercolorStyle(ctx, params) {
     });
 }
 
-// 终端命令行风格
+// 终端命令行风格（拟真 Mac 终端窗口）
 function renderTerminalStyle(ctx, params) {
-    const { style, width, height, paddingH, paddingV, lines, lineHeight,
-            fontSize, characterName, showDate } = params;
+    const { style, width, height, lines, lineHeight, fontSize, titleText, characterName } = params;
 
-    ctx.fillStyle = style.background;
+    // 纯黑背景
+    ctx.fillStyle = '#000000';
     ctx.fillRect(0, 0, width, height);
 
-    // 终端顶栏
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, width, 40);
+    // 终端窗口阴影
+    ctx.shadowColor = 'rgba(0, 255, 0, 0.2)';
+    ctx.shadowBlur = 40;
 
-    // 终端按钮
-    ['#ff5f56', '#ffbd2e', '#27c93f'].forEach((color, i) => {
+    const winX = 60;
+    const winY = 60;
+    const winW = width - 120;
+    const winH = height - 120;
+
+    // 终端主窗口
+    ctx.fillStyle = '#1e1e1e';
+    ctx.beginPath();
+    ctx.roundRect(winX, winY, winW, winH, 12);
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+
+    // 顶栏 (Title bar)
+    ctx.fillStyle = '#333333';
+    ctx.beginPath();
+    ctx.roundRect(winX, winY, winW, 40, [12, 12, 0, 0]);
+    ctx.fill();
+
+    // 苹果系统三色按钮
+    const colors = ['#ff5f56', '#ffbd2e', '#27c93f'];
+    colors.forEach((color, i) => {
         ctx.fillStyle = color;
         ctx.beginPath();
-        ctx.arc(20 + i * 25, 20, 8, 0, Math.PI * 2);
+        ctx.arc(winX + 25 + i * 25, winY + 20, 7, 0, Math.PI * 2);
         ctx.fill();
     });
 
-    // 终端标题
-    ctx.fillStyle = '#888';
-    ctx.font = '16px monospace';
+    // 顶栏标题
+    ctx.fillStyle = '#888888';
+    ctx.font = '16px "Courier New", monospace';
     ctx.textAlign = 'center';
-    ctx.fillText(`terminal — ${characterName}`, width / 2, 25);
+    ctx.fillText(`${characterName} @ tutu-theater ~ bash`, width / 2, winY + 26);
 
-    // 命令提示符
-    let y = paddingV + 40;
-    ctx.fillStyle = style.text;
-    ctx.font = `${fontSize}px ${style.font}`;
+    // 正文输出 (荧光绿)
+    ctx.fillStyle = '#00ff00';
+    ctx.font = `${fontSize}px "Consolas", "Courier New", monospace`;
     ctx.textAlign = 'left';
 
-    ctx.fillText('$ cat theater.txt', paddingH, y);
-    y += lineHeight + 20;
+    let y = winY + 90;
+    const indentX = winX + 40;
 
-    // 输出内容
-    lines.forEach(line => {
-        // 光标闪烁效果（静态）
-        const displayLine = line + (lines.indexOf(line) === lines.length - 1 ? '█' : '');
-        ctx.fillText(displayLine, paddingH, y);
+    // 假装输入了命令
+    ctx.fillStyle = '#56b6c2';
+    ctx.fillText(`root@tutu:~$ `, indentX, y);
+    ctx.fillStyle = '#e5c07b';
+    ctx.fillText(`cat ${titleText}.txt`, indentX + 160, y);
+    
+    y += lineHeight + 20;
+    ctx.fillStyle = '#00ff00';
+
+    lines.forEach((line, index) => {
+        // 最后一行加个闪烁光标方块
+        const isLast = index === lines.length - 1;
+        ctx.fillText(line + (isLast ? ' █' : ''), indentX, y);
         y += lineHeight;
     });
-
-    // 底部状态栏
-    if (showDate) {
-        ctx.fillStyle = '#1a1a1a';
-        ctx.fillRect(0, height - 35, width, 35);
-        ctx.fillStyle = style.text;
-        ctx.font = '16px monospace';
-        ctx.textAlign = 'left';
-        ctx.fillText(`Lines: ${lines.length}`, paddingH, height - 12);
-        ctx.textAlign = 'right';
-        ctx.fillText(new Date().toLocaleString(), width - paddingH, height - 12);
-    }
 }
 
-// 古风卷轴风格
+
+// 古风卷轴（真正的竖向排版：从右到左书写）
 function renderScrollStyle(ctx, params) {
-    const { style, width, height, paddingH, paddingV, lines, lineHeight,
-            fontSize, titleText, subtitleText } = params;
+    const { style, width, height, paddingV, fontSize, titleText, subtitleText } = params;
+    // 这里因为是竖排，不需要用原有的 lines (那是按横排宽度切的)，我们重新用原始文本 text 切
+    const rawText = params.text.replace(/\r/g, ''); 
 
-    ctx.fillStyle = style.background;
+    // 宣纸背景
+    ctx.fillStyle = '#dcb989';
     ctx.fillRect(0, 0, width, height);
-
-    // 卷轴纹理
-    for (let i = 0; i < height; i += 3) {
-        ctx.fillStyle = `rgba(139, 69, 19, ${0.02 + Math.random() * 0.03})`;
+    
+    // 画纸张纹理（细微的横向纹路）
+    ctx.fillStyle = 'rgba(139, 69, 19, 0.05)';
+    for(let i=0; i<height; i+=4) {
         ctx.fillRect(0, i, width, 1);
     }
 
-    // 卷轴边缘
-    const edgeGrad = ctx.createLinearGradient(0, 0, 80, 0);
-    edgeGrad.addColorStop(0, 'rgba(139, 69, 19, 0.3)');
-    edgeGrad.addColorStop(1, 'rgba(139, 69, 19, 0)');
-    ctx.fillStyle = edgeGrad;
-    ctx.fillRect(0, 0, 80, height);
+    // 左右卷轴画轴
+    const gradientL = ctx.createLinearGradient(0, 0, 40, 0);
+    gradientL.addColorStop(0, '#3e2723'); gradientL.addColorStop(0.5, '#6d4c41'); gradientL.addColorStop(1, '#3e2723');
+    ctx.fillStyle = gradientL;
+    ctx.fillRect(0, 0, 40, height);
 
-    const edgeGradR = ctx.createLinearGradient(width, 0, width - 80, 0);
-    edgeGradR.addColorStop(0, 'rgba(139, 69, 19, 0.3)');
-    edgeGradR.addColorStop(1, 'rgba(139, 69, 19, 0)');
-    ctx.fillStyle = edgeGradR;
-    ctx.fillRect(width - 80, 0, 80, height);
+    const gradientR = ctx.createLinearGradient(width-40, 0, width, 0);
+    gradientR.addColorStop(0, '#3e2723'); gradientR.addColorStop(0.5, '#6d4c41'); gradientR.addColorStop(1, '#3e2723');
+    ctx.fillStyle = gradientR;
+    ctx.fillRect(width - 40, 0, 40, height);
 
-    // 印章（右上角）
-    ctx.save();
-    ctx.translate(width - 150, 100);
-    ctx.rotate(0.1);
-    ctx.strokeStyle = style.accent;
-    ctx.fillStyle = 'rgba(139, 69, 19, 0.1)';
+    // 红色印章（左下角落款处）
+    ctx.strokeStyle = '#c62828';
     ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.arc(0, 0, 50, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = style.accent;
-    ctx.font = '20px serif';
+    ctx.strokeRect(100, height - 150, 60, 60);
+    ctx.fillStyle = '#c62828';
+    ctx.font = 'bold 24px "SimSun", serif';
     ctx.textAlign = 'center';
-    ctx.fillText('兔兔', 0, 5);
-    ctx.restore();
+    ctx.fillText('兔印', 130, height - 110);
 
-    // 标题
-    ctx.fillStyle = style.accent;
-    ctx.font = `bold ${fontSize + 16}px ${style.font}`;
-    ctx.textAlign = 'center';
-    ctx.fillText(titleText, width / 2, paddingV + 60);
+    // === 开始竖排文字核心逻辑 ===
+    ctx.fillStyle = '#2d1b11'; // 深墨色
+    ctx.font = `${fontSize}px "Noto Serif SC", "SimSun", serif`;
+    ctx.textAlign = 'center'; // 针对单个字符居中
+    ctx.textBaseline = 'middle';
 
+    const colWidth = fontSize * 1.8; // 列距
+    let currentX = width - 120; // 从右边开始
+    let currentY = paddingV;
+
+    // 先画大标题（最右侧）
+    ctx.font = `bold ${fontSize + 10}px "Noto Serif SC", "SimSun", serif`;
+    for(let char of titleText) {
+        ctx.fillText(char, currentX, currentY);
+        currentY += (fontSize + 10);
+    }
+    
     // 副标题
-    ctx.fillStyle = style.text;
-    ctx.font = `${fontSize - 4}px ${style.font}`;
-    ctx.fillText(subtitleText, width / 2, paddingV + 100);
+    currentX -= colWidth;
+    currentY = paddingV + 40;
+    ctx.font = `${fontSize - 4}px "Noto Serif SC", "SimSun", serif`;
+    for(let char of subtitleText) {
+        ctx.fillText(char, currentX, currentY);
+        currentY += (fontSize - 4);
+    }
 
-    // 正文（竖排）
-    ctx.fillStyle = style.text;
-    ctx.font = `${fontSize}px ${style.font}`;
-    ctx.textAlign = 'left';
+    // 正文
+    currentX -= (colWidth * 1.5);
+    currentY = paddingV;
+    ctx.font = `${fontSize}px "Noto Serif SC", "SimSun", serif`;
 
-    let y = paddingV + 160;
-    lines.forEach(line => {
-        ctx.fillText(line, paddingH + 60, y);
-        y += lineHeight;
-    });
+    for (let char of rawText) {
+        if (char === '\n') {
+            currentX -= colWidth; // 换行就是往左移一列
+            currentY = paddingV;
+            continue;
+        }
+        
+        // 标点符号微调（防止居中太怪）
+        let drawChar = char;
+        let yOffset = 0;
+        let xOffset = 0;
+        if ('，。、：；！？'.includes(char)) {
+            xOffset = fontSize * 0.25; // 标点偏右
+            yOffset = -fontSize * 0.25; // 标点偏上
+        }
+
+        ctx.fillText(drawChar, currentX + xOffset, currentY + yOffset);
+        currentY += fontSize;
+
+        // 一列画到底了，换到左边一列
+        if (currentY > height - paddingV - 60) {
+            currentX -= colWidth;
+            currentY = paddingV;
+        }
+    }
 }
+
 // ==========================================
 // 自定义 CSS 书摘
 // ==========================================
