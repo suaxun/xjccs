@@ -4813,6 +4813,87 @@ function exportTutuJsonPackage() {
     toastr.success('兔兔小剧场 JSON 导出成功');
 }
 
+function exportTutuSingleScenario(index) {
+    index = Number(index);
+
+    if (
+        !Number.isInteger(index) ||
+        index < 0 ||
+        !tutuScenarios[index]
+    ) {
+        toastr.error('找不到要导出的剧本');
+        return;
+    }
+
+    const item = tutuScenarios[index];
+
+    const name =
+        String(item.name || '未命名剧本').trim();
+
+    const desc =
+        String(item.desc || '').trim();
+
+    const category =
+        String(item.category || '未分类').trim() ||
+        '未分类';
+
+    const prompt =
+        String(item.prompt || '').trim();
+
+    if (!prompt) {
+        toastr.warning('这个剧本没有正文内容，无法导出');
+        return;
+    }
+
+    /*
+     * 使用和批量导出完全相同的兔兔小剧场 JSON 格式。
+     *
+     * 这样导出的单个剧本可以直接使用：
+     * “导入兔兔 JSON”
+     * 再导入到剧本库。
+     */
+    const packageData = {
+        type: TUTU_PACKAGE_TYPE,
+        version: TUTU_PACKAGE_VERSION,
+
+        exportedAt: new Date().toISOString(),
+
+        categories: [
+            category,
+        ],
+
+        scenarios: [
+            {
+                name,
+                desc,
+                category,
+                prompt,
+            },
+        ],
+    };
+
+    const json =
+        JSON.stringify(packageData, null, 2);
+
+    const blob = new Blob(
+        [json],
+        {
+            type: 'application/json;charset=utf-8',
+        }
+    );
+
+    const filename =
+        sanitizeTutuFilename(
+            `兔兔小剧场-${category}-${name}`
+        ) + '.json';
+
+    downloadTutuBlob(blob, filename);
+
+    toastr.success(
+        `剧本「${name}」导出成功`,
+        '兔兔小剧场'
+    );
+}
 
 function exportTutuSillyTavernPreset() {
     const packageData =
@@ -5427,7 +5508,12 @@ saveTutuExpandedCategories();
                                 title="查看剧本内容">
                                 <i class="fa-solid fa-eye"></i>
                             </div>
-
+<div
+    class="menu_button margin0 tutu-icon-btn tutu-export-script-btn"
+    data-index="${index}"
+    title="导出这个剧本">
+    <i class="fa-solid fa-file-export"></i>
+</div>
                             <div
                                 class="menu_button margin0 tutu-icon-btn tutu-edit-script-btn"
                                 data-index="${index}"
@@ -6838,6 +6924,20 @@ $(document).on('click', '.tutu-view-script-btn', function () {
         $(this).attr('title', '隐藏剧本内容');
     }
 });
+// 单独导出剧本
+$(document).on(
+    'click',
+    '.tutu-export-script-btn',
+    function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const index =
+            Number($(this).attr('data-index'));
+
+        exportTutuSingleScenario(index);
+    }
+);
 
 // 载入剧本到生成页面
 $(document).on('click', '.tutu-load-script-btn', function() {
