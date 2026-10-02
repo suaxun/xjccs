@@ -2126,17 +2126,17 @@ function getTutuQuoteStyle(styleName) {
             name: '📱 社交动态', type: 'canvas',
             font: '"Helvetica Neue", Helvetica, "PingFang SC", "Microsoft YaHei", sans-serif', renderMode: 'social'
         },
-        cinematic: {
-            name: '🎬 电影宽屏', type: 'canvas',
-            font: '"Noto Sans SC", "Source Han Sans SC", sans-serif', renderMode: 'cinematic'
-        },
         ancient: {
             name: '📜 古风稿纸', type: 'canvas',
             font: '"Kaiti SC", "STKaiti", "Noto Serif SC", serif', renderMode: 'ancient'
         },
-        cyberpunk: {
-            name: '🌃 赛博全息', type: 'canvas',
-            font: '"Consolas", "Courier New", "Noto Sans SC", monospace', renderMode: 'cyberpunk'
+        letter: {
+            name: '💌 温馨信笺', type: 'canvas',
+            font: '"Kaiti SC", "STKaiti", "Noto Serif SC", serif', renderMode: 'letter'
+        },
+        aurora: {
+            name: '🌌 极光玻璃', type: 'canvas',
+            font: '"Helvetica Neue", Helvetica, "PingFang SC", "Noto Sans SC", sans-serif', renderMode: 'aurora'
         },
         custom_css: {
             name: '🎨 自定义 CSS', type: 'html', renderMode: 'custom_css'
@@ -2146,12 +2146,13 @@ function getTutuQuoteStyle(styleName) {
 }
 
 function getAllTutuQuoteStyles() {
-    const styleNames = ['minimalist', 'social', 'cinematic', 'ancient', 'cyberpunk', 'custom_css'];
+    const styleNames = ['minimalist', 'social', 'ancient', 'letter', 'aurora', 'custom_css'];
     return styleNames.map(name => ({
         value: name,
         ...getTutuQuoteStyle(name),
     }));
 }
+
 
 
 
@@ -2417,41 +2418,6 @@ function renderSocialStyle(ctx, params) {
     ctx.fillText('♥ 喜欢   💬 评论   ➦ 分享', textX, footerY + 10);
 }
 
-// 3. 🎬 电影宽屏风（上下黑边，暗角，中置字幕）
-function renderCinematicStyle(ctx, params) {
-    const { width, height, lines, lineHeight, fontSize } = params;
-
-    // 背景深色渐变
-    const grad = ctx.createRadialGradient(width/2, height/2, height*0.2, width/2, height/2, width*0.8);
-    grad.addColorStop(0, '#2C3440'); // 幽蓝电影色调
-    grad.addColorStop(1, '#090B0E');
-    ctx.fillStyle = grad;
-    ctx.fillRect(0, 0, width, height);
-
-    // 上下电影黑边
-    ctx.fillStyle = '#000000';
-    ctx.fillRect(0, 0, width, height * 0.12);
-    ctx.fillRect(0, height - height * 0.12, width, height * 0.12);
-
-    // 正文字幕（居中，黄色，带黑边描边）
-    ctx.font = `bold ${fontSize}px ${params.style.font}`;
-    ctx.textAlign = 'center';
-    
-    // 计算文字整体高度，让它处于画面偏下方
-    const textHeight = lines.length * lineHeight;
-    let currentY = height - (height * 0.12) - textHeight + fontSize;
-
-    lines.forEach(line => {
-        // 字幕黑边描边
-        ctx.lineWidth = 6;
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
-        ctx.strokeText(line, width / 2, currentY);
-        // 字幕本体（亮黄色）
-        ctx.fillStyle = '#F3D45F';
-        ctx.fillText(line, width / 2, currentY);
-        currentY += lineHeight;
-    });
-}
 
 // 4. 📜 古风稿纸（乌丝栏格，红线，楷体）
 function renderAncientStyle(ctx, params) {
@@ -2501,66 +2467,178 @@ function renderAncientStyle(ctx, params) {
     });
 }
 
-// 5. 🌃 赛博全息（黑底，网格，荧光扫描线，科技感）
-function renderCyberpunkStyle(ctx, params) {
-    const { width, height, paddingH, paddingV, lines, lineHeight, fontSize, characterName } = params;
+// 统一渲染入口
+function renderQuoteStyle(ctx, params) {
+    const { style } = params;
+    switch (style.renderMode) {
+        case 'social': renderSocialStyle(ctx, params); break;
+        case 'ancient': renderAncientStyle(ctx, params); break;
+        case 'letter': renderLetterStyle(ctx, params); break;
+        case 'aurora': renderAuroraStyle(ctx, params); break;
+        default: renderMinimalistStyle(ctx, params);
+    }
+}
 
-    // 深渊黑底色
-    ctx.fillStyle = '#05050A';
+// 💌 温馨信笺风（带胶带、纸张阴影和书写横线）
+function renderLetterStyle(ctx, params) {
+    const { width, height, paddingH, paddingV, lines, lineHeight, fontSize, titleText, subtitleText, showDate } = params;
+
+    // 木质/暖灰桌面背景
+    ctx.fillStyle = '#EBE7DF';
     ctx.fillRect(0, 0, width, height);
 
-    // 科技感透视网格
-    ctx.strokeStyle = 'rgba(0, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-    for(let i=0; i<width; i+=40) {
-        ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, height); ctx.stroke();
-    }
-    for(let j=0; j<height; j+=40) {
-        ctx.beginPath(); ctx.moveTo(0, j); ctx.lineTo(width, j); ctx.stroke();
-    }
+    const paperX = paddingH * 0.5;
+    const paperY = paddingV * 0.5;
+    const paperW = width - paperX * 2;
+    const paperH = height - paperY * 2;
 
-    let currentY = paddingV;
+    // 纸张阴影
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.12)';
+    ctx.shadowBlur = 25;
+    ctx.shadowOffsetY = 10;
+    
+    // 白纸主体
+    ctx.fillStyle = '#FDFCF8';
+    ctx.fillRect(paperX, paperY, paperW, paperH);
+    ctx.shadowColor = 'transparent';
 
-    // 霓虹边框标记
-    ctx.fillStyle = '#00F0FF';
-    ctx.fillRect(paddingH, currentY, 15, 15);
-    ctx.fillRect(width - paddingH - 15, currentY, 15, 15);
-    ctx.fillRect(paddingH, height - paddingV, 15, 15);
-    ctx.fillRect(width - paddingH - 15, height - paddingV, 15, 15);
+    // 顶部半透明胶带贴纸
+    ctx.save();
+    ctx.translate(width / 2, paperY);
+    ctx.rotate(-0.03); // 微微倾斜
+    ctx.fillStyle = 'rgba(215, 195, 180, 0.8)';
+    ctx.fillRect(-70, -20, 140, 38);
+    ctx.restore();
 
-    // 系统标识
-    ctx.font = '20px "Courier New", monospace';
-    ctx.fillStyle = '#FF003C';
-    ctx.fillText(`SYS.AUTH // ${characterName.toUpperCase()}`, paddingH + 30, currentY + 15);
+    let currentY = paperY + 90;
+
+    // 标题区域
+    ctx.fillStyle = '#5A4C40';
+    ctx.font = `bold ${fontSize + 8}px ${params.style.font}`;
+    ctx.textAlign = 'center';
+    ctx.fillText(titleText, width / 2, currentY);
+    
+    currentY += 40;
+    ctx.font = `italic ${fontSize - 4}px ${params.style.font}`;
+    ctx.fillStyle = '#9C8C7E';
+    ctx.fillText(subtitleText, width / 2, currentY);
 
     currentY += 80;
 
-    // 赛博全息发光字体
+    // 绘制横线和正文
+    ctx.textAlign = params.textAlign === 'center' ? 'center' : 'left';
     ctx.font = `${fontSize}px ${params.style.font}`;
-    ctx.textAlign = 'left';
+    ctx.fillStyle = '#333333';
     
-    lines.forEach(line => {
-        // 错位红蓝色差(Glitch Effect)
-        ctx.fillStyle = 'rgba(255, 0, 60, 0.7)';
-        ctx.fillText(line, paddingH - 2, currentY);
-        ctx.fillStyle = 'rgba(0, 240, 255, 0.7)';
-        ctx.fillText(line, paddingH + 2, currentY);
-        // 主体发光白字
-        ctx.shadowColor = '#00F0FF';
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = '#FFFFFF';
-        ctx.fillText(line, paddingH, currentY);
-        ctx.shadowBlur = 0; // 重置阴影
+    const lineStartX = paperX + 50;
+    const lineEndX = width - paperX - 50;
+    const textStartX = params.textAlign === 'center' ? width / 2 : lineStartX + 10;
 
+    lines.forEach(line => {
+        // 画浅色虚线/横线
+        ctx.beginPath();
+        ctx.moveTo(lineStartX, currentY + 12);
+        ctx.lineTo(lineEndX, currentY + 12);
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillText(line, textStartX, currentY);
         currentY += lineHeight;
     });
 
-    // 覆盖一层横向扫描线，增加全息质感
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
-    for(let k=0; k<height; k+=4) {
-        ctx.fillRect(0, k, width, 2);
+    if (showDate) {
+        ctx.textAlign = 'right';
+        ctx.fillStyle = '#B3A69A';
+        ctx.font = `${fontSize - 6}px ${params.style.font}`;
+        ctx.fillText(new Date().toLocaleDateString(), lineEndX, height - paperY - 30);
     }
 }
+
+// 🌌 极光玻璃风（时下最火的毛玻璃UI，深色高级感）
+function renderAuroraStyle(ctx, params) {
+    const { width, height, paddingH, paddingV, lines, lineHeight, fontSize, titleText, subtitleText, showDate } = params;
+
+    // 极光渐变背景
+    const grad = ctx.createLinearGradient(0, 0, width, height);
+    grad.addColorStop(0, '#100C20'); // 深邃紫
+    grad.addColorStop(0.5, '#0F2C4C'); // 极光蓝
+    grad.addColorStop(1, '#063B3B'); // 暗青色
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+
+    // 增加几个柔和发光球体，模拟极光光晕
+    const drawGlow = (x, y, r, color) => {
+        const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+        g.addColorStop(0, color);
+        g.addColorStop(1, 'transparent');
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, width, height);
+    };
+    drawGlow(width * 0.8, height * 0.2, width * 0.5, 'rgba(120, 80, 255, 0.25)');
+    drawGlow(width * 0.2, height * 0.8, width * 0.5, 'rgba(0, 255, 200, 0.15)');
+
+    const glassX = paddingH * 0.5;
+    const glassY = paddingV * 0.5;
+    const glassW = width - glassX * 2;
+    const glassH = height - glassY * 2;
+
+    // 毛玻璃背后的卡片阴影
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.5)';
+    ctx.shadowBlur = 40;
+    ctx.shadowOffsetY = 20;
+
+    // 绘制半透明玻璃主体
+    ctx.beginPath();
+    ctx.roundRect(glassX, glassY, glassW, glassH, 24);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.06)'; // 半透明白层
+    ctx.fill();
+    ctx.shadowColor = 'transparent';
+
+    // 绘制玻璃的高光边框
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.stroke();
+
+    let currentY = glassY + 90;
+    
+    // 文字发光效果
+    ctx.shadowColor = 'rgba(255, 255, 255, 0.3)';
+    ctx.shadowBlur = 12;
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.font = `bold ${fontSize + 8}px ${params.style.font}`;
+    ctx.fillText(titleText, width / 2, currentY);
+    
+    currentY += 40;
+    ctx.font = `${fontSize - 4}px ${params.style.font}`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.fillText(subtitleText, width / 2, currentY);
+    
+    currentY += 80;
+
+    // 正文
+    ctx.textAlign = params.textAlign === 'center' ? 'center' : 'left';
+    ctx.font = `${fontSize}px ${params.style.font}`;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.shadowBlur = 0; // 正文去掉模糊，保证清晰可读
+    
+    const textStartX = params.textAlign === 'center' ? width / 2 : glassX + 60;
+    
+    lines.forEach(line => {
+        ctx.fillText(line, textStartX, currentY);
+        currentY += lineHeight;
+    });
+
+    if (showDate) {
+        ctx.textAlign = 'right';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.font = `${fontSize - 6}px ${params.style.font}`;
+        ctx.fillText(new Date().toLocaleDateString(), width - glassX - 40, height - glassY - 30);
+    }
+}
+
 
 // ==========================================
 // 自定义 CSS 书摘
@@ -3379,9 +3457,18 @@ function openTutuQuoteEditor(content, characterName) {
 
 
                 <div class="tutu-quote-editor-preview-area">
-                    <div class="tutu-quote-preview-title">
-                        实时预览
+                    <div class="tutu-quote-preview-title" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span>实时预览</span>
+                        
+                        <!-- ★ 新增的缩放滑动条 -->
+                        <div style="display:flex; gap:8px; align-items:center; background:rgba(0,0,0,0.15); padding:4px 12px; border-radius:20px;">
+                            <i class="fa-solid fa-magnifying-glass-minus" style="font-size:0.8em; opacity:0.7;"></i>
+                            <input type="range" id="tutu_qe_zoom_slider" min="20" max="200" value="100" style="width: 100px; margin:0; cursor:pointer;">
+                            <i class="fa-solid fa-magnifying-glass-plus" style="font-size:0.8em; opacity:0.7;"></i>
+                            <span id="tutu_qe_zoom_label" style="font-size:0.85em; width:45px; text-align:right;">100%</span>
+                        </div>
                     </div>
+                    
                     <div class="tutu-quote-preview-scroll">
                         <canvas id="tutu_qe_preview_canvas"></canvas>
                     </div>
@@ -3439,6 +3526,15 @@ function openTutuQuoteEditor(content, characterName) {
     );
 
     $('#tutu_qe_refresh_btn').on('click', renderTutuQuotePreview);
+    // ★ 绑定滑动条缩放逻辑
+    $(overlay).on('input', '#tutu_qe_zoom_slider', function() {
+        const val = $(this).val();
+        $('#tutu_qe_zoom_label').text(val + '%');
+        $('#tutu_qe_preview_canvas').css({
+            'width': val + '%',
+            'height': 'auto' // 保持比例
+        });
+    });
 
     $('#tutu_qe_export_btn').on('click', async () => {
         const options = getTutuQuoteEditorOptions();
@@ -3539,15 +3635,14 @@ function renderTutuQuotePreview() {
         paddingV + headerHeight + bodyHeight + footerHeight + paddingV
     );
 
-    // 预览用缩放比例
-    const maxPreviewWidth = 560;
-    const scale = Math.min(1, maxPreviewWidth / width);
-
     canvas.width = width;
     canvas.height = height;
 
-    canvas.style.width = `${Math.round(width * scale)}px`;
-    canvas.style.height = `${Math.round(height * scale)}px`;
+    // ★ 按照滑动条的值来设置预览宽度
+    const zoomVal = $('#tutu_qe_zoom_slider').val() || 100;
+    canvas.style.width = `${zoomVal}%`;
+    canvas.style.height = 'auto'; // 保持宽高比
+
 
     // 【关键修复】：这里不再写死画背景和文字，而是调用统一的渲染引擎！
     renderQuoteStyle(ctx, {
