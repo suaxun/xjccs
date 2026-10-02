@@ -814,9 +814,6 @@ tutuSettings = {
 
     autoGenerateEnabled: false,
 
-    // 嵌入 AI 回复楼层时的默认状态
-    // false = 默认展开
-    // true = 默认折叠
     embedDefaultCollapsed: false,
     autoGenerateMode: 'current',
     autoGenerateScope: 'all',
@@ -824,13 +821,14 @@ tutuSettings = {
     autoSequenceIndex: 0,
     autoSequenceIndexes: {},
 
-    // ★ 新增：输出方式
-    // 'panel' = 外置面板预览
-    // 'embed' = 嵌入聊天楼层
     outputMode: 'panel',
+
+    // ★ 新增：自定义捕捉标签
+    captureTagName: '',
 
     ...tutuSettings,
 };
+
 if (typeof tutuSettings.embedDefaultCollapsed !== 'boolean') {
     tutuSettings.embedDefaultCollapsed = false;
 }
@@ -1478,6 +1476,25 @@ localStorage.setItem(
     <strong>嵌入楼层</strong>：生成内容会附加到最新 AI 回复的底部，
     切换聊天也不会消失。
     AI 不会读取到嵌入的小剧场内容（通过正则自动过滤）。
+</div>
+<label class="tutu-settings-label">
+    自定义捕捉标签
+</label>
+
+<input
+    id="tutu_capture_tag_name"
+    class="text_pole"
+    type="text"
+    placeholder="例如：details"
+>
+
+<div class="tutu-api-help">
+    填写一个 HTML 标签名（例如 <code>details</code>），
+    插件会自动捕捉 AI 回复中所有该标签包裹的内容，
+    为它们添加小剧场操作按钮（收藏、导出、全屏查看）。
+    <br>
+    留空表示不捕捉。多个标签用英文逗号分隔，例如：
+    <code>details, blockquote</code>
 </div>
 
         <label class="tutu-settings-label">
@@ -4100,6 +4117,261 @@ function restoreAllTutuTheaterEmbeds() {
 
 
 initTutuEmbedRestorer();
+// ==========================================
+// 自定义标签捕捉
+// ==========================================
+
+/**
+ * 解析用户配置的捕捉标签名列表
+ */
+function getTutuCaptureTagNames() {
+    const raw =
+        String(tutuSettings.captureTagName || '').trim();
+
+    if (!raw) {
+        return [];
+    }
+
+    return raw
+        .split(/[,，\s]+/)
+        .map(tag => tag.trim().toLowerCase())
+        .filter(Boolean)
+        .filter(tag => /^[a-z][a-z0-9-]*$/i.test(tag));
+}
+
+/**
+ * 为一个已经存在于 DOM 中的元素添加小剧场操作按钮
+ */
+function attachTutuCaptureActions(element) {
+    /*
+     * 防止重复处理
+     */
+    if (element.dataset.tutuCaptured === 'true') {
+        return;
+    }
+
+    element.dataset.tutuCaptured = 'true';
+
+    /*
+     * 提取这个元素的内容
+     *
+     * 如果是 <details>，取其中 <summary> 之后的部分。
+     * 否则取整个 innerHTML。
+     */
+    const tagName =
+        element.tagName.toLowerCase();
+
+    let capturedContent = '';
+
+    if (tagName === 'details') {
+        /*
+         * 克隆节点，移除 summary，取剩余 HTML
+         */
+        const clone = element.cloneNode(true);
+        const summary = clone.querySelector('summary');
+
+        if (summary) {
+            summary.remove();
+        }
+
+        capturedContent = clone.innerHTML.trim();
+    } else {
+        capturedContent = element.innerHTML.trim();
+    }
+
+    if (!capturedContent) {
+        return;
+    }
+
+    /*
+     * 获取角色名称
+     */
+    const $mesBlock =
+        $(element).closest('.mes');
+
+    let characterName = 'AI';
+
+    if ($mesBlock.length) {
+        characterName =
+            $mesBlock.find('.ch_name .name_text').text().trim() ||
+            'AI';
+    }
+
+    /*
+     * 保存内容到 DOM 节点
+     */
+    element._tutuCapturedContent = capturedContent;
+    element._tutuCapturedCharacter = characterName;
+
+    /*
+     * 创建操作按钮栏
+     */
+    const actionsBar = document.createElement('div');
+    actionsBar.className = 'tutu-capture-actions-bar';
+
+    const label = document.createElement('span');
+    label.className = 'tutu-capture-label';
+    label.textContent = '🐰 小剧场';
+
+    const buttonsContainer = document.createElement('span');
+    buttonsContainer.className = 'tutu-capture-buttons';
+
+    function createCaptureButton(iconClass, titleText, handler) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tutu-capture-action-btn';
+        btn.title = titleText;
+        btn.innerHTML = `<i class="${iconClass}"></i>`;
+
+        btn.addEventListener('click', event => {
+            event.preventDefault();
+            event.stopPropagation();
+            handler();
+        });
+
+        return btn;
+    }
+
+    const favoriteBtn = createCaptureButton(
+        'fa-regular fa-heart',
+        '收藏小剧场',
+        () => {
+            favoriteTutuContent(
+                element._tutuCapturedContent,
+                element._tutuCapturedCharacter
+            );
+        }
+    );
+
+    const exportBtn = createCaptureButton(
+        'fa-solid fa-file-export',
+        '导出小剧场',
+        () => {
+            exportTutuContent(
+                element._tutuCapturedContent,
+                element._tutuCapturedCharacter
+            );
+        }
+    );
+
+    const fullscreenBtn = createCaptureButton(
+        'fa-solid fa-expand',
+        '全屏查看',
+        () => {
+            openTutuTheaterFullscreen(
+                element._tutuCapturedContent,
+                element._tutuCapturedCharacter
+            );
+        }
+    );
+
+    buttonsContainer.appendChild(favoriteBtn);
+    buttonsContainer.appendChild(exportBtn);
+    buttonsContainer.appendChild(fullscreenBtn);
+
+    actionsBar.appendChild(label);
+    actionsBar.appendChild(buttonsContainer);
+
+    /*
+     * 将按钮栏插入到元素内部的顶部
+     *
+     * 如果是 <details>，插在 <summary> 后面
+     */
+    if (tagName === 'details') {
+        const summary = element.querySelector('summary');
+
+        if (summary) {
+            summary.after(actionsBar);
+        } else {
+            element.prepend(actionsBar);
+        }
+    } else {
+        element.prepend(actionsBar);
+    }
+
+    /*
+     * 给元素加上视觉标记
+     */
+    element.classList.add('tutu-captured-element');
+}
+
+/**
+ * 扫描所有聊天消息，捕捉指定标签
+ */
+function scanAndCaptureTutuTags() {
+    const tagNames = getTutuCaptureTagNames();
+
+    if (!tagNames.length) {
+        return;
+    }
+
+    const selector = tagNames
+        .map(tag => `.mes_text ${tag}:not([data-tutu-captured="true"])`)
+        .join(', ');
+
+    const elements = document.querySelectorAll(selector);
+
+    elements.forEach(element => {
+        attachTutuCaptureActions(element);
+    });
+}
+
+/**
+ * 初始化自动捕捉监听
+ */
+function initTutuCaptureListener() {
+    /*
+     * 首次扫描
+     */
+    setTimeout(() => {
+        scanAndCaptureTutuTags();
+    }, 500);
+
+    /*
+     * 监听消息渲染事件
+     */
+    if (typeof eventSource !== 'undefined') {
+        const captureEvents = [
+            event_types.CHARACTER_MESSAGE_RENDERED,
+            event_types.MESSAGE_UPDATED,
+            event_types.CHAT_CHANGED,
+        ].filter(Boolean);
+
+        captureEvents.forEach(eventType => {
+            eventSource.on(eventType, () => {
+                setTimeout(() => {
+                    scanAndCaptureTutuTags();
+                }, 400);
+            });
+        });
+    }
+
+    /*
+     * 使用 MutationObserver 作为兜底方案
+     *
+     * 当 SillyTavern 动态渲染消息时，
+     * 事件可能不够及时，
+     * Observer 可以确保不遗漏。
+     */
+    const chatContainer =
+        document.getElementById('chat');
+
+    if (chatContainer) {
+        const observer = new MutationObserver(() => {
+            scanAndCaptureTutuTags();
+        });
+
+        observer.observe(chatContainer, {
+            childList: true,
+            subtree: true,
+        });
+    }
+}
+
+/*
+ * 启动捕捉监听
+ */
+initTutuCaptureListener();
 
 function normalizeSecondaryApiBase(endpoint) {
     endpoint = String(endpoint || '')
@@ -4431,6 +4703,8 @@ outputMode:
 
 embedDefaultCollapsed:
     $('#tutu_embed_default_state').val() === 'collapsed',
+captureTagName:
+    $('#tutu_capture_tag_name').val().trim(),
 
     };
 
@@ -4505,6 +4779,8 @@ function loadTutuSettingsToUI() {
             ? 'collapsed'
             : 'expanded'
     );
+$('#tutu_capture_tag_name')
+    .val(tutuSettings.captureTagName || '');
 
 
     updateSecondaryApiVisibility();
@@ -5867,6 +6143,19 @@ catch (error) {
     // ==========================================
     // 4. 事件绑定
     // ==========================================
+    $(document).on(
+    'input',
+    '#tutu_capture_tag_name',
+    function () {
+        tutuSettings.captureTagName =
+            $(this).val().trim();
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+    }
+);
     // 打开小剧场导入导出面板
 $(document).on(
     'click',
@@ -6252,16 +6541,17 @@ $(document).on(
     }
 );
 
-    // 输出方式切换
 $(document).on(
     'change',
-    '#tutu_output_mode, #tutu_embed_default_state',
+    '#tutu_output_mode, #tutu_embed_default_state, #tutu_capture_tag_name',
     function () {
         tutuSettings.outputMode =
             $('#tutu_output_mode').val() || 'panel';
 
         tutuSettings.embedDefaultCollapsed =
             $('#tutu_embed_default_state').val() === 'collapsed';
+tutuSettings.captureTagName =
+    $('#tutu_capture_tag_name').val().trim();
 
         localStorage.setItem(
             SETTINGS_KEY,
