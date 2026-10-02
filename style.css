@@ -2858,5 +2858,31 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     font-size: 0.85em !important;
     line-height: 1.5;
 }
+/* ==========================================
+   全新书摘预览区滚动与缩放逻辑
+   ========================================== */
+.tutu-quote-preview-scroll {
+    display: block !important;
+    overflow-y: auto !important;
+    overflow-x: auto !important;
+    text-align: center;
+    padding: 20px;
+}
+
+#tutu_qe_preview_canvas {
+    max-width: 100%;
+    height: auto !important;
+    margin: 0 auto;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    cursor: zoom-in; /* 提示可以点击放大 */
+    transition: max-width 0.2s ease;
+}
+
+/* 点击放大后的状态 */
+#tutu_qe_preview_canvas.tutu-zoomed {
+    max-width: none; /* 释放原始分辨率 */
+    cursor: zoom-out;
+}
 
 
