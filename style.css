@@ -697,68 +697,94 @@
 }
 
 /* =========================
-   2. 顶部标签栏
+   2. 顶部标签栏 (Ins 极简风)
    ========================= */
 
-/*
- * 你 HTML 中使用的是 tutu-icon-toolbar，
- * 不是 tutu-tab-nav。
- */
 .tutu-icon-toolbar {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 6px;
-
+    display: flex;
+    justify-content: space-around; /* 5个图标均匀分布 */
+    align-items: center;
     width: 100%;
-    padding: 5px;
-
-    background: rgba(0, 0, 0, 0.16);
-    border: 1px solid var(--SmartThemeBorderColor);
-    border-radius: 10px;
-
+    padding: 5px 10px 15px 10px; /* 底部留出空间给小圆点 */
+    
+    /* 去除沉重的背景和边框，只留一道微弱的底边分隔线 */
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 0;
     flex-shrink: 0;
 }
 
 .tutu-icon-tab {
-    min-width: 0;
-
+    position: relative; /* 为底部小圆点定位 */
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 4px;
-
-    padding: 9px 6px;
-
-    border-radius: 7px;
+    
+    width: 45px;
+    height: 45px;
+    padding: 0;
+    
+    /* 圆形点击热区 */
+    border-radius: 50%;
     color: var(--SmartThemeBodyColor);
-    opacity: 0.65;
-
+    opacity: 0.45; /* 未选中时降低透明度 */
+    
     cursor: pointer;
     user-select: none;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-.tutu-icon-tab i {
-    font-size: 1.05em;
-}
-
+/* 隐藏图标下方的文字 */
 .tutu-icon-tab span {
-    font-size: 0.82em;
-    white-space: nowrap;
+    display: none !important; 
 }
 
+/* 放大图标，因为文字没了 */
+.tutu-icon-tab i {
+    font-size: 1.5em;
+    transition: transform 0.3s ease;
+}
+
+/* 悬浮效果：变亮并轻微放大 */
 .tutu-icon-tab:hover {
-    opacity: 1;
-    background: rgba(255, 255, 255, 0.08);
+    opacity: 0.8;
+    background: rgba(255, 255, 255, 0.05);
+}
+.tutu-icon-tab:hover i {
+    transform: scale(1.1);
 }
 
+/* 选中状态（Active） */
 .tutu-icon-tab.active {
     opacity: 1;
-    color: var(--SmartThemeQuoteColor);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: inset 0 -2px 0 var(--SmartThemeQuoteColor);
+    color: var(--SmartThemeQuoteColor); /* 使用主题强调色 */
+    background: transparent;
+    box-shadow: none; /* 移除以前丑陋的内阴影 */
 }
+
+.tutu-icon-tab.active i {
+    transform: scale(1.15); /* 选中时图标更大一点 */
+}
+
+/* 经典 Ins 风：选中时的底部小圆点指示器 */
+.tutu-icon-tab::after {
+    content: '';
+    position: absolute;
+    bottom: -8px; /* 圆点在图标下方 */
+    left: 50%;
+    transform: translateX(-50%) scale(0);
+    width: 5px;
+    height: 5px;
+    background-color: var(--SmartThemeQuoteColor);
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tutu-icon-tab.active::after {
+    transform: translateX(-50%) scale(1); /* 选中时圆点弹出 */
+}
+
 
 /* =========================
    3. Tab 页面
@@ -1399,57 +1425,65 @@
    兔兔小剧场：紧凑图标排版
    ========================================================= */
 
-/* ---- 通用图标按钮 ---- */
+/* ---- 通用图标按钮 (极简圆形) ---- */
 .tutu-icon-action {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    width: 34px;
-    min-width: 34px;
-    height: 34px;
+    width: 38px;     /* 稍微调大一点，更好点 */
+    min-width: 38px;
+    height: 38px;
     flex-shrink: 0;
 
     box-sizing: border-box;
     padding: 0;
 
-    border: 1px solid var(--SmartThemeBorderColor);
-    border-radius: 7px;
+    /* 取消边框，改为纯净的毛玻璃背景 */
+    border: none;
+    border-radius: 50%; /* 纯正的圆形 */
 
-    background: rgba(255, 255, 255, 0.04);
+    background: rgba(255, 255, 255, 0.06);
     color: var(--SmartThemeBodyColor);
 
-    font-size: 0.95em;
+    font-size: 1.1em;
     cursor: pointer;
     user-select: none;
 
-    transition: background 0.18s ease, filter 0.18s ease, transform 0.18s ease;
+    /* 增加阴影和丝滑动画 */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .tutu-icon-action:hover {
-    background: rgba(255, 255, 255, 0.12);
-    transform: translateY(-1px);
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.tutu-icon-action:focus-visible {
-    outline: 2px solid var(--SmartThemeQuoteColor);
-    outline-offset: 2px;
+.tutu-icon-action:active {
+    transform: translateY(0) scale(0.95);
 }
 
+/* 主按钮（比如魔法棒生成按钮） */
 .tutu-icon-action.primary {
     background: var(--SmartThemeQuoteColor);
-    border-color: transparent;
     color: #fff;
+    /* 增加主题色发光阴影 */
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--SmartThemeQuoteColor) 40%, transparent);
 }
 
 .tutu-icon-action.primary:hover {
     filter: brightness(1.15);
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--SmartThemeQuoteColor) 60%, transparent);
 }
 
 .tutu-icon-action.disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     pointer-events: none;
+    box-shadow: none;
 }
+
 
 /* ---- 生成页：输入框 + 按钮同一行 ---- */
 .tutu-compact-control-panel {
@@ -1783,12 +1817,27 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 30px;
-    height: 30px;
-    padding: 0 8px;
-    border-radius: 6px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 12px;
+    border-radius: 20px; /* 胶囊状 */
     cursor: pointer;
-    transition: 0.2s ease;
+    font-size: 0.85em;
+    font-weight: bold;
+    border: 1px solid rgba(255,255,255,0.05);
+    background: rgba(0,0,0,0.2);
+    transition: all 0.2s ease;
+}
+
+.tutu-result-mode-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background: var(--SmartThemeQuoteColor);
+    border-color: transparent;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--SmartThemeQuoteColor) 40%, transparent);
 }
 
 .tutu-result-mode-btn:hover {
@@ -2883,6 +2932,14 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
 #tutu_qe_preview_canvas.tutu-zoomed {
     max-width: none; /* 释放原始分辨率 */
     cursor: zoom-out;
+}
+/* 输入框变圆润 */
+.tutu-prompt-row textarea#tutu_prompt,
+.tutu-library-category-tools input#tutu_new_category_input {
+    border-radius: 18px !important; /* 胶囊圆角 */
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: rgba(0, 0, 0, 0.15) !important;
+    padding: 8px 15px !important;
 }
 
 
