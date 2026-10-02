@@ -2465,5 +2465,54 @@ body.tutu-fullscreen-open {
         min-height: 0;
     }
 }
+/* ==========================================
+   小剧场导入导出区域
+   ========================================== */
+
+.tutu-transfer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    padding: 12px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.tutu-transfer-row {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.tutu-transfer-row .tutu-settings-label {
+    margin-top: 0;
+}
+
+.tutu-transfer-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tutu-transfer-actions .menu_button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+@media (max-width: 600px) {
+    .tutu-transfer-actions {
+        flex-direction: column;
+    }
+
+    .tutu-transfer-actions .menu_button {
+        width: 100%;
+    }
+}
 
 
