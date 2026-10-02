@@ -1235,8 +1235,132 @@ localStorage.setItem(
             title="新建剧本">
             <i class="fa-solid fa-plus"></i>
         </div>
+
+        <!-- 打开导入导出面板 -->
+        <div
+            id="tutu_toggle_transfer_btn"
+            class="tutu-icon-action"
+            role="button"
+            tabindex="0"
+            aria-label="导入导出"
+            title="导入导出">
+            <i class="fa-solid fa-file-arrow-up"></i>
+        </div>
     </div>
 </div>
+
+<!-- 小剧场导入导出面板 -->
+<div
+    id="tutu_transfer_panel"
+    class="tutu-transfer-panel"
+    style="display:none;">
+
+    <div class="tutu-transfer-panel-header">
+        <div class="tutu-transfer-panel-title">
+            <i class="fa-solid fa-box-archive"></i>
+            小剧场导入导出
+        </div>
+
+        <div
+            id="tutu_close_transfer_btn"
+            class="tutu-icon-action"
+            role="button"
+            tabindex="0"
+            title="关闭">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
+    </div>
+
+    <div class="tutu-transfer-row">
+        <label class="tutu-settings-label">
+            导出范围
+        </label>
+
+        <select
+            id="tutu_export_scope"
+            class="text_pole">
+
+            <option value="all">
+                全部分类和剧本
+            </option>
+
+            <option value="category">
+                指定分类
+            </option>
+        </select>
+    </div>
+
+    <div
+        id="tutu_export_category_row"
+        class="tutu-transfer-row"
+        style="display:none;">
+
+        <label class="tutu-settings-label">
+            选择分类
+        </label>
+
+        <select
+            id="tutu_export_category"
+            class="text_pole">
+        </select>
+    </div>
+
+    <div class="tutu-transfer-row">
+        <label class="tutu-settings-label">
+            导出格式
+        </label>
+
+        <select
+            id="tutu_export_type"
+            class="text_pole">
+
+            <option value="tutu_json">
+                兔兔小剧场 JSON
+            </option>
+
+            <option value="st_preset">
+                SillyTavern 对话补全预设
+            </option>
+
+            <option value="st_worldbook">
+                SillyTavern 世界书
+            </option>
+        </select>
+    </div>
+
+    <div class="tutu-transfer-actions">
+        <button
+            type="button"
+            id="tutu_export_library_btn"
+            class="menu_button">
+
+            <i class="fa-solid fa-file-export"></i>
+            导出小剧场
+        </button>
+
+        <button
+            type="button"
+            id="tutu_import_library_btn"
+            class="menu_button">
+
+            <i class="fa-solid fa-file-import"></i>
+            导入兔兔 JSON
+        </button>
+
+        <input
+            type="file"
+            id="tutu_import_library_file"
+            accept=".json,application/json"
+            style="display:none;">
+    </div>
+
+    <div class="tutu-api-help">
+        兔兔 JSON 会完整保存分类、剧本名称、简介和正文。
+        <br>
+        导入功能只接受兔兔小剧场 JSON，不会把 SillyTavern 预设或世界书误导入剧本库。
+    </div>
+</div>
+
 
 
 
@@ -1298,101 +1422,6 @@ localStorage.setItem(
 
             <!-- TAB 3: 多选批量导入系统预设 -->
             <div id="tutu_tab_import" class="tutu-tab-content">
-            <!-- 兔兔小剧场导入导出 -->
-<div class="tutu-transfer-section">
-
-    <div class="tutu-settings-title">
-        <i class="fa-solid fa-box-archive"></i>
-        小剧场导入导出
-    </div>
-
-    <div class="tutu-transfer-row">
-        <label class="tutu-settings-label">
-            导出范围
-        </label>
-
-        <select
-            id="tutu_export_scope"
-            class="text_pole">
-            <option value="all">
-                全部分类和剧本
-            </option>
-            <option value="category">
-                指定分类
-            </option>
-        </select>
-    </div>
-
-    <div
-        id="tutu_export_category_row"
-        class="tutu-transfer-row"
-        style="display:none;">
-
-        <label class="tutu-settings-label">
-            选择分类
-        </label>
-
-        <select
-            id="tutu_export_category"
-            class="text_pole">
-        </select>
-    </div>
-
-    <div class="tutu-transfer-row">
-        <label class="tutu-settings-label">
-            导出格式
-        </label>
-
-        <select
-            id="tutu_export_type"
-            class="text_pole">
-
-            <option value="tutu_json">
-                兔兔小剧场 JSON
-            </option>
-
-            <option value="st_preset">
-                SillyTavern 对话补全预设
-            </option>
-
-            <option value="st_worldbook">
-                SillyTavern 世界书
-            </option>
-        </select>
-    </div>
-
-    <div class="tutu-transfer-actions">
-        <button
-            type="button"
-            id="tutu_export_library_btn"
-            class="menu_button">
-
-            <i class="fa-solid fa-file-export"></i>
-            导出小剧场
-        </button>
-
-        <button
-            type="button"
-            id="tutu_import_library_btn"
-            class="menu_button">
-
-            <i class="fa-solid fa-file-import"></i>
-            导入小剧场
-        </button>
-
-        <input
-            type="file"
-            id="tutu_import_library_file"
-            accept=".json,application/json"
-            style="display:none;">
-    </div>
-
-    <div class="tutu-api-help">
-        兔兔小剧场 JSON 可以完整保存分类、剧本名称、简介和剧本内容。
-        <br>
-        SillyTavern 预设和世界书格式适合分享给其他酒馆使用。
-    </div>
-</div>
                 <div style="display:flex; gap:10px; margin-bottom: 10px;">
 <select id="tutu_preset_type" class="text_pole" style="flex: 1; margin: 0;">
     <option value="openai" selected>对话补全预设 (Chat Completion)</option>
@@ -4348,7 +4377,6 @@ function loadTutuSettingsToUI() {
     updateSecondaryApiVisibility();
     renderApiPresetDropdown();
     updateAutoGenerateStatus();
-    renderTutuCategorySelects();
 }
 
 
@@ -4796,29 +4824,97 @@ function exportTutuSillyTavernPreset() {
     }
 
     /*
-     * SillyTavern 对话补全预设的通用结构。
+     * 每一个小剧场剧本对应一个独立条目。
      *
-     * 每个小剧场剧本都会转换成一个 prompt。
+     * identifier 用于 prompt_order 关联。
+     * prompt_order 很重要：
+     * 它告诉 SillyTavern 这些 prompts 是当前预设中的有效条目。
      */
-    const preset = {
-        name: '兔兔小剧场预设',
+    const prompts =
+        packageData.scenarios.map((item, index) => {
+            const identifier =
+                `tutu_theater_${Date.now()}_${index}`;
 
-        prompts: packageData.scenarios.map(item => ({
-            name:
-                `[${item.category}] ${item.name}`,
+            const promptName =
+                `[${item.category}] ${item.name}`;
 
-            role: 'system',
+            const promptContent = [
+                `小剧场名称：${item.name}`,
+                `所属分类：${item.category}`,
 
-            content: [
                 item.desc
                     ? `简介：${item.desc}`
                     : '',
 
+                '',
                 item.prompt,
             ]
                 .filter(Boolean)
-                .join('\n\n'),
+                .join('\n');
+
+            return {
+                identifier,
+                name: promptName,
+
+                /*
+                 * SillyTavern Chat Completion 常用字段
+                 */
+                role: 'system',
+                content: promptContent,
+
+                /*
+                 * 让它成为一个真正的提示词条目，
+                 * 而不是只作为普通文本存在。
+                 */
+                system_prompt: true,
+                marker: false,
+                enabled: true,
+
+                /*
+                 * 兼容部分 SillyTavern 版本的字段
+                 */
+                injection_position: 0,
+                injection_depth: 4,
+                injection_order: index,
+
+                forbid_overrides: false,
+            };
+        });
+
+    /*
+     * prompt_order 是关键。
+     *
+     * 不同 SillyTavern 版本对 character_id 的处理略有区别，
+     * 这里使用一个通用的全局预设条目。
+     */
+    const promptOrder = [{
+        character_id: 100001,
+
+        order: prompts.map(prompt => ({
+            identifier: prompt.identifier,
+            enabled: true,
         })),
+    }];
+
+    const preset = {
+        name: '兔兔小剧场预设',
+
+        /*
+         * 当前版本通常读取 prompts
+         */
+        prompts,
+
+        /*
+         * prompt_order 决定条目如何排列和是否启用
+         */
+        prompt_order: promptOrder,
+
+        /*
+         * 以下字段是常见兼容字段
+         */
+        temperature: 0.8,
+        openai_max_tokens: 1024,
+        openai_max_context: 4096,
     };
 
     const json =
@@ -4839,7 +4935,7 @@ function exportTutuSillyTavernPreset() {
     downloadTutuBlob(blob, filename);
 
     toastr.success(
-        'SillyTavern 对话补全预设导出成功'
+        `已导出 ${prompts.length} 个预设条目`
     );
 }
 
@@ -5043,188 +5139,51 @@ function getTutuCategoryFromImportedName(name) {
 
 
 function convertImportedDataToTutuScenarios(data) {
+    if (
+        !data ||
+        data.type !== TUTU_PACKAGE_TYPE ||
+        !Array.isArray(data.scenarios)
+    ) {
+        throw new Error(
+            '这不是兔兔小剧场导出的 JSON 文件'
+        );
+    }
+
     const imported = [];
 
-    /*
-     * 1. 兔兔小剧场自己的 JSON
-     */
-    if (
-        data &&
-        data.type === TUTU_PACKAGE_TYPE &&
-        Array.isArray(data.scenarios)
-    ) {
-        data.scenarios.forEach(item => {
-            if (!item) {
-                return;
-            }
+    data.scenarios.forEach(item => {
+        if (!item || typeof item !== 'object') {
+            return;
+        }
 
-            const prompt =
-                String(item.prompt || '').trim();
+        const prompt =
+            String(item.prompt || '').trim();
 
-            if (!prompt) {
-                return;
-            }
+        if (!prompt) {
+            return;
+        }
 
-            imported.push({
-                name:
-                    String(
-                        item.name || '导入剧本'
-                    ).trim(),
-
-                desc:
-                    String(item.desc || '').trim(),
-
-                category:
-                    String(
-                        item.category || '未分类'
-                    ).trim() || '未分类',
-
-                prompt,
-            });
-        });
-
-        return imported;
-    }
-
-    /*
-     * 2. SillyTavern 世界书
-     */
-    if (
-        data &&
-        Array.isArray(data.entries)
-    ) {
-        data.entries.forEach((entry, index) => {
-            if (!entry) {
-                return;
-            }
-
-            const prompt =
-                String(entry.content || '').trim();
-
-            if (!prompt) {
-                return;
-            }
-
-            const rawName =
-                entry.comment ||
-                entry.name ||
-                (
-                    Array.isArray(entry.key)
-                        ? entry.key.join(', ')
-                        : entry.key
-                ) ||
-                `世界书条目 ${index + 1}`;
-
-            const parsed =
-                getTutuCategoryFromImportedName(
-                    rawName
-                );
-
-            const category =
+        imported.push({
+            name:
                 String(
-                    entry.extensions?.tutuCategory ||
-                    parsed.category ||
-                    '未分类'
-                ).trim() || '未分类';
+                    item.name || '导入剧本'
+                ).trim(),
 
-            imported.push({
-                name: parsed.name,
-                desc: '从 SillyTavern 世界书导入',
-                category,
-                prompt,
-            });
-        });
+            desc:
+                String(item.desc || '').trim(),
 
-        return imported;
-    }
-
-    /*
-     * 3. SillyTavern 对话补全预设
-     */
-    const prompts =
-        Array.isArray(data?.prompts)
-            ? data.prompts
-            : Array.isArray(data?.prompt_manager)
-                ? data.prompt_manager
-                : null;
-
-    if (prompts) {
-        prompts.forEach((item, index) => {
-            const prompt =
-                getTutuImportedPromptText(item);
-
-            if (!prompt) {
-                return;
-            }
-
-            const rawName =
-                getTutuImportedPromptName(
-                    item,
-                    index
-                );
-
-            const parsed =
-                getTutuCategoryFromImportedName(
-                    rawName
-                );
-
-            imported.push({
-                name: parsed.name,
-                desc: '从 SillyTavern 对话补全预设导入',
-                category: parsed.category,
-                prompt,
-            });
-        });
-
-        return imported;
-    }
-
-    /*
-     * 4. 兼容简单数组格式
-     */
-    if (Array.isArray(data)) {
-        data.forEach((item, index) => {
-            if (!item) {
-                return;
-            }
-
-            const prompt =
+            category:
                 String(
-                    item.prompt ||
-                    item.content ||
-                    ''
-                ).trim();
+                    item.category || '未分类'
+                ).trim() || '未分类',
 
-            if (!prompt) {
-                return;
-            }
-
-            imported.push({
-                name:
-                    String(
-                        item.name ||
-                        `导入剧本 ${index + 1}`
-                    ).trim(),
-
-                desc:
-                    String(item.desc || '').trim(),
-
-                category:
-                    String(
-                        item.category || '未分类'
-                    ).trim() || '未分类',
-
-                prompt,
-            });
+            prompt,
         });
+    });
 
-        return imported;
-    }
-
-    throw new Error(
-        '无法识别该 JSON 文件格式'
-    );
+    return imported;
 }
+
 
 
 function mergeTutuImportedScenarios(importedScenarios) {
@@ -5689,47 +5648,35 @@ catch (error) {
     // ==========================================
     // 4. 事件绑定
     // ==========================================
-    // 点击“导入小剧场”
+    // 打开小剧场导入导出面板
 $(document).on(
     'click',
-    '#tutu_import_library_btn',
+    '#tutu_toggle_transfer_btn',
     function () {
-        $('#tutu_import_library_file')
-            .val('')
-            .trigger('click');
+        const $panel =
+            $('#tutu_transfer_panel');
+
+        if ($panel.is(':visible')) {
+            $panel.stop(true, true).slideUp(160);
+        } else {
+            renderTutuExportCategorySelect();
+
+            $panel.stop(true, true).slideDown(160);
+        }
     }
 );
 
 
-// 选择导入文件
+// 关闭小剧场导入导出面板
 $(document).on(
-    'change',
-    '#tutu_import_library_file',
-    async function () {
-        const file =
-            this.files?.[0];
-
-        if (!file) {
-            return;
-        }
-
-        try {
-            await importTutuLibraryFile(file);
-        } catch (error) {
-            console.error(
-                '导入小剧场失败：',
-                error
-            );
-
-            toastr.error(
-                error.message || '导入失败'
-            );
-        } finally {
-            $(this).val('');
-        }
+    'click',
+    '#tutu_close_transfer_btn',
+    function () {
+        $('#tutu_transfer_panel')
+            .stop(true, true)
+            .slideUp(160);
     }
 );
-    // 导出范围切换
 $(document).on(
     'change',
     '#tutu_export_scope',
@@ -5738,15 +5685,18 @@ $(document).on(
             String($(this).val() || 'all');
 
         if (scope === 'category') {
-            $('#tutu_export_category_row').show();
             renderTutuExportCategorySelect();
+
+            $('#tutu_export_category_row')
+                .stop(true, true)
+                .slideDown(160);
         } else {
-            $('#tutu_export_category_row').hide();
+            $('#tutu_export_category_row')
+                .stop(true, true)
+                .slideUp(160);
         }
     }
 );
-
-
 // 导出小剧场
 $(document).on(
     'click',
@@ -5772,6 +5722,49 @@ $(document).on(
     }
 );
 
+
+// 点击导入按钮，打开文件选择器
+$(document).on(
+    'click',
+    '#tutu_import_library_btn',
+    function () {
+        $('#tutu_import_library_file')
+            .val('')
+            .trigger('click');
+    }
+);
+
+
+// 选择兔兔 JSON 文件
+$(document).on(
+    'change',
+    '#tutu_import_library_file',
+    async function () {
+        const file =
+            this.files?.[0];
+
+        if (!file) {
+            return;
+        }
+
+        try {
+            await importTutuLibraryFile(file);
+        } catch (error) {
+            console.error(
+                '导入兔兔小剧场失败：',
+                error
+            );
+
+            toastr.error(
+                error.message || '导入失败'
+            );
+        } finally {
+            $(this).val('');
+        }
+    }
+);
+
+ 
     $(document).on(
     'click',
     '.tutu-favorite-html-preview-btn',
@@ -6535,18 +6528,10 @@ $(document).on(
     }
 );
 
-    // 打开或关闭历史聊天记录读取选项
-$(document).on('change', '#tutu_include_history', function () {
-    if ($(this).is(':checked')) {
-        $('#tutu_history_limit_box').show();
-    } else {
-        $('#tutu_history_limit_box').hide();
-    }
-});
+
 
 loadTutuSettingsToUI();
 renderTutuCategorySelects();
-renderTutuExportCategorySelect();
 renderLibrary();
 renderTutuFavorites();
 
@@ -6656,7 +6641,6 @@ $(document).on('click', '#tutu_show_source_btn', function() {
     }
 
     injectTutuButton();
-    $(document).on('click', function() { injectTutuButton(); });
 $(document).on('click', '#option_tutu_theater', function() {
 
     const extensionsMenu = document.getElementById('extensionsMenu');
