@@ -3525,857 +3525,6 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         inset -2px -2px 6px var(--tutu-neu-light);
 }
 
-
-/* =========================================================
-   拍立得相机 - 仿真复古相机面板
-   ========================================================= */
-
-#tutu_theater_panel[data-tutu-theme="polaroid"] {
-    --polaroid-body: #2a2a2a;
-    --polaroid-dark: #1a1a1a;
-    --polaroid-lens: #4a9fd8;
-    --polaroid-paper: #f5f5f0;
-    --polaroid-shadow: #e8e6d8;
-    --polaroid-text: #2c2c2c;
-    --polaroid-muted: #6a6a6a;
-    --polaroid-red: #e74c3c;
-    --polaroid-green: #27ae60;
-    --polaroid-frame: #ddd8c5;
-
-    color: var(--polaroid-text);
-    
-    background:
-        linear-gradient(
-            135deg,
-            #2a2a2a 0%,
-            #323232 50%,
-            #2a2a2a 100%
-        );
-
-    border: 3px solid var(--polaroid-dark);
-    border-radius: 6px;
-
-    box-shadow:
-        0 20px 50px rgba(0, 0, 0, 0.6),
-        inset 0 1px 0 rgba(255, 255, 255, 0.1),
-        inset 0 -2px 8px rgba(0, 0, 0, 0.3);
-
-    backdrop-filter: none;
-
-    font-family:
-        "Courier New",
-        Courier,
-        "SF Mono",
-        Monaco,
-        monospace;
-}
-
-/* 顶部相机控制区 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-> div:first-child {
-    position: relative;
-    min-height: 72px;
-    padding: 14px 18px;
-    margin: -18px -18px 0 !important;
-
-    background:
-        linear-gradient(
-            180deg,
-            #2a2a2a 0%,
-            #222 100%
-        );
-
-    border-bottom: 2px solid var(--polaroid-dark);
-    border-radius: 4px 4px 0 0;
-
-    box-shadow:
-        inset 0 -3px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* 相机品牌 Logo */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-> div:first-child h3 {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-
-    color: #fff !important;
-    font-family:
-        "SF Compact Display",
-        -apple-system,
-        sans-serif !important;
-    font-size: 1.15em !important;
-    font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-> div:first-child h3::before {
-    content: "";
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #6eb8e8 0%,
-            #4a9fd8 45%,
-            #2871a8 100%
-        );
-
-    border: 3px solid #333;
-    border-radius: 4px;
-
-    box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.2),
-        inset 0 1px 3px rgba(255, 255, 255, 0.4),
-        0 3px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* 电源指示灯 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-> div:first-child::before {
-    content: "";
-    position: absolute;
-    top: 20px;
-    right: 72px;
-
-    width: 8px;
-    height: 8px;
-
-    background: var(--polaroid-red);
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 8px var(--polaroid-red),
-        0 0 14px rgba(231, 76, 60, 0.6),
-        inset 0 1px 2px rgba(255, 255, 255, 0.3);
-
-    animation: polaroid-blink 2s ease-in-out infinite;
-}
-
-@keyframes polaroid-blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* 关闭按钮改为相机电源键 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 40px;
-    height: 40px;
-
-    color: #fff;
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #444 0%,
-            #2a2a2a 60%,
-            #1a1a1a 100%
-        );
-
-    border: 2px solid #111;
-    border-radius: 50%;
-
-    box-shadow:
-        0 4px 8px rgba(0, 0, 0, 0.5),
-        inset 0 1px 2px rgba(255, 255, 255, 0.15),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
-
-    font-size: 1.1em;
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_close:hover {
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #e74c3c 0%,
-            #c0392b 60%,
-            #a93226 100%
-        );
-    box-shadow:
-        0 0 12px rgba(231, 76, 60, 0.6),
-        inset 0 1px 2px rgba(255, 255, 255, 0.2);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_close:active {
-    transform: scale(0.92);
-}
-
-/* 功能按钮改为相机模式旋钮 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-toolbar {
-    position: relative;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-
-    padding: 16px 12px;
-    margin: 0 -18px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #2a2a2a 0%,
-            #1f1f1f 100%
-        );
-
-    border: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    border-bottom: 2px solid #111;
-
-    box-shadow:
-        inset 0 3px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* 模式刻度线 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-toolbar::before {
-    content: "";
-    position: absolute;
-    top: 8px;
-    left: 20px;
-    right: 20px;
-    height: 2px;
-
-    background:
-        repeating-linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0.1) 0,
-            rgba(255, 255, 255, 0.1) 2px,
-            transparent 2px,
-            transparent 12px
-        );
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab {
-    position: relative;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 54px;
-    height: 54px;
-    padding: 0;
-
-    color: #999;
-    background:
-        radial-gradient(
-            circle at 35% 35%,
-            #3a3a3a 0%,
-            #2a2a2a 50%,
-            #1f1f1f 100%
-        );
-
-    border: 3px solid #1a1a1a;
-    border-radius: 50%;
-
-    box-shadow:
-        0 4px 10px rgba(0, 0, 0, 0.5),
-        inset 0 2px 4px rgba(255, 255, 255, 0.08),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
-
-    opacity: 1;
-    cursor: pointer;
-
-    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab i {
-    font-size: 1.35em;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab:hover {
-    color: #fff;
-    background:
-        radial-gradient(
-            circle at 35% 35%,
-            #444 0%,
-            #333 50%,
-            #2a2a2a 100%
-        );
-    transform: translateY(-2px) rotate(8deg);
-    box-shadow:
-        0 6px 14px rgba(0, 0, 0, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.12);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab:hover i {
-    transform: scale(1.1);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab.active {
-    color: #fff;
-    background:
-        radial-gradient(
-            circle at 35% 35%,
-            #27ae60 0%,
-            #229954 50%,
-            #1e8449 100%
-        );
-
-    border-color: #196f3d;
-
-    box-shadow:
-        0 0 16px rgba(39, 174, 96, 0.6),
-        0 6px 14px rgba(0, 0, 0, 0.6),
-        inset 0 2px 4px rgba(255, 255, 255, 0.2);
-
-    transform: rotate(12deg);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab.active i {
-    transform: scale(1.15);
-}
-
-/* 指示灯 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab::after {
-    content: "";
-    position: absolute;
-    top: 2px;
-    right: 4px;
-
-    width: 6px;
-    height: 6px;
-
-    background: transparent;
-    border-radius: 50%;
-
-    transform: none;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-tab.active::after {
-    background: var(--polaroid-green);
-    box-shadow:
-        0 0 6px var(--polaroid-green),
-        inset 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-
-/* 照片输出槽 - 生成工作区 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-compact-control-panel {
-    position: relative;
-    padding: 14px;
-
-    background: var(--polaroid-body);
-    border: 2px solid var(--polaroid-dark);
-    border-radius: 4px;
-
-    box-shadow:
-        inset 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-prompt-row textarea#tutu_prompt {
-    min-height: 52px;
-    padding: 12px 14px !important;
-
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper) !important;
-
-    border: 2px solid var(--polaroid-frame) !important;
-    border-radius: 3px !important;
-
-    box-shadow:
-        0 2px 6px rgba(0, 0, 0, 0.15),
-        inset 0 1px 2px rgba(0, 0, 0, 0.08) !important;
-
-    font-family: inherit;
-}
-
-/* 输入框和下拉框 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.text_pole {
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper) !important;
-
-    border: 2px solid var(--polaroid-frame) !important;
-    border-radius: 3px !important;
-
-    box-shadow:
-        0 2px 5px rgba(0, 0, 0, 0.12),
-        inset 0 1px 2px rgba(0, 0, 0, 0.06) !important;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.text_pole:focus {
-    border-color: var(--polaroid-lens) !important;
-    outline: none;
-    box-shadow:
-        0 0 0 3px rgba(74, 159, 216, 0.2),
-        0 3px 8px rgba(0, 0, 0, 0.2) !important;
-}
-
-/* 相机控制按钮 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-action,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.menu_button,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-mode-btn {
-    color: #eee;
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #444 0%,
-            #333 50%,
-            #2a2a2a 100%
-        );
-
-    border: 2px solid #1a1a1a;
-    border-radius: 4px;
-
-    box-shadow:
-        0 3px 8px rgba(0, 0, 0, 0.4),
-        inset 0 1px 2px rgba(255, 255, 255, 0.1),
-        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
-
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-
-    transition: all 0.22s ease;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-action:hover,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.menu_button:hover,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-mode-btn:hover {
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #555 0%,
-            #444 50%,
-            #333 100%
-        );
-    transform: translateY(-1px);
-    box-shadow:
-        0 5px 12px rgba(0, 0, 0, 0.5),
-        inset 0 1px 2px rgba(255, 255, 255, 0.15);
-}
-
-/* 快门按钮 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-action.primary {
-    color: #fff;
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #e74c3c 0%,
-            #c0392b 50%,
-            #a93226 100%
-        );
-
-    border-color: #922b21;
-
-    box-shadow:
-        0 0 12px rgba(231, 76, 60, 0.4),
-        0 4px 10px rgba(0, 0, 0, 0.5),
-        inset 0 2px 4px rgba(255, 255, 255, 0.2),
-        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-action.primary:hover {
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #ec7063 0%,
-            #e74c3c 50%,
-            #c0392b 100%
-        );
-    transform: translateY(-2px);
-    box-shadow:
-        0 0 18px rgba(231, 76, 60, 0.6),
-        0 6px 14px rgba(0, 0, 0, 0.6);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-icon-action.primary:active {
-    transform: translateY(0) scale(0.96);
-}
-
-/* 自动模式指示 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_auto_status.tutu-auto-status {
-    color: #999;
-    background: rgba(0, 0, 0, 0.3);
-    border: 2px dashed #444;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_auto_status.tutu-auto-status.enabled {
-    color: var(--polaroid-green);
-    background: rgba(39, 174, 96, 0.15);
-    border-color: var(--polaroid-green);
-    border-style: solid;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_auto_status.tutu-auto-status.enabled i {
-    color: var(--polaroid-green);
-    animation: polaroid-blink 1.5s ease-in-out infinite;
-}
-
-/* 拍立得照片输出区 - 结果展示 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-box {
-    position: relative;
-    padding: 0;
-
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper);
-
-    border: 3px solid var(--polaroid-frame);
-    border-radius: 4px;
-
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.3),
-        0 2px 6px rgba(0, 0, 0, 0.2);
-
-    overflow: hidden;
-}
-
-/* 照片顶部留白 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-box::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 16px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(232, 230, 216, 0.8) 0%,
-            transparent 100%
-        );
-
-    pointer-events: none;
-    z-index: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-toolbar {
-    min-height: 48px;
-    padding: 8px 12px;
-    margin: 0;
-
-    background: rgba(245, 245, 240, 0.95);
-    border-bottom: 2px solid var(--polaroid-shadow);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_result_status {
-    color: var(--polaroid-muted);
-    font-size: 0.82em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-preview {
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper);
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-source {
-    color: var(--polaroid-text);
-    background: #e8e6d8;
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-result-mode-btn.active {
-    color: #fff;
-    background:
-        radial-gradient(
-            circle at 30% 30%,
-            #4a9fd8 0%,
-            #2e7ba8 50%,
-            #1e5c7a 100%
-        );
-    border-color: #1a4d66;
-    box-shadow:
-        0 0 12px rgba(74, 159, 216, 0.4),
-        0 3px 10px rgba(0, 0, 0, 0.4);
-}
-
-/* 相册与档案 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-category-section,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-group {
-    padding: 0;
-
-    background: var(--polaroid-paper);
-    border: 3px solid var(--polaroid-frame);
-    border-radius: 4px;
-
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.25);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-category-header,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-group-header {
-    min-height: 46px;
-    padding: 10px 12px;
-
-    color: var(--polaroid-text);
-    background:
-        linear-gradient(
-            180deg,
-            #e8e6d8 0%,
-            #ddd8c5 100%
-        );
-
-    border-bottom: 2px solid var(--polaroid-shadow);
-    border-radius: 2px 2px 0 0;
-
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-category-header:hover,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-group-header:hover {
-    background:
-        linear-gradient(
-            180deg,
-            #eeede5 0%,
-            #e8e6d8 100%
-        );
-    filter: none;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-category-dropzone {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 12px;
-}
-
-/* 拍立得照片卡片 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-card {
-    position: relative;
-    padding: 12px;
-    padding-top: 16px;
-
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper);
-
-    border: 2px solid var(--polaroid-frame);
-    border-radius: 3px;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.2),
-        inset 0 1px 2px rgba(255, 255, 255, 0.5);
-
-    transition: all 0.25s ease;
-}
-
-/* 照片顶部留白效果 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 8px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(232, 230, 216, 0.6) 0%,
-            transparent 100%
-        );
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-card:hover {
-    transform: translateY(-3px) rotate(-0.5deg);
-    box-shadow:
-        0 8px 20px rgba(0, 0, 0, 0.3);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-name,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-title {
-    color: var(--polaroid-text);
-    font-weight: 700;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-desc {
-    color: var(--polaroid-muted);
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-script-actions {
-    padding-top: 8px;
-    border-top: 1px dashed var(--polaroid-shadow);
-}
-
-/* 收藏 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-group-list {
-    padding: 12px;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-card {
-    position: relative;
-    padding: 12px;
-    padding-top: 16px;
-
-    color: var(--polaroid-text);
-    background: var(--polaroid-paper);
-
-    border: 2px solid var(--polaroid-frame);
-    border-radius: 3px;
-
-    box-shadow:
-        0 3px 10px rgba(0, 0, 0, 0.2);
-
-    transition: all 0.22s ease;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-card::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 8px;
-
-    background:
-        linear-gradient(
-            180deg,
-            rgba(232, 230, 216, 0.6) 0%,
-            transparent 100%
-        );
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-card:hover {
-    transform: translateY(-2px) rotate(0.5deg);
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.3);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-preview {
-    color: var(--polaroid-text);
-    background: #f9f8f2;
-    border: 1px solid var(--polaroid-shadow);
-    border-radius: 2px;
-}
-
-/* 设置面板 */
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-settings-section {
-    padding: 14px;
-
-    background: var(--polaroid-paper);
-    border: 3px solid var(--polaroid-frame);
-    border-radius: 4px;
-
-    box-shadow:
-        0 6px 16px rgba(0, 0, 0, 0.25);
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-settings-title {
-    margin: 0 0 8px;
-    padding-bottom: 8px;
-
-    color: var(--polaroid-text);
-    border-bottom: 2px solid var(--polaroid-shadow);
-
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-settings-label {
-    color: var(--polaroid-text);
-    opacity: 1;
-    font-weight: 600;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-api-help {
-    color: var(--polaroid-muted);
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-delete-script-btn,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-.tutu-favorite-delete-btn,
-#tutu_theater_panel[data-tutu-theme="polaroid"]
-#tutu_clear_favorites_btn {
-    color: var(--polaroid-red);
-}
-
-/* 移动端 */
-@media (max-width: 600px) {
-    #tutu_theater_panel[data-tutu-theme="polaroid"]
-    .tutu-icon-tab {
-        width: 48px;
-        height: 48px;
-    }
-
-    #tutu_theater_panel[data-tutu-theme="polaroid"]
-    .tutu-script-actions {
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-}
-
-
-
 /* =========================================================
    纸张档案
    ========================================================= */
@@ -4547,475 +3696,678 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     box-shadow: 3px 3px 0 rgba(85, 71, 45, 0.5);
 }
 /* =========================================================
-   编辑部
+   拍立得主题
+   方向：象牙白注塑机身、取景窗、胶片出口、低饱和工业细节
    ========================================================= */
 
-#tutu_theater_panel[data-tutu-theme="editorial"] {
-    color: #111;
-    background: #f6f4ef;
+.tutu-theme-preview-swatch.polaroid {
+    position: relative;
+    overflow: hidden;
+    background: #ebe8df;
+    border: 1px solid #b9b5aa;
+    border-radius: 3px;
+}
 
-    border: 4px solid #111;
-    border-radius: 0;
+.tutu-theme-preview-swatch.polaroid::before {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 7px;
+    width: 13px;
+    height: 9px;
+    background: #252829;
+    border: 2px solid #77786f;
+    border-radius: 2px;
+}
 
+.tutu-theme-preview-swatch.polaroid::after {
+    content: "";
+    position: absolute;
+    right: 6px;
+    bottom: 5px;
+    width: 17px;
+    height: 3px;
+    background: #242627;
+    box-shadow: 0 -6px 0 #dd6d5c;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] {
+    --pl-shell: #ebe8df;
+    --pl-paper: #fffefa;
+    --pl-panel: #d8d5cc;
+    --pl-line: #bbb8ae;
+    --pl-ink: #252829;
+    --pl-muted: #73746f;
+    --pl-dark: #222526;
+    --pl-accent: #dd6d5c;
+    --pl-blue: #598ca0;
+
+    color: var(--pl-ink);
+    background: var(--pl-shell);
+    border: 1px solid #aaa79e;
+    border-radius: 6px;
     box-shadow:
-        14px 14px 0 #111,
-        15px 15px 0 rgba(17, 17, 17, 0.2);
-
+        0 20px 45px rgba(23, 25, 25, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.75);
     backdrop-filter: none;
-
     font-family:
-        Georgia,
-        "Noto Serif SC",
-        "Songti SC",
-        serif;
+        Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", sans-serif;
 }
 
-/* 标题栏 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-> div:first-child {
-    min-height: 52px;
-    padding: 14px 18px;
+/* 相机顶盖 */
+#tutu_theater_panel[data-tutu-theme="polaroid"] > div:first-child {
+    position: relative;
+    min-height: 48px;
     margin: -18px -18px 0 !important;
-
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #fff 0,
-            #fff 1px,
-            transparent 1px,
-            transparent 3px
-        ),
-        #111;
-
-    border-bottom: 4px solid #111;
-    border-radius: 0;
+    padding: 12px 16px 12px 58px;
+    background: var(--pl-shell);
+    border-bottom: 1px solid var(--pl-line);
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-> div:first-child h3 {
-    color: #fff !important;
-    font-size: 1.3em !important;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+#tutu_theater_panel[data-tutu-theme="polaroid"] > div:first-child::before {
+    content: "";
+    position: absolute;
+    left: 17px;
+    top: 12px;
+    width: 27px;
+    height: 19px;
+    background: #202324;
+    border: 3px solid #777870;
+    border-radius: 3px;
+    box-shadow:
+        inset 0 0 0 3px #101213,
+        0 1px 1px rgba(255, 255, 255, 0.7);
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-#tutu_close {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 38px;
-    height: 38px;
-
-    color: #fff;
-    background: #c83d35;
-
-    border: 3px solid #111;
-    border-radius: 0;
-
-    box-shadow: 4px 4px 0 #111;
-
-    font-weight: 900;
-
-    transition: all 0.15s ease;
+#tutu_theater_panel[data-tutu-theme="polaroid"] > div:first-child::after {
+    content: "";
+    position: absolute;
+    right: 61px;
+    top: 20px;
+    width: 7px;
+    height: 7px;
+    background: var(--pl-accent);
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #d0cdc4;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-#tutu_close:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #111;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-#tutu_close:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #111;
-}
-
-/* 标签导航 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-toolbar {
-    display: flex;
-    justify-content: flex-start;
-    gap: 0;
-
-    padding: 0;
-    margin: 0 -18px;
-
-    background: #fff;
-    border: 3px solid #111;
-    border-left: 0;
-    border-right: 0;
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab {
-    flex: 1;
-
-    width: auto;
-    height: 48px;
-    padding: 0;
-
-    color: #111;
-    background: #fff;
-
-    border: 0;
-    border-right: 2px solid #111;
-    border-radius: 0;
-
-    opacity: 1;
-
+#tutu_theater_panel[data-tutu-theme="polaroid"] > div:first-child h3 {
+    color: var(--pl-ink);
+    font-size: 1.08em !important;
     font-weight: 700;
-    text-transform: uppercase;
-
-    transition: all 0.12s ease;
+    letter-spacing: 0;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab:last-child {
-    border-right: 0;
+#tutu_theater_panel[data-tutu-theme="polaroid"] #tutu_close {
+    display: grid;
+    place-items: center;
+    width: 31px;
+    height: 31px;
+    color: #ddd;
+    background: var(--pl-dark);
+    border: 1px solid #101212;
+    border-radius: 50%;
+    box-shadow:
+        0 2px 3px rgba(0, 0, 0, 0.25),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12);
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab:hover {
-    background: #f0f0f0;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab:hover i {
-    transform: scale(1.08);
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab.active {
+#tutu_theater_panel[data-tutu-theme="polaroid"] #tutu_close:hover {
     color: #fff;
-    background: #111;
+    background: #343839;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab.active i {
-    transform: scale(1.15);
+/* 模式选择区 */
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-toolbar {
+    justify-content: center;
+    gap: 10px;
+    margin: 0 -18px;
+    padding: 11px 18px;
+    background: var(--pl-panel);
+    border: 0;
+    border-bottom: 1px solid #aaa79e;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-tab::after {
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab {
+    width: 42px;
+    height: 36px;
+    color: #676963;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid #b3b0a7;
+    border-radius: 3px;
+    opacity: 1;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab:hover {
+    color: var(--pl-ink);
+    background: rgba(255, 255, 255, 0.55);
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab.active {
+    color: #fff;
+    background: var(--pl-dark);
+    border-color: var(--pl-dark);
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab i,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab.active i {
+    font-size: 1.08em;
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-tab::after {
     display: none;
 }
 
-/* 输入框 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.text_pole {
-    color: #111;
-    background: #fff !important;
-
-    border: 3px solid #111 !important;
-    border-radius: 0 !important;
-
-    box-shadow: none !important;
-
-    font-family: inherit;
+/* 控件 */
+#tutu_theater_panel[data-tutu-theme="polaroid"] .text_pole {
+    color: var(--pl-ink);
+    background: var(--pl-paper) !important;
+    border: 1px solid var(--pl-line) !important;
+    border-radius: 4px !important;
+    box-shadow: inset 0 1px 2px rgba(30, 32, 32, 0.07) !important;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.text_pole:focus {
-    outline: 3px solid #c83d35;
-    outline-offset: 2px;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .text_pole:focus {
+    border-color: var(--pl-blue) !important;
+    outline: 2px solid rgba(89, 140, 160, 0.16);
 }
 
-/* 按钮 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-action,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.menu_button,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-mode-btn {
-    color: #111;
-    background: #fff;
-
-    border: 3px solid #111;
-    border-radius: 0;
-
-    box-shadow: 4px 4px 0 #111;
-
-    font-weight: 700;
-    text-transform: uppercase;
-
-    transition: all 0.12s ease;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-compact-control-panel {
+    padding: 10px;
+    background: #cfccc3;
+    border: 1px solid #aaa79e;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(35, 37, 37, 0.09);
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-action:hover,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.menu_button:hover,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-mode-btn:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 6px 6px 0 #111;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .menu_button,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-mode-btn {
+    color: var(--pl-ink);
+    background: #e4e1d8;
+    border: 1px solid #aaa79e;
+    border-radius: 4px;
+    box-shadow:
+        0 1px 2px rgba(30, 32, 32, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65);
+    text-transform: none;
+    letter-spacing: 0;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-action:active,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.menu_button:active {
-    transform: translate(1px, 1px);
-    box-shadow: 2px 2px 0 #111;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-action:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .menu_button:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-mode-btn:hover {
+    color: var(--pl-ink);
+    background: #f0eee7;
+    transform: none;
+    box-shadow:
+        0 2px 4px rgba(30, 32, 32, 0.18),
+        inset 0 1px 0 #fff;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-icon-action.primary,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-mode-btn.active {
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-action.primary {
     color: #fff;
-    background: #c83d35;
+    background: var(--pl-accent);
+    border-color: #b95143;
+    border-radius: 50%;
+    box-shadow:
+        0 2px 5px rgba(82, 37, 31, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
-/* 结果区 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-box {
-    padding: 0;
-
-    color: #111;
-    background: #fff;
-
-    border: 3px solid #111;
-    border-radius: 0;
-
-    box-shadow: 6px 6px 0 #111;
-
-    overflow: hidden;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-toolbar {
-    min-height: 50px;
-    padding: 10px 14px;
-    margin: 0;
-
-    background: #f6f4ef;
-    border-bottom: 3px solid #111;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-#tutu_result_status {
-    color: #111;
-    font-weight: 700;
-    text-transform: uppercase;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-preview {
-    color: #111;
-    background: #fff;
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-result-source {
-    color: #111;
-    background: #f6f4ef;
-    border-radius: 0;
-}
-
-/* 剧本库 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-category-section,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-group {
-    padding: 0;
-
-    color: #111;
-    background: #fff;
-
-    border: 3px solid #111;
-    border-radius: 0;
-
-    box-shadow: 5px 5px 0 #111;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-category-header,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-group-header {
-    min-height: 48px;
-    padding: 12px 14px;
-
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-icon-action.primary:hover {
     color: #fff;
-    background: #111;
-
-    border-bottom: 3px solid #111;
-    border-radius: 0;
-
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-category-header:hover,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-group-header:hover {
-    background: #222;
+    background: #e87968;
+    transform: none;
     filter: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-category-dropzone {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 14px;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-card {
+/* 胶片输出 */
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-box {
     position: relative;
-    padding: 14px;
+    padding: 10px 10px 34px;
+    color: var(--pl-ink);
+    background: var(--pl-paper);
+    border: 1px solid #cbc8bf;
+    border-radius: 2px;
+    box-shadow: 0 8px 18px rgba(35, 37, 37, 0.18);
+}
 
-    color: #111;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-box::after {
+    content: "INSTANT FILM";
+    position: absolute;
+    right: 14px;
+    bottom: 10px;
+    color: #99968e;
+    font: 600 9px/1 monospace;
+    letter-spacing: 1.5px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-toolbar {
+    margin: 0 0 9px;
+    padding: 0 0 8px;
+    background: transparent;
+    border-bottom: 1px solid #dedbd3;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-preview,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-result-source {
+    color: var(--pl-ink);
+    background: #f2f1ec;
+    border: 1px solid #dedbd3;
+    border-radius: 1px;
+}
+
+/* 相册 */
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-group {
+    padding: 0;
+    background: #d6d3ca;
+    border: 1px solid #aaa79e;
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-group-header {
+    min-height: 43px;
+    padding: 9px 12px;
+    color: var(--pl-ink);
+    background: #d6d3ca;
+    border-bottom: 1px solid #b5b2a9;
+    border-radius: 4px 4px 0 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-category-header:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-group-header:hover {
+    background: #dfdcd3;
+    filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-category-dropzone,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-group-list {
+    gap: 10px;
+    padding: 10px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-script-card,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-card {
+    position: relative;
+    padding: 12px 12px 25px;
+    color: var(--pl-ink);
+    background: var(--pl-paper);
+    border: 1px solid #ccc9c0;
+    border-radius: 2px;
+    box-shadow: 0 4px 9px rgba(35, 37, 37, 0.14);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-script-card::after,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-card::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    bottom: 9px;
+    width: 23px;
+    height: 3px;
+    background: var(--pl-accent);
+    box-shadow:
+        -27px 0 0 #d9b64b,
+        -54px 0 0 var(--pl-blue);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-script-card:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-card:hover {
     background: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 7px 14px rgba(35, 37, 37, 0.18);
+}
 
-    border: 3px solid #111;
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-favorite-title {
+    color: var(--pl-ink);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-script-desc,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-api-help {
+    color: var(--pl-muted);
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-settings-section,
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-appearance-manager {
+    padding: 14px;
+    color: var(--pl-ink);
+    background: #dedbd2;
+    border: 1px solid #b6b3aa;
+    border-radius: 5px;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"] .tutu-settings-title {
+    color: var(--pl-ink);
+    border-bottom: 1px solid #b9b6ad;
+}
+
+/* =========================================================
+   编辑部主题
+   方向：现代文化杂志，不做粗黑框“孟菲斯海报”
+   ========================================================= */
+
+.tutu-theme-preview-swatch.editorial {
+    position: relative;
+    overflow: hidden;
+    background: #f7f6f2;
+    border: 1px solid #222;
     border-radius: 0;
-
-    box-shadow: 3px 3px 0 #111;
-
-    transition: all 0.12s ease;
 }
 
-/* 装饰菱形 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-name::before,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-title::before {
-    content: "◆";
-    margin-right: 8px;
-    color: #c83d35;
-    font-size: 0.8em;
+.tutu-theme-preview-swatch.editorial::before {
+    content: "Aa";
+    position: absolute;
+    left: 4px;
+    top: 2px;
+    color: #161616;
+    font: 700 11px/1 Georgia, serif;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #111;
+.tutu-theme-preview-swatch.editorial::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    right: 4px;
+    bottom: 5px;
+    height: 1px;
+    background: #c64c3e;
+    box-shadow: 0 -4px 0 #b8b8b4;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-name,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-title {
-    color: #c83d35;
+#tutu_theater_panel[data-tutu-theme="editorial"] {
+    --ed-paper: #f7f6f2;
+    --ed-white: #fff;
+    --ed-ink: #171717;
+    --ed-muted: #77756f;
+    --ed-line: #d4d1ca;
+    --ed-accent: #b7473b;
+
+    color: var(--ed-ink);
+    background: var(--ed-paper);
+    border: 1px solid #aaa8a2;
+    border-radius: 2px;
+    box-shadow: 0 18px 44px rgba(20, 20, 19, 0.22);
+    backdrop-filter: none;
+    font-family:
+        Inter, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", "PingFang SC", sans-serif;
+}
+
+/* 报头 */
+#tutu_theater_panel[data-tutu-theme="editorial"] > div:first-child {
+    min-height: 58px;
+    margin: -18px -18px 0 !important;
+    padding: 13px 18px;
+    background: var(--ed-paper);
+    border-top: 5px solid var(--ed-ink);
+    border-bottom: 1px solid var(--ed-ink);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] > div:first-child h3 {
+    color: var(--ed-ink);
+    font-family: Georgia, "Noto Serif SC", "Songti SC", serif;
+    font-size: 1.42em !important;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] > div:first-child h3::after {
+    content: " / EXTRA";
+    color: var(--ed-accent);
+    font: 600 10px/1 Inter, sans-serif;
+    letter-spacing: 1.2px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] #tutu_close {
+    color: var(--ed-ink);
+    font-size: 1.15em !important;
+}
+
+/* 栏目导航 */
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-toolbar {
+    justify-content: flex-start;
+    gap: 0;
+    margin: 0 -18px;
+    padding: 0 18px;
+    background: var(--ed-paper);
+    border: 0;
+    border-bottom: 1px solid var(--ed-line);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab {
+    width: auto;
+    height: 42px;
+    padding: 0 15px;
+    color: var(--ed-muted);
+    border-radius: 0;
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab span {
+    display: inline !important;
+    margin-left: 7px;
+    font-size: 0.78em;
+    font-weight: 650;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab i {
+    font-size: 0.9em;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab:hover {
+    color: var(--ed-ink);
+    background: transparent;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab.active {
+    color: var(--ed-ink);
+    background: transparent;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-tab.active::after {
+    bottom: -1px;
+    width: 100%;
+    height: 2px;
+    background: var(--ed-accent);
+    border-radius: 0;
+}
+
+/* 表单与按钮 */
+#tutu_theater_panel[data-tutu-theme="editorial"] .text_pole {
+    color: var(--ed-ink);
+    background: var(--ed-white) !important;
+    border: 1px solid var(--ed-line) !important;
+    border-radius: 2px !important;
+    box-shadow: none !important;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .text_pole:focus {
+    border-color: var(--ed-ink) !important;
+    outline: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="editorial"] .menu_button,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-mode-btn {
+    color: var(--ed-ink);
+    background: transparent;
+    border: 1px solid var(--ed-line);
+    border-radius: 2px;
+    box-shadow: none;
+    text-transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-action:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"] .menu_button:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-mode-btn:hover {
+    color: var(--ed-white);
+    background: var(--ed-ink);
+    border-color: var(--ed-ink);
+    transform: none;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-mode-btn.active {
+    color: #fff;
+    background: var(--ed-accent);
+    border-color: var(--ed-accent);
+}
+
+/* 文章版面 */
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-box {
+    padding: 0;
+    color: var(--ed-ink);
+    background: var(--ed-white);
+    border: 1px solid var(--ed-line);
+    border-radius: 2px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-toolbar {
+    min-height: 47px;
+    margin: 0;
+    padding: 8px 12px;
+    background: var(--ed-paper);
+    border-bottom: 1px solid var(--ed-line);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] #tutu_result_status {
+    color: var(--ed-ink);
+    font-family: Georgia, "Noto Serif SC", serif;
     font-weight: 700;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-desc {
-    color: #555;
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-script-actions {
-    padding-top: 10px;
-    border-top: 2px solid #ddd;
-}
-
-/* 收藏 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-group-list {
-    padding: 14px;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-card {
-    padding: 14px;
-
-    color: #111;
-    background: #fff;
-
-    border: 3px solid #111;
-    border-radius: 0;
-
-    box-shadow: 3px 3px 0 #111;
-
-    transition: all 0.12s ease;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-card:hover {
-    transform: translate(-2px, -2px);
-    box-shadow: 5px 5px 0 #111;
-}
-
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-preview {
-    color: #111;
-    background: #f6f4ef;
-    border: 2px solid #ddd;
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-preview {
+    color: var(--ed-ink);
+    background: var(--ed-white);
     border-radius: 0;
 }
 
-/* 设置 */
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-settings-section {
-    padding: 14px;
-
-    color: #111;
-    background: #fff;
-
-    border: 3px solid #111;
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-result-source {
+    color: var(--ed-ink);
+    background: #efeee9;
     border-radius: 0;
-
-    box-shadow: 5px 5px 0 #111;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-settings-title {
-    margin: 0 0 10px;
-    padding-bottom: 10px;
-
-    color: #111;
-    border-bottom: 3px solid #111;
-
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+/* 栏目与稿件 */
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-group {
+    padding: 0;
+    color: var(--ed-ink);
+    background: var(--ed-white);
+    border: 1px solid var(--ed-line);
+    border-radius: 2px;
+    box-shadow: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-settings-label {
-    color: #111;
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-group-header {
+    min-height: 45px;
+    padding: 9px 12px;
+    color: var(--ed-ink);
+    background: var(--ed-paper);
+    border-bottom: 1px solid var(--ed-line);
+    border-left: 4px solid var(--ed-accent);
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-category-header:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-group-header:hover {
+    background: #eeece6;
+    filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-category-dropzone {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0;
+    padding: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-script-card {
+    min-height: 128px;
+    padding: 14px;
+    color: var(--ed-ink);
+    background: var(--ed-white);
+    border: 0;
+    border-right: 1px solid var(--ed-line);
+    border-bottom: 1px solid var(--ed-line);
+    border-radius: 0;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-script-card:hover {
+    background: #faf9f6;
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-title {
+    color: var(--ed-ink);
+    font-family: Georgia, "Noto Serif SC", "Songti SC", serif;
+    font-size: 1.08em;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-script-desc,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-api-help {
+    color: var(--ed-muted);
     opacity: 1;
-    font-weight: 700;
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-api-help {
-    color: #555;
-    opacity: 1;
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-script-actions {
+    margin-top: auto;
+    padding-top: 9px;
+    border-top: 1px solid var(--ed-line);
 }
 
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-delete-script-btn,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-.tutu-favorite-delete-btn,
-#tutu_theater_panel[data-tutu-theme="editorial"]
-#tutu_clear_favorites_btn {
-    color: #c83d35;
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-group-list {
+    padding: 10px;
 }
 
-/* 移动端 */
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-card,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-settings-section,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-appearance-manager {
+    color: var(--ed-ink);
+    background: var(--ed-white);
+    border: 1px solid var(--ed-line);
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-settings-title {
+    color: var(--ed-ink);
+    font-family: Georgia, "Noto Serif SC", serif;
+    border-bottom: 1px solid var(--ed-ink);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-delete-script-btn,
+#tutu_theater_panel[data-tutu-theme="editorial"] .tutu-favorite-delete-btn,
+#tutu_theater_panel[data-tutu-theme="editorial"] #tutu_clear_favorites_btn {
+    color: var(--ed-accent);
+}
+
 @media (max-width: 600px) {
-    #tutu_theater_panel[data-tutu-theme="editorial"] {
-        box-shadow: 8px 8px 0 #111;
+    #tutu_theater_panel[data-tutu-theme="editorial"]
+    .tutu-icon-tab span {
+        display: none !important;
     }
 
     #tutu_theater_panel[data-tutu-theme="editorial"]
-    .tutu-script-actions {
-        flex-wrap: wrap;
-        justify-content: center;
+    .tutu-category-dropzone {
+        grid-template-columns: 1fr;
     }
 }
+
 
