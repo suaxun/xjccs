@@ -1792,13 +1792,7 @@
                 padding: 9px 10px;
             }
         }
-        .tutu-embed-theme-minimal {
-    border: 0;
-    border-top: 1px solid var(--SmartThemeBorderColor);
-    border-bottom: 1px solid var(--SmartThemeBorderColor);
-    border-radius: 0;
-    background: transparent;
-}
+
 
 .tutu-embed-theme-minimal .tutu-theater-embed-header {
     color: var(--SmartThemeBodyColor);
@@ -1806,13 +1800,7 @@
     border-left: 3px solid var(--SmartThemeQuoteColor);
 }
 
-.tutu-embed-theme-paper {
-    color: #3c342c;
-    background: #fffaf0;
-    border: 1px solid #d8c49d;
-    border-radius: 4px;
-    box-shadow: 4px 4px 0 rgba(170, 140, 95, 0.3);
-}
+
 
 .tutu-embed-theme-paper .tutu-theater-embed-header {
     color: #3c342c;
@@ -1823,13 +1811,7 @@
     color: #3c342c;
 }
 
-.tutu-embed-theme-neon {
-    background: #101417;
-    border: 1px solid #38d8c7;
-    box-shadow:
-        0 0 12px rgba(56, 216, 199, 0.25),
-        inset 0 0 16px rgba(56, 216, 199, 0.08);
-}
+
 
 .tutu-embed-theme-neon .tutu-theater-embed-header {
     color: #eafffc;
@@ -4416,6 +4398,271 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     #tutu_theater_panel[data-tutu-theme="editorial"]
     .tutu-category-dropzone {
         grid-template-columns: 1fr;
+    }
+}
+/* ==========================================
+   聊天楼层小剧场折叠条
+   ========================================== */
+
+.tutu-theater-embed {
+    margin: 14px 0 4px;
+    padding: 0;
+    overflow: hidden;
+
+    color: var(--SmartThemeBodyColor, #eee);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeBlurTintColor, #222) 92%,
+        transparent
+    );
+
+    border: 1px solid var(
+        --SmartThemeBorderColor,
+        rgba(255, 255, 255, 0.15)
+    );
+    border-radius: 8px;
+
+    box-shadow:
+        0 4px 14px rgba(0, 0, 0, 0.14);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.tutu-theater-embed[open] {
+    border-color: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 65%,
+        var(--SmartThemeBorderColor)
+    );
+
+    box-shadow:
+        0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+/* 去掉 details 默认三角标记 */
+.tutu-theater-embed-header {
+    list-style: none;
+}
+
+.tutu-theater-embed-header::-webkit-details-marker {
+    display: none;
+}
+
+.tutu-theater-embed-header::marker {
+    display: none;
+    content: "";
+}
+
+/* 标题栏 */
+.tutu-theater-embed-header {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    align-items: center;
+    gap: 9px;
+
+    min-height: 44px;
+    padding: 7px 10px;
+
+    box-sizing: border-box;
+    cursor: pointer;
+    user-select: none;
+
+    color: var(--SmartThemeBodyColor, #eee);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 18%,
+        var(--SmartThemeBlurTintColor, #222)
+    );
+
+    border-bottom: 1px solid transparent;
+    font-size: 0.9em;
+    font-weight: 600;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+/* 自定义展开箭头 */
+.tutu-theater-embed-header::before {
+    content: "\f054";
+
+    width: 18px;
+    color: var(--SmartThemeQuoteColor, #7b68ee);
+
+    font-family: "Font Awesome 6 Free";
+    font-size: 0.78em;
+    font-weight: 900;
+    text-align: center;
+
+    transform: rotate(0deg);
+    transition: transform 0.2s ease;
+}
+
+.tutu-theater-embed[open]
+.tutu-theater-embed-header::before {
+    transform: rotate(90deg);
+}
+
+.tutu-theater-embed[open]
+.tutu-theater-embed-header {
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 24%,
+        var(--SmartThemeBlurTintColor, #222)
+    );
+
+    border-bottom-color: var(
+        --SmartThemeBorderColor,
+        rgba(255, 255, 255, 0.15)
+    );
+}
+
+.tutu-theater-embed-header:hover {
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 30%,
+        var(--SmartThemeBlurTintColor, #222)
+    );
+
+    filter: none;
+}
+
+/* 标题 */
+.tutu-theater-embed-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 展开状态文字 */
+.tutu-theater-embed-toggle {
+    flex-shrink: 0;
+    min-width: 34px;
+
+    color: var(--SmartThemeBodyColor, #eee);
+    opacity: 0.62;
+
+    font-size: 0;
+    font-weight: 400;
+    text-align: right;
+}
+
+.tutu-theater-embed-toggle::after {
+    content: "展开";
+    font-size: 12px;
+}
+
+.tutu-theater-embed[open]
+.tutu-theater-embed-toggle::after {
+    content: "收起";
+}
+
+/* 操作按钮 */
+.tutu-theater-embed-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.tutu-theater-embed-action {
+    display: inline-grid;
+    place-items: center;
+
+    width: 29px;
+    height: 29px;
+    padding: 0;
+
+    color: var(--SmartThemeBodyColor, #eee);
+    background: rgba(0, 0, 0, 0.14);
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 5px;
+
+    cursor: pointer;
+    font-size: 0.8em;
+
+    transition:
+        background 0.18s ease,
+        border-color 0.18s ease;
+}
+
+.tutu-theater-embed-action:hover {
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 42%,
+        transparent
+    );
+
+    border-color: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 70%,
+        white
+    );
+
+    transform: none;
+    filter: none;
+}
+
+/* 内容区 */
+.tutu-theater-embed-body {
+    padding: 13px;
+
+    color: var(--SmartThemeBodyColor, #eee);
+    background: transparent;
+
+    font-size: 0.94em;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.tutu-theater-embed-iframe {
+    display: block;
+
+    width: 100%;
+    height: 520px;
+    min-height: 300px;
+
+    box-sizing: border-box;
+    margin: 0;
+
+    background: #fff;
+    border: 0;
+    border-radius: 5px;
+}
+
+@media (max-width: 600px) {
+    .tutu-theater-embed-header {
+        grid-template-columns:
+            auto minmax(0, 1fr) auto;
+        gap: 6px;
+        padding: 7px 8px;
+    }
+
+    .tutu-theater-embed-toggle {
+        display: none;
+    }
+
+    .tutu-theater-embed-actions {
+        gap: 3px;
+    }
+
+    .tutu-theater-embed-action {
+        width: 28px;
+        height: 28px;
+    }
+
+    .tutu-theater-embed-body {
+        padding: 8px;
+    }
+
+    .tutu-theater-embed-iframe {
+        height: 420px;
+        min-height: 280px;
     }
 }
 
