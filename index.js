@@ -181,6 +181,97 @@ async function injectTutuRegex() {
 
 const STORAGE_KEY = 'tutu_theater_scenarios';
 const SETTINGS_KEY = 'tutu_theater_settings';
+const STYLE_LIBRARY_KEY = 'tutu_theater_style_library';
+const STYLE_PACKAGE_TYPE = 'tutu-theater-style-package';
+const STYLE_PACKAGE_VERSION = 1;
+
+let tutuStyleLibrary = loadLocalJson(STYLE_LIBRARY_KEY, {
+    manager: [],
+    embed: [],
+    quote: [],
+});
+
+function normalizeTutuStyleLibrary(data) {
+    const result = {
+        manager: [],
+        embed: [],
+        quote: [],
+    };
+
+    for (const target of Object.keys(result)) {
+        result[target] = Array.isArray(data?.[target])
+            ? data[target].filter(item =>
+                item &&
+                typeof item.id === 'string' &&
+                typeof item.name === 'string' &&
+                typeof item.css === 'string'
+            )
+            : [];
+    }
+
+    return result;
+}
+
+tutuStyleLibrary =
+    normalizeTutuStyleLibrary(tutuStyleLibrary);
+
+function saveTutuStyleLibrary() {
+    localStorage.setItem(
+        STYLE_LIBRARY_KEY,
+        JSON.stringify(tutuStyleLibrary)
+    );
+}
+
+function createTutuStyleId() {
+    return typeof crypto?.randomUUID === 'function'
+        ? crypto.randomUUID()
+        : `tutu-style-${Date.now()}-${Math.random()
+            .toString(16)
+            .slice(2)}`;
+}
+
+function saveTutuStylePreset(target, name, css, oldId = '') {
+    if (!['manager', 'embed', 'quote'].includes(target)) {
+        throw new Error('未知样式类型');
+    }
+
+    name = String(name || '').trim();
+    css = String(css || '').trim();
+
+    if (!name) {
+        throw new Error('请输入样式名称');
+    }
+
+    if (!css) {
+        throw new Error('CSS 不能为空');
+    }
+
+    const list = tutuStyleLibrary[target];
+    const index = list.findIndex(item => item.id === oldId);
+
+    const record = {
+        id: index >= 0 ? list[index].id : createTutuStyleId(),
+        name,
+        css,
+        updatedAt: Date.now(),
+    };
+
+    if (index >= 0) {
+        list[index] = record;
+    } else {
+        list.unshift(record);
+    }
+
+    saveTutuStyleLibrary();
+    return record;
+}
+
+function deleteTutuStylePreset(target, id) {
+    tutuStyleLibrary[target] =
+        tutuStyleLibrary[target].filter(item => item.id !== id);
+
+    saveTutuStyleLibrary();
+}
 const API_PRESETS_KEY = 'tutu_theater_api_presets';
 const CHARACTER_CONTEXT_KEY = 'tutu_theater_character_context';
 const CATEGORIES_KEY = 'tutu_theater_categories';
@@ -826,12 +917,25 @@ outputMode: 'panel',
 // 界面外观
 uiTheme: 'classic',
 uiCustomCss: '',
+embedTheme: 'classic',
+
+stylePresetIds: {
+    manager: '',
+    embed: '',
+    quote: '',
+},
 
 // 自定义捕捉标签
 captureTagName: '',
 
 
     ...tutuSettings,
+};
+tutuSettings.stylePresetIds = {
+    manager: '',
+    embed: '',
+    quote: '',
+    ...(tutuSettings.stylePresetIds || {}),
 };
 
 if (typeof tutuSettings.embedDefaultCollapsed !== 'boolean') {
@@ -1515,6 +1619,16 @@ localStorage.setItem(
             for="tutu_ui_custom_css">
             自定义 CSS
         </label>
+<input
+    id="tutu_manager_style_name"
+    class="text_pole"
+    placeholder="管理器样式名称">
+
+<select
+    id="tutu_manager_style_preset"
+    class="text_pole">
+    <option value="">选择已保存样式</option>
+</select>
 
         <textarea
             id="tutu_ui_custom_css"
@@ -1549,6 +1663,32 @@ localStorage.setItem(
                 <i class="fa-solid fa-rotate-left"></i>
                 清空
             </button>
+            
+    <!-- 在这里添加样式导入导出 -->
+    <div class="tutu-appearance-actions">
+        <button
+            type="button"
+            id="tutu_export_styles_btn"
+            class="menu_button">
+            <i class="fa-solid fa-file-export"></i>
+            导出全部样式
+        </button>
+
+        <button
+            type="button"
+            id="tutu_import_styles_btn"
+            class="menu_button">
+            <i class="fa-solid fa-file-import"></i>
+            导入样式
+        </button>
+
+        <input
+            id="tutu_import_styles_file"
+            type="file"
+            accept=".json,application/json"
+            style="display:none;">
+    </div>
+</div>
         </div>
 
         <div class="tutu-api-help">
@@ -1576,6 +1716,52 @@ localStorage.setItem(
 <label class="tutu-settings-label">
     嵌入楼层默认状态
 </label>
+<label class="tutu-settings-label">
+    折叠条样式
+</label>
+
+<select id="tutu_embed_theme" class="text_pole">
+    <option value="classic">经典</option>
+    <option value="minimal">极简</option>
+    <option value="paper">信纸</option>
+    <option value="neon">霓虹</option>
+    <option value="custom">自定义 CSS</option>
+</select>
+
+<div id="tutu_embed_custom_style_box" style="display:none;">
+    <input
+        id="tutu_embed_style_name"
+        class="text_pole"
+        placeholder="样式名称">
+
+    <select
+        id="tutu_embed_style_preset"
+        class="text_pole">
+        <option value="">选择已保存样式</option>
+    </select>
+
+    <textarea
+        id="tutu_embed_custom_css"
+        class="text_pole tutu-ui-custom-css"
+        rows="10"
+        placeholder="{{root}} {
+    border-radius: 4px;
+}
+
+{{root}} .tutu-theater-embed-header {
+    background: #222;
+}"></textarea>
+
+    <div class="tutu-appearance-actions">
+        <button id="tutu_save_embed_style" class="menu_button">
+            保存
+        </button>
+
+        <button id="tutu_delete_embed_style" class="menu_button">
+            删除
+        </button>
+    </div>
+</div>
 
 <select id="tutu_embed_default_state" class="text_pole">
     <option value="expanded">
@@ -1901,6 +2087,55 @@ function updatePresetFileDropdown() {
     fetchAndRenderNativePrompts();
 }
 
+function exportTutuStyles() {
+    const data = {
+        type: STYLE_PACKAGE_TYPE,
+        version: STYLE_PACKAGE_VERSION,
+        exportedAt: new Date().toISOString(),
+        styles: tutuStyleLibrary,
+    };
+
+    downloadTutuBlob(
+        new Blob(
+            [JSON.stringify(data, null, 2)],
+            { type: 'application/json;charset=utf-8' }
+        ),
+        '兔兔小剧场-样式预设.json'
+    );
+}
+async function importTutuStyles(file) {
+    if (file.size > 1024 * 1024) {
+        throw new Error('样式文件不能超过 1MB');
+    }
+
+    const data = JSON.parse(await file.text());
+
+    if (
+        data?.type !== STYLE_PACKAGE_TYPE ||
+        !data.styles
+    ) {
+        throw new Error('这不是兔兔小剧场样式文件');
+    }
+
+    const imported =
+        normalizeTutuStyleLibrary(data.styles);
+
+    for (const target of ['manager', 'embed', 'quote']) {
+        imported[target].forEach(item => {
+            const oldIndex = tutuStyleLibrary[target]
+                .findIndex(old => old.id === item.id);
+
+            if (oldIndex >= 0) {
+                tutuStyleLibrary[target][oldIndex] = item;
+            } else {
+                tutuStyleLibrary[target].push(item);
+            }
+        });
+    }
+
+    saveTutuStyleLibrary();
+    renderTutuStylePresetSelects();
+}
 
 
 function switchTutuTab(tabId) {
@@ -3167,7 +3402,12 @@ function appendTheaterToDOM(
         Boolean(tutuSettings.embedDefaultCollapsed);
 
 const details = document.createElement('details');
-details.className = 'tutu-theater-embed';
+const embedTheme =
+    tutuSettings.embedTheme || 'classic';
+
+details.className =
+    `tutu-theater-embed tutu-embed-theme-${embedTheme}`;
+
 details.open = !isCollapsed;
 
 /*
@@ -3315,6 +3555,55 @@ summary.appendChild(embedActions);
 
     // 使用 DOM 节点追加，不使用 HTML 字符串拼接
     $mesText[0].appendChild(details);
+}
+function installTutuTargetCss(target, css) {
+    const styleId = `tutu_custom_style_${target}`;
+
+    let style = document.getElementById(styleId);
+
+    if (!style) {
+        style = document.createElement('style');
+        style.id = styleId;
+        document.head.appendChild(style);
+    }
+
+    const rootMap = {
+        manager: '#tutu_theater_panel',
+        embed: '.tutu-theater-embed.tutu-embed-theme-custom',
+        quote: '.quote-container',
+    };
+
+    style.textContent = String(css || '')
+        .replaceAll('{{root}}', rootMap[target]);
+}
+
+function applyTutuEmbedStyle() {
+    const theme = tutuSettings.embedTheme || 'classic';
+
+    document
+        .querySelectorAll('.tutu-theater-embed')
+        .forEach(element => {
+            element.classList.remove(
+                'tutu-embed-theme-classic',
+                'tutu-embed-theme-minimal',
+                'tutu-embed-theme-paper',
+                'tutu-embed-theme-neon',
+                'tutu-embed-theme-custom'
+            );
+
+            element.classList.add(
+                `tutu-embed-theme-${theme}`
+            );
+        });
+
+    const id = tutuSettings.stylePresetIds.embed;
+    const preset = tutuStyleLibrary.embed
+        .find(item => item.id === id);
+
+    installTutuTargetCss(
+        'embed',
+        theme === 'custom' ? preset?.css || '' : ''
+    );
 }
 
 
@@ -3573,6 +3862,24 @@ function openTutuQuoteEditor(content, characterName) {
                         <label class="tutu-quote-control-label">
                             自定义 CSS 样式
                         </label>
+<input
+    id="tutu_quote_style_name"
+    class="text_pole"
+    placeholder="书摘样式名称">
+
+<select id="tutu_quote_style_preset" class="text_pole">
+    <option value="">选择已保存样式</option>
+</select>
+
+<div class="tutu-appearance-actions">
+    <button id="tutu_save_quote_style" class="menu_button">
+        保存样式
+    </button>
+
+    <button id="tutu_delete_quote_style" class="menu_button">
+        删除样式
+    </button>
+</div>
                         <textarea id="tutu_qe_custom_css" class="text_pole tutu-custom-css-textarea"
                             rows="8"
                             placeholder=".quote-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }&#10;.quote-title { color: white; }&#10;.quote-content { color: #f0f0f0; }"></textarea>
@@ -5672,6 +5979,12 @@ uiCustomCss:
     String(
         $('#tutu_ui_custom_css').val() || ''
     ),
+embedTheme:
+    $('#tutu_embed_theme').val() || 'classic',
+
+stylePresetIds: {
+    ...tutuSettings.stylePresetIds,
+},
 
     };
 
@@ -5895,7 +6208,14 @@ $('#tutu_ui_theme').val(
 $('#tutu_ui_custom_css').val(
     tutuSettings.uiCustomCss || ''
 );
+$('#tutu_embed_theme')
+    .val(tutuSettings.embedTheme || 'classic');
 
+$('#tutu_embed_custom_style_box')
+    .toggle(tutuSettings.embedTheme === 'custom');
+
+renderTutuStylePresetSelects();
+applyTutuEmbedStyle();
 applyTutuUiTheme(
     tutuSettings.uiTheme,
     tutuSettings.uiCustomCss
@@ -6896,6 +7216,49 @@ async function importTutuLibraryFile(file) {
         `成功导入 ${importedCount} 个小剧场剧本`
     );
 }
+function renderTutuStylePresetSelect(target, selector) {
+    const $select = $(selector);
+
+    if (!$select.length) return;
+
+    const current =
+        tutuSettings.stylePresetIds[target] || '';
+
+    $select.empty().append(
+        $('<option>', {
+            value: '',
+            text: '选择已保存样式',
+        })
+    );
+
+    tutuStyleLibrary[target].forEach(item => {
+        $select.append(
+            $('<option>', {
+                value: item.id,
+                text: item.name,
+            })
+        );
+    });
+
+    $select.val(current);
+}
+
+function renderTutuStylePresetSelects() {
+    renderTutuStylePresetSelect(
+        'manager',
+        '#tutu_manager_style_preset'
+    );
+
+    renderTutuStylePresetSelect(
+        'embed',
+        '#tutu_embed_style_preset'
+    );
+
+    renderTutuStylePresetSelect(
+        'quote',
+        '#tutu_quote_style_preset'
+    );
+}
 
 function renderLibrary() {
     const $list = $('#tutu_library_list');
@@ -7262,6 +7625,49 @@ catch (error) {
     // ==========================================
     // 4. 事件绑定
     // ==========================================
+    $(document).on('click', '#tutu_export_styles_btn', exportTutuStyles);
+
+$(document).on('click', '#tutu_import_styles_btn', function () {
+    $('#tutu_import_styles_file').val('').trigger('click');
+});
+
+$(document).on('change', '#tutu_import_styles_file', async function () {
+    try {
+        await importTutuStyles(this.files?.[0]);
+        toastr.success('样式导入成功');
+    } catch (error) {
+        toastr.error(error.message || '样式导入失败');
+    }
+});
+    $(document).on('change', '#tutu_quote_style_preset', function () {
+    const id = $(this).val();
+    const preset = tutuStyleLibrary.quote
+        .find(item => item.id === id);
+
+    $('#tutu_quote_style_name').val(preset?.name || '');
+    $('#tutu_qe_custom_css').val(preset?.css || '');
+
+    tutuSettings.stylePresetIds.quote = id;
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(tutuSettings)
+    );
+});
+
+    $(document).on('change', '#tutu_embed_theme', function () {
+    tutuSettings.embedTheme = $(this).val() || 'classic';
+
+    $('#tutu_embed_custom_style_box')
+        .toggle(tutuSettings.embedTheme === 'custom');
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(tutuSettings)
+    );
+
+    applyTutuEmbedStyle();
+});
+
     $(document).on(
     'change',
     '#tutu_ui_theme',
@@ -7301,6 +7707,28 @@ $(document).on(
         );
     }
 );
+const record = saveTutuStylePreset(
+    'manager',
+    $('#tutu_manager_style_name').val(),
+    $('#tutu_ui_custom_css').val(),
+    $('#tutu_manager_style_preset').val()
+);
+
+tutuSettings.stylePresetIds.manager = record.id;
+tutuSettings.uiCustomCss = record.css;
+saveTutuSettings();
+renderTutuStylePresetSelects();
+applyTutuUiTheme('custom', record.css);
+const id = $('#tutu_manager_style_preset').val();
+
+if (id && confirm('确定删除这个管理器样式吗？')) {
+    deleteTutuStylePreset('manager', id);
+    tutuSettings.stylePresetIds.manager = '';
+    tutuSettings.uiCustomCss = '';
+    saveTutuSettings();
+    renderTutuStylePresetSelects();
+    installTutuCustomCss('');
+}
 
 $(document).on(
     'click',
