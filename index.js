@@ -821,10 +821,15 @@ tutuSettings = {
     autoSequenceIndex: 0,
     autoSequenceIndexes: {},
 
-    outputMode: 'panel',
+outputMode: 'panel',
 
-    // ★ 新增：自定义捕捉标签
-    captureTagName: '',
+// 界面外观
+uiTheme: 'classic',
+uiCustomCss: '',
+
+// 自定义捕捉标签
+captureTagName: '',
+
 
     ...tutuSettings,
 };
@@ -1429,6 +1434,131 @@ localStorage.setItem(
 <div id="tutu_tab_settings" class="tutu-tab-content">
 
     <div class="tutu-settings-section">
+    <div class="tutu-appearance-manager">
+    <div class="tutu-settings-title">
+        <i class="fa-solid fa-palette"></i>
+        界面外观
+    </div>
+
+    <label class="tutu-settings-label" for="tutu_ui_theme">
+        管理器样式
+    </label>
+
+    <select id="tutu_ui_theme" class="text_pole">
+        <option value="classic">经典主题</option>
+        <option value="cream">奶油手账</option>
+        <option value="neumorphic">新拟态</option>
+        <option value="editorial">编辑部</option>
+        <option value="terminal">终端控制台</option>
+        <option value="archive">纸张档案</option>
+        <option value="custom">自定义 CSS</option>
+    </select>
+
+    <div
+        id="tutu_theme_preview_list"
+        class="tutu-theme-preview-list">
+
+        <button
+            type="button"
+            class="tutu-theme-preview active"
+            data-theme="classic">
+            <span class="tutu-theme-preview-swatch classic"></span>
+            <span>经典</span>
+        </button>
+
+        <button
+            type="button"
+            class="tutu-theme-preview"
+            data-theme="cream">
+            <span class="tutu-theme-preview-swatch cream"></span>
+            <span>奶油</span>
+        </button>
+
+        <button
+            type="button"
+            class="tutu-theme-preview"
+            data-theme="neumorphic">
+            <span class="tutu-theme-preview-swatch neumorphic"></span>
+            <span>拟态</span>
+        </button>
+
+        <button
+            type="button"
+            class="tutu-theme-preview"
+            data-theme="editorial">
+            <span class="tutu-theme-preview-swatch editorial"></span>
+            <span>编辑部</span>
+        </button>
+
+        <button
+            type="button"
+            class="tutu-theme-preview"
+            data-theme="terminal">
+            <span class="tutu-theme-preview-swatch terminal"></span>
+            <span>终端</span>
+        </button>
+
+        <button
+            type="button"
+            class="tutu-theme-preview"
+            data-theme="archive">
+            <span class="tutu-theme-preview-swatch archive"></span>
+            <span>档案</span>
+        </button>
+    </div>
+
+    <div
+        id="tutu_ui_custom_css_box"
+        class="tutu-ui-custom-css-box"
+        style="display:none;">
+
+        <label
+            class="tutu-settings-label"
+            for="tutu_ui_custom_css">
+            自定义 CSS
+        </label>
+
+        <textarea
+            id="tutu_ui_custom_css"
+            class="text_pole tutu-ui-custom-css"
+            rows="12"
+            spellcheck="false"
+            placeholder="#tutu_theater_panel {
+    background: #202124;
+}
+
+#tutu_theater_panel .tutu-icon-toolbar {
+    border-bottom: 2px solid #ff6688;
+}
+
+#tutu_theater_panel .tutu-icon-action {
+    border-radius: 4px;
+}"></textarea>
+
+        <div class="tutu-appearance-actions">
+            <button
+                type="button"
+                id="tutu_apply_custom_css_btn"
+                class="menu_button">
+                <i class="fa-solid fa-check"></i>
+                应用 CSS
+            </button>
+
+            <button
+                type="button"
+                id="tutu_reset_custom_css_btn"
+                class="menu_button">
+                <i class="fa-solid fa-rotate-left"></i>
+                清空
+            </button>
+        </div>
+
+        <div class="tutu-api-help">
+            自定义样式会保存在浏览器中。建议所有选择器以
+            <code>#tutu_theater_panel</code> 开头，避免影响酒馆其他界面。
+        </div>
+    </div>
+</div>
         <div class="tutu-settings-title">
             <i class="fa-solid fa-robot"></i>
             小剧场生成 API
@@ -5535,6 +5665,15 @@ embedDefaultCollapsed:
     $('#tutu_embed_default_state').val() === 'collapsed',
 captureTagName:
     $('#tutu_capture_tag_name').val().trim(),
+uiTheme:
+    normalizeTutuUiTheme(
+        $('#tutu_ui_theme').val()
+    ),
+
+uiCustomCss:
+    String(
+        $('#tutu_ui_custom_css').val() || ''
+    ),
 
     };
 
@@ -5570,6 +5709,130 @@ function renderApiPresetDropdown() {
             })
         );
     });
+}
+const TUTU_UI_THEMES = new Set([
+    'classic',
+    'cream',
+    'neumorphic',
+    'editorial',
+    'terminal',
+    'archive',
+    'custom',
+]);
+
+const TUTU_CUSTOM_STYLE_ID =
+    'tutu_theater_user_custom_style';
+
+function normalizeTutuUiTheme(theme) {
+    const value = String(theme || '').trim();
+
+    return TUTU_UI_THEMES.has(value)
+        ? value
+        : 'classic';
+}
+
+function installTutuCustomCss(css) {
+    let styleElement =
+        document.getElementById(
+            TUTU_CUSTOM_STYLE_ID
+        );
+
+    if (!styleElement) {
+        styleElement =
+            document.createElement('style');
+
+        styleElement.id =
+            TUTU_CUSTOM_STYLE_ID;
+
+        document.head.appendChild(
+            styleElement
+        );
+    }
+
+    /*
+     * 使用 textContent，不把 CSS 当作 HTML 插入。
+     * 自定义 CSS 仍然是可信的本地高级功能。
+     */
+    styleElement.textContent =
+        String(css || '');
+}
+
+function updateTutuThemeControls(theme) {
+    const normalizedTheme =
+        normalizeTutuUiTheme(theme);
+
+    $('#tutu_ui_theme').val(
+        normalizedTheme
+    );
+
+    $('.tutu-theme-preview')
+        .removeClass('active')
+        .filter(
+            `[data-theme="${normalizedTheme}"]`
+        )
+        .addClass('active');
+
+    if (normalizedTheme === 'custom') {
+        $('#tutu_ui_custom_css_box')
+            .stop(true, true)
+            .slideDown(160);
+    } else {
+        $('#tutu_ui_custom_css_box')
+            .stop(true, true)
+            .slideUp(160);
+    }
+}
+
+function applyTutuUiTheme(
+    theme = tutuSettings.uiTheme,
+    customCss = tutuSettings.uiCustomCss
+) {
+    const normalizedTheme =
+        normalizeTutuUiTheme(theme);
+
+    const panel =
+        document.getElementById(
+            'tutu_theater_panel'
+        );
+
+    if (panel) {
+        panel.dataset.tutuTheme =
+            normalizedTheme;
+    }
+
+    /*
+     * 自定义 CSS 只在选择 custom 时启用。
+     * 切回内置主题后不会继续污染内置样式。
+     */
+    installTutuCustomCss(
+        normalizedTheme === 'custom'
+            ? customCss
+            : ''
+    );
+
+    updateTutuThemeControls(
+        normalizedTheme
+    );
+}
+
+function saveAndApplyTutuUiTheme(theme) {
+    tutuSettings.uiTheme =
+        normalizeTutuUiTheme(theme);
+
+    tutuSettings.uiCustomCss =
+        String(
+            $('#tutu_ui_custom_css').val() || ''
+        );
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(tutuSettings)
+    );
+
+    applyTutuUiTheme(
+        tutuSettings.uiTheme,
+        tutuSettings.uiCustomCss
+    );
 }
 
 function loadTutuSettingsToUI() {
@@ -5611,6 +5874,20 @@ function loadTutuSettingsToUI() {
     );
 $('#tutu_capture_tag_name')
     .val(tutuSettings.captureTagName || '');
+$('#tutu_ui_theme').val(
+    normalizeTutuUiTheme(
+        tutuSettings.uiTheme
+    )
+);
+
+$('#tutu_ui_custom_css').val(
+    tutuSettings.uiCustomCss || ''
+);
+
+applyTutuUiTheme(
+    tutuSettings.uiTheme,
+    tutuSettings.uiCustomCss
+);
 
 
     updateSecondaryApiVisibility();
@@ -6973,6 +7250,106 @@ catch (error) {
     // ==========================================
     // 4. 事件绑定
     // ==========================================
+    $(document).on(
+    'change',
+    '#tutu_ui_theme',
+    function () {
+        saveAndApplyTutuUiTheme(
+            $(this).val()
+        );
+    }
+);
+
+$(document).on(
+    'click',
+    '.tutu-theme-preview',
+    function () {
+        const theme =
+            String(
+                $(this).attr('data-theme') ||
+                'classic'
+            );
+
+        $('#tutu_ui_theme').val(theme);
+
+        saveAndApplyTutuUiTheme(theme);
+    }
+);
+
+$(document).on(
+    'click',
+    '#tutu_apply_custom_css_btn',
+    function () {
+        $('#tutu_ui_theme').val('custom');
+
+        saveAndApplyTutuUiTheme('custom');
+
+        toastr.success(
+            '自定义界面 CSS 已应用'
+        );
+    }
+);
+
+$(document).on(
+    'click',
+    '#tutu_reset_custom_css_btn',
+    function () {
+        $('#tutu_ui_custom_css').val('');
+
+        tutuSettings.uiCustomCss = '';
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+
+        installTutuCustomCss('');
+
+        toastr.success(
+            '自定义 CSS 已清空'
+        );
+    }
+);
+
+/*
+ * 编辑 CSS 时实时预览，避免每次都点应用。
+ */
+let tutuCustomCssPreviewTimer = null;
+
+$(document).on(
+    'input',
+    '#tutu_ui_custom_css',
+    function () {
+        if (
+            $('#tutu_ui_theme').val() !==
+            'custom'
+        ) {
+            return;
+        }
+
+        clearTimeout(
+            tutuCustomCssPreviewTimer
+        );
+
+        tutuCustomCssPreviewTimer =
+            setTimeout(() => {
+                const css =
+                    String(
+                        $('#tutu_ui_custom_css')
+                            .val() || ''
+                    );
+
+                installTutuCustomCss(css);
+
+                tutuSettings.uiCustomCss = css;
+
+                localStorage.setItem(
+                    SETTINGS_KEY,
+                    JSON.stringify(tutuSettings)
+                );
+            }, 250);
+    }
+);
     $(document).on(
     'input',
     '#tutu_capture_tag_name',
