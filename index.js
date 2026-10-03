@@ -1449,7 +1449,7 @@ localStorage.setItem(
         <option value="cream">奶油手账</option>
         <option value="neumorphic">新拟态</option>
         <option value="editorial">编辑部</option>
-<option value="sakura">樱花奶茶</option>
+<option value="polaroid">拍立得相机</option>
         <option value="archive">纸张档案</option>
         <option value="custom">自定义 CSS</option>
     </select>
@@ -1492,11 +1492,10 @@ localStorage.setItem(
 <button
     type="button"
     class="tutu-theme-preview"
-    data-theme="sakura">
-    <span class="tutu-theme-preview-swatch sakura"></span>
-    <span>樱花</span>
+    data-theme="polaroid">
+    <span class="tutu-theme-preview-swatch polaroid"></span>
+    <span>拍立得</span>
 </button>
-
         <button
             type="button"
             class="tutu-theme-preview"
@@ -5714,7 +5713,7 @@ const TUTU_UI_THEMES = new Set([
     'cream',
     'neumorphic',
     'editorial',
-    'sakura',
+    'polaroid',
     'archive',
     'custom',
 ]);
@@ -5728,23 +5727,21 @@ function normalizeTutuUiTheme(theme) {
     let value = String(theme || '').trim();
 
     /*
-     * 已删除的旧主题统一迁移到樱花奶茶
+     * 已删除的旧主题统一迁移到拍立得
      */
     if (
         value === 'terminal' ||
         value === 'instagram' ||
-        value === 'breeze'
+        value === 'breeze' ||
+        value === 'sakura'
     ) {
-        value = 'sakura';
+        value = 'polaroid';
     }
 
     return TUTU_UI_THEMES.has(value)
         ? value
         : 'classic';
 }
-
-
-
 
 function installTutuCustomCss(css) {
     let styleElement =
