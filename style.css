@@ -3056,4 +3056,739 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     margin-top: 4px;
     line-height: 1.4;
 }
+/* =========================================================
+   兔兔小剧场：界面外观管理器
+   ========================================================= */
+
+.tutu-appearance-manager {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px;
+    margin-bottom: 6px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+}
+
+.tutu-theme-preview-list {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.tutu-theme-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+    padding: 8px 4px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 6px;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.78em;
+}
+
+.tutu-theme-preview:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.tutu-theme-preview.active {
+    border-color: var(--SmartThemeQuoteColor);
+    outline: 2px solid color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor) 25%,
+        transparent
+    );
+}
+
+.tutu-theme-preview-swatch {
+    display: block;
+    width: 42px;
+    height: 28px;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.tutu-theme-preview-swatch.classic {
+    background: #383741;
+    border: 2px solid #8b78d7;
+}
+
+.tutu-theme-preview-swatch.cream {
+    background: #fff7e8;
+    border: 2px solid #d77a61;
+    box-shadow: 3px 3px 0 #e8d2ac;
+}
+
+.tutu-theme-preview-swatch.neumorphic {
+    background: #dfe5ec;
+    box-shadow:
+        4px 4px 7px #b8bec5,
+        -4px -4px 7px #fff;
+}
+
+.tutu-theme-preview-swatch.editorial {
+    background:
+        linear-gradient(
+            90deg,
+            #111 0 35%,
+            #fafafa 35% 100%
+        );
+    border: 2px solid #111;
+    border-radius: 0;
+}
+
+.tutu-theme-preview-swatch.terminal {
+    background:
+        repeating-linear-gradient(
+            0deg,
+            #07130c 0 3px,
+            #0c2114 3px 4px
+        );
+    border: 1px solid #58dd86;
+}
+
+.tutu-theme-preview-swatch.archive {
+    background: #f0ead9;
+    border: 1px dashed #7d6b4d;
+    box-shadow: 4px 4px 0 #b8a989;
+}
+
+.tutu-ui-custom-css-box {
+    padding-top: 10px;
+    border-top: 1px dashed var(--SmartThemeBorderColor);
+}
+
+.tutu-ui-custom-css {
+    width: 100%;
+    min-height: 220px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family:
+        Consolas,
+        Monaco,
+        "Courier New",
+        monospace;
+    font-size: 0.84em;
+    line-height: 1.55;
+    tab-size: 4;
+}
+
+.tutu-appearance-actions {
+    display: flex;
+    gap: 8px;
+    margin: 8px 0;
+}
+
+@media (max-width: 700px) {
+    .tutu-theme-preview-list {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+}
+/* =========================================================
+   奶油手账
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="cream"] {
+    --tutu-cream-paper: #fffaf0;
+    --tutu-cream-ink: #40362f;
+    --tutu-cream-accent: #d66f58;
+    --tutu-cream-yellow: #f2c96d;
+    --tutu-cream-green: #739b7b;
+
+    color: var(--tutu-cream-ink);
+    background:
+        linear-gradient(
+            rgba(129, 99, 67, 0.055) 1px,
+            transparent 1px
+        ),
+        var(--tutu-cream-paper);
+    background-size: 100% 28px;
+
+    border: 1px solid #dfcda9;
+    border-radius: 8px;
+    box-shadow:
+        0 18px 40px rgba(75, 56, 38, 0.24),
+        8px 8px 0 #ead9b8;
+    backdrop-filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.text_pole {
+    color: var(--tutu-cream-ink);
+    background: #fffdf7 !important;
+    border: 1px solid #d8c39e !important;
+    border-radius: 5px !important;
+    box-shadow: inset 0 -2px 0 #f2dfbd;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-toolbar {
+    justify-content: flex-start;
+    gap: 7px;
+    padding: 4px 4px 11px;
+    border-bottom: 2px dashed #d8c39e;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-tab {
+    width: auto;
+    height: 34px;
+    padding: 0 13px;
+    border-radius: 4px 4px 0 0;
+    color: #5b493c;
+    background: #ead9b8;
+    opacity: 0.75;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-tab:nth-child(2n) {
+    background: #d9e4cd;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-tab:nth-child(3n) {
+    background: #f2d0c8;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-tab.active {
+    opacity: 1;
+    color: #fff;
+    background: var(--tutu-cream-accent);
+    transform: translateY(2px);
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-action {
+    color: #4d4037;
+    background: #f4e5c8;
+    border: 1px solid #d7be91;
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 #d8c39e;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-icon-action.primary {
+    color: #fff;
+    background: var(--tutu-cream-accent);
+    border-color: #b65c49;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-result-box,
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-favorite-card {
+    color: var(--tutu-cream-ink);
+    background: rgba(255, 253, 247, 0.9);
+    border: 1px solid #d9c6a3;
+    box-shadow: 4px 4px 0 rgba(211, 188, 148, 0.45);
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-favorite-group-header {
+    color: #fff;
+    background: var(--tutu-cream-green);
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="cream"]
+.tutu-script-card {
+    background: #fffdf7;
+    border-left: 5px solid var(--tutu-cream-yellow);
+}
+/* =========================================================
+   新拟态
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"] {
+    --tutu-neu-bg: #dfe5ec;
+    --tutu-neu-text: #303944;
+    --tutu-neu-accent: #477d89;
+    --tutu-neu-dark: #bac0c7;
+    --tutu-neu-light: #fff;
+
+    color: var(--tutu-neu-text);
+    background: var(--tutu-neu-bg);
+    border: 0;
+    border-radius: 8px;
+    box-shadow:
+        15px 15px 30px rgba(39, 47, 56, 0.35),
+        -8px -8px 22px rgba(255, 255, 255, 0.35);
+    backdrop-filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-toolbar {
+    padding: 8px;
+    border: 0;
+    border-radius: 7px;
+    box-shadow:
+        inset 4px 4px 8px var(--tutu-neu-dark),
+        inset -4px -4px 8px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-tab {
+    border-radius: 50%;
+    color: var(--tutu-neu-text);
+    opacity: 0.65;
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-tab.active {
+    color: var(--tutu-neu-accent);
+    opacity: 1;
+    box-shadow:
+        5px 5px 10px var(--tutu-neu-dark),
+        -5px -5px 10px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.text_pole {
+    color: var(--tutu-neu-text);
+    background: var(--tutu-neu-bg) !important;
+    border: 0 !important;
+    border-radius: 7px !important;
+    box-shadow:
+        inset 4px 4px 8px var(--tutu-neu-dark),
+        inset -4px -4px 8px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-result-mode-btn {
+    color: var(--tutu-neu-text);
+    background: var(--tutu-neu-bg);
+    border: 0;
+    border-radius: 7px;
+    box-shadow:
+        5px 5px 10px var(--tutu-neu-dark),
+        -5px -5px 10px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-action:active,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.menu_button:active {
+    box-shadow:
+        inset 4px 4px 8px var(--tutu-neu-dark),
+        inset -4px -4px 8px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background: var(--tutu-neu-accent);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-result-box,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-favorite-group {
+    color: var(--tutu-neu-text);
+    background: var(--tutu-neu-bg);
+    border: 0;
+    box-shadow:
+        inset 3px 3px 7px var(--tutu-neu-dark),
+        inset -3px -3px 7px var(--tutu-neu-light);
+}
+
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="neumorphic"]
+.tutu-favorite-group-header {
+    color: var(--tutu-neu-text);
+    background: var(--tutu-neu-bg);
+    box-shadow:
+        4px 4px 8px var(--tutu-neu-dark),
+        -4px -4px 8px var(--tutu-neu-light);
+}
+/* =========================================================
+   编辑部
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="editorial"] {
+    color: #111;
+    background: #f6f4ef;
+    border: 3px solid #111;
+    border-radius: 0;
+    box-shadow: 12px 12px 0 #111;
+    backdrop-filter: none;
+    font-family:
+        Georgia,
+        "Noto Serif SC",
+        "Songti SC",
+        serif;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-toolbar {
+    justify-content: flex-start;
+    gap: 0;
+    padding: 0;
+    border: 2px solid #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab {
+    flex: 1;
+    width: auto;
+    height: 42px;
+    border-right: 1px solid #111;
+    border-radius: 0;
+    color: #111;
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab:last-child {
+    border-right: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab.active {
+    color: #fff;
+    background: #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.text_pole {
+    color: #111;
+    background: #fff !important;
+    border: 2px solid #111 !important;
+    border-radius: 0 !important;
+    font-family: inherit;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-mode-btn {
+    color: #111;
+    background: #fff;
+    border: 2px solid #111;
+    border-radius: 0;
+    box-shadow: 3px 3px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background: #c83d35;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-box,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-card {
+    color: #111;
+    background: #fff;
+    border: 2px solid #111;
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-group-header {
+    color: #fff;
+    background: #111;
+    border-radius: 0;
+    text-transform: uppercase;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-title {
+    color: #c83d35;
+}
+/* =========================================================
+   终端控制台
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="terminal"] {
+    --tutu-terminal-bg: #07110b;
+    --tutu-terminal-panel: #0b1c11;
+    --tutu-terminal-green: #66e38f;
+    --tutu-terminal-muted: #7ca98a;
+
+    color: var(--tutu-terminal-green);
+    background:
+        repeating-linear-gradient(
+            0deg,
+            rgba(255, 255, 255, 0.018) 0,
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        var(--tutu-terminal-bg);
+
+    border: 1px solid var(--tutu-terminal-green);
+    border-radius: 3px;
+    box-shadow:
+        0 0 24px rgba(102, 227, 143, 0.18),
+        inset 0 0 30px rgba(0, 0, 0, 0.7);
+
+    font-family:
+        Consolas,
+        Monaco,
+        "Courier New",
+        monospace;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-toolbar {
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 5px;
+    border: 1px solid #285f3b;
+    background: #09170e;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-tab {
+    width: 44px;
+    height: 34px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    color: var(--tutu-terminal-muted);
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-tab.active {
+    color: #061009;
+    background: var(--tutu-terminal-green);
+    border-color: var(--tutu-terminal-green);
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.text_pole {
+    color: var(--tutu-terminal-green);
+    caret-color: var(--tutu-terminal-green);
+    background: #050d08 !important;
+    border: 1px solid #285f3b !important;
+    border-radius: 2px !important;
+    font-family: inherit;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-result-mode-btn {
+    color: var(--tutu-terminal-green);
+    background: #09170e;
+    border: 1px solid #285f3b;
+    border-radius: 2px;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-result-mode-btn.active {
+    color: #061009;
+    background: var(--tutu-terminal-green);
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-result-box,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-favorite-card,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-favorite-group {
+    color: var(--tutu-terminal-green);
+    background: rgba(5, 13, 8, 0.82);
+    border: 1px solid #285f3b;
+    border-radius: 2px;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-favorite-group-header {
+    color: var(--tutu-terminal-green);
+    background: #102a19;
+    border-bottom: 1px solid var(--tutu-terminal-green);
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="terminal"]
+.tutu-category-header::before {
+    content: "$ ";
+    opacity: 0.7;
+}
+/* =========================================================
+   纸张档案
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="archive"] {
+    --tutu-archive-paper: #eee9dc;
+    --tutu-archive-ink: #302d28;
+    --tutu-archive-folder: #c6a86b;
+    --tutu-archive-red: #9a493c;
+
+    color: var(--tutu-archive-ink);
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0 34px,
+            rgba(154, 73, 60, 0.18) 34px 35px,
+            transparent 35px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            #eee9dc 0 27px,
+            #d9d2c3 27px 28px
+        );
+
+    border: 1px solid #807662;
+    border-radius: 2px;
+    box-shadow:
+        8px 8px 0 #aaa18f,
+        16px 16px 0 rgba(51, 45, 37, 0.2);
+    backdrop-filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-toolbar {
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 3px;
+    padding: 0 8px;
+    border-bottom: 3px solid #806b43;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-tab {
+    width: 62px;
+    height: 36px;
+    color: #3c3426;
+    background: #d4bb86;
+    border: 1px solid #806b43;
+    border-bottom: 0;
+    border-radius: 5px 5px 0 0;
+    opacity: 0.72;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-tab.active {
+    height: 42px;
+    opacity: 1;
+    color: #fff;
+    background: #806b43;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.text_pole {
+    color: var(--tutu-archive-ink);
+    background: rgba(255, 253, 246, 0.88) !important;
+    border: 1px solid #8e816c !important;
+    border-radius: 2px !important;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-result-mode-btn {
+    color: #3c3426;
+    background: #d9c79f;
+    border: 1px solid #806b43;
+    border-radius: 2px;
+    box-shadow: 2px 2px 0 rgba(85, 71, 45, 0.35);
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background: var(--tutu-archive-red);
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-result-box,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-favorite-card {
+    color: var(--tutu-archive-ink);
+    background: rgba(255, 253, 246, 0.88);
+    border: 1px solid #8e816c;
+    border-radius: 2px;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-favorite-group-header {
+    color: #332b1f;
+    background: var(--tutu-archive-folder);
+    border-radius: 0;
+    border-bottom: 1px dashed #6d5b39;
+}
+
+#tutu_theater_panel[data-tutu-theme="archive"]
+.tutu-script-card {
+    position: relative;
+    color: var(--tutu-archive-ink);
+    background: #fffdf6;
+    border: 1px solid #9f927d;
+    border-left: 6px solid var(--tutu-archive-red);
+    border-radius: 1px;
+}
 
