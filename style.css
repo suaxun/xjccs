@@ -3141,52 +3141,30 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     border-radius: 0;
 }
 
-.tutu-theme-preview-swatch.instagram {
+.tutu-theme-preview-swatch.breeze {
     position: relative;
     overflow: hidden;
-    background: #fff;
-    border: 1px solid #dbdbdb;
+    background: #f7f9fa;
+    border: 1px solid #cfd8dc;
 }
 
-.tutu-theme-preview-swatch.instagram::before {
+.tutu-theme-preview-swatch.breeze::before {
     content: "";
     position: absolute;
-    top: 5px;
-    left: 6px;
-
-    width: 12px;
-    height: 12px;
-
-    border: 2px solid #fff;
-    border-radius: 50%;
-
-    background:
-        linear-gradient(
-            135deg,
-            #feda75,
-            #fa7e1e 32%,
-            #d62976 62%,
-            #962fbf 82%,
-            #4f5bd5
-        );
-
-    box-shadow: 0 0 0 1px #d62976;
+    inset: 0 auto 0 0;
+    width: 11px;
+    background: #177e89;
 }
 
-.tutu-theme-preview-swatch.instagram::after {
+.tutu-theme-preview-swatch.breeze::after {
     content: "";
     position: absolute;
-    left: 5px;
+    top: 6px;
     right: 5px;
-    bottom: 5px;
-    height: 7px;
-
-    background:
-        repeating-linear-gradient(
-            90deg,
-            #efefef 0 7px,
-            transparent 7px 9px
-        );
+    width: 20px;
+    height: 4px;
+    border-top: 4px solid #263238;
+    border-bottom: 4px solid #d9e0e3;
 }
 
 
@@ -3469,29 +3447,26 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         -4px -4px 8px var(--tutu-neu-light);
 }
 /* =========================================================
-   Instagram 主页主题
+   清透工作台
    ========================================================= */
 
-#tutu_theater_panel[data-tutu-theme="instagram"] {
-    --tutu-ins-bg: #ffffff;
-    --tutu-ins-surface: #ffffff;
-    --tutu-ins-soft: #fafafa;
-    --tutu-ins-hover: #f2f2f2;
-    --tutu-ins-border: #dbdbdb;
-    --tutu-ins-text: #000000;
-    --tutu-ins-muted: #737373;
-    --tutu-ins-link: #0095f6;
-    --tutu-ins-danger: #ed4956;
+#tutu_theater_panel[data-tutu-theme="breeze"] {
+    --tutu-work-bg: #f4f7f8;
+    --tutu-work-surface: #ffffff;
+    --tutu-work-soft: #edf2f3;
+    --tutu-work-border: #d6dfe2;
+    --tutu-work-text: #263238;
+    --tutu-work-muted: #66777d;
+    --tutu-work-primary: #177e89;
+    --tutu-work-primary-soft: #dceff1;
+    --tutu-work-warm: #d56f3e;
+    --tutu-work-danger: #c34f5a;
 
-    color: var(--tutu-ins-text);
-    background: var(--tutu-ins-bg);
-
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-
-    box-shadow:
-        0 12px 34px rgba(0, 0, 0, 0.14);
-
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-bg);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
+    box-shadow: 0 18px 45px rgba(31, 48, 54, 0.2);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
 
@@ -3499,644 +3474,540 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         -apple-system,
         BlinkMacSystemFont,
         "Segoe UI",
-        Roboto,
-        Helvetica,
-        Arial,
         "PingFang SC",
         "Microsoft YaHei",
         sans-serif;
 }
 
-/* 顶部标题模拟 Instagram 顶栏 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
+/* 标题栏 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
 > div:first-child {
-    min-height: 44px;
-    margin: -18px -18px 0 !important;
-    padding: 0 16px;
-
-    border-bottom:
-        1px solid var(--tutu-ins-border);
-
-    background: rgba(255, 255, 255, 0.96);
-
-    position: sticky;
-    top: 0;
-    z-index: 20;
+    min-height: 42px;
+    padding-bottom: 12px;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid var(--tutu-work-border);
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 > div:first-child h3 {
-    color: var(--tutu-ins-text);
-    font-family:
-        "Segoe Script",
-        "Brush Script MT",
-        cursive;
-    font-size: 1.45em !important;
-    font-weight: 600;
+    color: var(--tutu-work-text);
+    font-size: 1.1em !important;
+    font-weight: 650;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 #tutu_close {
-    color: var(--tutu-ins-text);
-}
-
-/* 主导航模拟 Instagram 底部/侧边图标导航 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-toolbar {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-
-    width: calc(100% + 36px);
-    margin: 0 -18px;
-    padding: 0 10px;
-
-    background: #fff;
-    border: 0;
-    border-bottom:
-        1px solid var(--tutu-ins-border);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab {
-    width: 100%;
-    height: 48px;
-    padding: 0;
-
-    color: var(--tutu-ins-text);
-    background: transparent;
-    border-radius: 0;
-
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab i {
-    font-size: 1.42em;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab:hover {
-    background: var(--tutu-ins-hover);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab:hover i {
-    transform: scale(1.06);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab.active {
-    color: var(--tutu-ins-text);
-    background: transparent;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab.active i {
-    transform: scale(1.1);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-tab::after {
-    bottom: 0;
-    width: 36px;
-    height: 2px;
-
-    border-radius: 0;
-    background: var(--tutu-ins-text);
-}
-
-/* 输入框模拟 Instagram 搜索框 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.text_pole {
-    color: var(--tutu-ins-text);
-
-    background: #efefef !important;
-    border: 1px solid transparent !important;
-    border-radius: 8px !important;
-
-    box-shadow: none !important;
-
-    font-family: inherit;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.text_pole:focus {
-    background: #fff !important;
-    border-color:
-        var(--tutu-ins-border) !important;
-    outline: none;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.text_pole::placeholder {
-    color: var(--tutu-ins-muted);
-}
-
-/* 顶部生成输入区域模拟发帖框 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-compact-control-panel {
-    padding: 12px;
-
-    background: #fff;
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-prompt-row::before {
-    content: "兔";
-
     display: inline-flex;
     align-items: center;
     justify-content: center;
-
-    width: 40px;
-    min-width: 40px;
-    height: 40px;
-
-    color: #fff;
-    background:
-        linear-gradient(
-            135deg,
-            #feda75,
-            #fa7e1e 30%,
-            #d62976 58%,
-            #962fbf 78%,
-            #4f5bd5
-        );
-
-    border: 3px solid #fff;
+    width: 32px;
+    height: 32px;
+    color: var(--tutu-work-muted);
     border-radius: 50%;
-
-    box-shadow:
-        0 0 0 2px #d62976;
-
-    font-weight: 700;
 }
 
-/* 图标操作按钮采用 Instagram 无框操作栏 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-action,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-result-mode-btn,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-actions .menu_button,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-actions .menu_button {
-    color: var(--tutu-ins-text);
+#tutu_theater_panel[data-tutu-theme="breeze"]
+#tutu_close:hover {
+    color: var(--tutu-work-danger);
+    background: #fbeaec;
+}
+
+/* 桌面端左侧导航 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-toolbar {
+    position: absolute;
+    top: 74px;
+    bottom: 18px;
+    left: 18px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 4px;
+
+    width: 104px;
+    padding: 8px;
+
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
+    box-shadow: 0 3px 12px rgba(31, 48, 54, 0.06);
+}
+
+/* 主题基础样式曾用 !important 隐藏文字 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab span {
+    display: block !important;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab {
+    display: flex;
+    justify-content: flex-start;
+    gap: 9px;
+
+    width: 100%;
+    height: 40px;
+    padding: 0 10px;
+
+    color: var(--tutu-work-muted);
     background: transparent;
+    border-radius: 4px;
 
-    border: 0;
-    border-radius: 50%;
+    opacity: 1;
+    font-size: 0.84em;
+}
 
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab i {
+    width: 18px;
+    font-size: 1em;
+    text-align: center;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab:hover {
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-soft);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab:hover i {
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab.active {
+    color: var(--tutu-work-primary);
+    background: var(--tutu-work-primary-soft);
+    font-weight: 650;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab.active i {
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab::after {
+    top: 8px;
+    bottom: 8px;
+    left: -8px;
+
+    width: 3px;
+    height: auto;
+
+    background: var(--tutu-work-primary);
+    border-radius: 0 2px 2px 0;
+
+    transform: scaleY(0);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-tab.active::after {
+    transform: scaleY(1);
+}
+
+/* 主工作区避开左侧导航 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-tab-content {
+    width: calc(100% - 118px);
+    margin-left: 118px;
+    padding: 2px 3px 2px 0;
+}
+
+/* 表单控件 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.text_pole {
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-surface) !important;
+    border: 1px solid var(--tutu-work-border) !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.text_pole:hover {
+    border-color: #aebdc2 !important;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.text_pole:focus {
+    border-color: var(--tutu-work-primary) !important;
+    outline: 2px solid rgba(23, 126, 137, 0.12);
+    outline-offset: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.text_pole::placeholder {
+    color: #89999e;
+}
+
+/* 输入工作条 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-compact-control-panel {
+    padding: 10px;
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-prompt-row textarea#tutu_prompt {
+    min-height: 40px;
+    padding: 9px 12px !important;
+    border-radius: 4px !important;
+}
+
+/* 通用操作按钮 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-action {
+    color: var(--tutu-work-muted);
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 4px;
     box-shadow: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-action:hover,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-result-mode-btn:hover,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-actions .menu_button:hover,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-actions .menu_button:hover {
-    color: var(--tutu-ins-muted);
-    background: var(--tutu-ins-hover);
-
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-action:hover {
+    color: var(--tutu-work-primary);
+    background: var(--tutu-work-primary-soft);
+    border-color: #9ac5ca;
     transform: none;
     box-shadow: none;
 }
 
-/* 蓝色主操作按钮 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-action.primary,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-#tutu_save_settings_btn,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-save-script-btn {
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-action.primary {
     color: #fff;
-    background: var(--tutu-ins-link);
-
-    border: 0;
-    border-radius: 8px;
-
+    background: var(--tutu-work-primary);
+    border-color: var(--tutu-work-primary);
     box-shadow: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-icon-action.primary:hover,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-#tutu_save_settings_btn:hover {
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-icon-action.primary:hover {
     color: #fff;
-    background: #1877f2;
+    background: #116c75;
+    filter: none;
 }
 
-/* 结果区模拟 Instagram 单篇帖子 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.menu_button {
+    border-radius: 4px;
+}
+
+/* 上下文区 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-context-box {
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-left: 3px solid var(--tutu-work-primary);
+    border-radius: 4px;
+}
+
+/* 生成结果 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-result-box {
     padding: 0;
-
-    color: var(--tutu-ins-text);
-    background: var(--tutu-ins-surface);
-
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-
-    overflow: hidden;
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-result-toolbar {
-    min-height: 48px;
+    min-height: 46px;
+    padding: 7px 10px;
     margin: 0;
-    padding: 8px 12px;
-
-    background: #fff;
-    border-bottom:
-        1px solid var(--tutu-ins-border);
+    background: #f9fbfb;
+    border-bottom: 1px solid var(--tutu-work-border);
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 #tutu_result_status {
-    color: var(--tutu-ins-text);
-    font-size: 0.86em;
-    font-weight: 600;
+    color: var(--tutu-work-muted);
+    font-size: 0.84em;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-#tutu_result_status::before {
-    content: "";
-
-    display: inline-block;
-    width: 28px;
-    height: 28px;
-    margin-right: 8px;
-
-    vertical-align: middle;
-
-    background:
-        linear-gradient(
-            135deg,
-            #feda75,
-            #fa7e1e 30%,
-            #d62976 58%,
-            #962fbf 78%,
-            #4f5bd5
-        );
-
-    border: 2px solid #fff;
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 0 1px #d62976;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-result-preview {
-    color: var(--tutu-ins-text);
-    background: #fff;
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-surface);
     border-radius: 0;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-result-preview iframe {
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-result-source {
-    color: var(--tutu-ins-text);
-    background: #fafafa;
+    color: var(--tutu-work-text);
+    background: #f1f5f6;
     border-radius: 0;
 }
 
-/* 喜欢按钮采用 Instagram 红心 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-#tutu_favorite_current_btn.active {
-    color: var(--tutu-ins-danger);
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-result-mode-btn {
+    color: var(--tutu-work-muted);
     background: transparent;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-#tutu_favorite_current_btn.active i {
-    color: var(--tutu-ins-danger);
-}
-
-/* 工具栏右侧像帖子操作区 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-result-toolbar-right {
-    gap: 2px;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-export-format-select {
-    max-width: 116px;
-    height: 32px;
-}
-
-/* 剧本分类模拟 Profile 的帖子分区 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-library-toolbar,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-toolbar {
-    min-height: 72px;
-    padding: 10px 4px 14px;
-
-    border-bottom:
-        1px solid var(--tutu-ins-border);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-library-title {
-    color: var(--tutu-ins-text);
-    font-size: 1.12em;
-    font-weight: 600;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-category-section,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-group {
-    margin-bottom: 12px;
-    padding: 0;
-
-    color: var(--tutu-ins-text);
-    background: #fff;
-
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-
+    border: 1px solid transparent;
+    border-radius: 4px;
     box-shadow: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-result-mode-btn:hover {
+    color: var(--tutu-work-primary);
+    background: var(--tutu-work-primary-soft);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-result-mode-btn.active {
+    color: var(--tutu-work-primary);
+    background: var(--tutu-work-primary-soft);
+    border-color: #afd1d5;
+    box-shadow: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+#tutu_favorite_current_btn.active {
+    color: var(--tutu-work-danger);
+    background: #fbeaec;
+    border-color: #edc4c9;
+}
+
+/* 剧本库工作区 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-library-toolbar,
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-toolbar {
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--tutu-work-border);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-library-title {
+    color: var(--tutu-work-text);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-group {
+    padding: 0;
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(31, 48, 54, 0.04);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-category-header,
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-favorite-group-header {
-    min-height: 50px;
-    padding: 10px 12px;
+    min-height: 44px;
+    padding: 8px 11px;
 
-    color: var(--tutu-ins-text);
-    background: #fff;
+    color: var(--tutu-work-text);
+    background: #f9fbfb;
 
-    border-bottom:
-        1px solid var(--tutu-ins-border);
-    border-radius: 8px 8px 0 0;
-
-    filter: none;
+    border-bottom: 1px solid var(--tutu-work-border);
+    border-radius: 6px 6px 0 0;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-category-header:hover,
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-favorite-group-header:hover {
-    background: var(--tutu-ins-soft);
+    background: var(--tutu-work-soft);
     filter: none;
 }
 
-/* 分类图标变成 Story 圆环 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-category-title > i,
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-favorite-group-title > i {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    width: 32px;
-    height: 32px;
-
-    color: #fff;
-
-    background:
-        linear-gradient(
-            135deg,
-            #feda75,
-            #fa7e1e 30%,
-            #d62976 58%,
-            #962fbf 78%,
-            #4f5bd5
-        );
-
-    border: 2px solid #fff;
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 0 2px #d62976;
-
-    font-size: 0.78em;
+    color: var(--tutu-work-primary);
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-category-count,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-group-count,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-time {
-    color: var(--tutu-ins-muted);
-    opacity: 1;
-}
-
-/* 剧本列表模拟帖子网格 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
+/* 剧本双列排列 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-category-dropzone {
     display: grid;
-    grid-template-columns:
-        repeat(2, minmax(0, 1fr));
-    gap: 1px;
-    padding: 1px;
-
-    background: var(--tutu-ins-border);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 8px;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-script-card {
     display: flex;
     flex-direction: column;
     align-items: stretch;
-    justify-content: space-between;
+    min-height: 128px;
 
-    min-height: 150px;
-    padding: 14px;
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-surface);
 
-    color: var(--tutu-ins-text);
-    background: #fff;
-
-    border: 0;
-    border-radius: 0;
-
-    cursor: default;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-card:hover {
-    background: var(--tutu-ins-soft);
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-name {
-    color: var(--tutu-ins-text);
-    font-size: 1em;
-    font-weight: 600;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-desc {
-    color: var(--tutu-ins-muted);
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-script-actions {
-    width: 100%;
-    margin-top: 12px;
-    padding-top: 8px;
-
-    justify-content: flex-start;
-
-    border-top:
-        1px solid var(--tutu-ins-border);
-}
-
-/* 收藏卡片模拟 Feed 卡片 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-group-list {
-    padding: 10px;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-card {
-    color: var(--tutu-ins-text);
-    background: #fff;
-
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-
-    box-shadow: none;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-title {
-    color: var(--tutu-ins-text);
-    font-weight: 600;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-preview {
-    color: var(--tutu-ins-text);
-    background: #fafafa;
-
-    border: 1px solid var(--tutu-ins-border);
+    border: 1px solid var(--tutu-work-border);
     border-radius: 4px;
 }
 
-/* 设置页采用 Instagram 设置列表 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-script-card:hover {
+    background: #fbfcfc;
+    border-color: #aebdc2;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-title {
+    color: var(--tutu-work-text);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-script-desc {
+    color: var(--tutu-work-muted);
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-script-actions {
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: auto;
+    padding-top: 8px;
+    border-top: 1px solid var(--tutu-work-soft);
+}
+
+/* 收藏 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-group-list {
+    padding: 8px;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-card {
+    color: var(--tutu-work-text);
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 4px;
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-preview {
+    color: var(--tutu-work-text);
+    background: #f3f6f7;
+    border: 1px solid #e2e8ea;
+    border-radius: 4px;
+}
+
+/* 设置页分段 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-settings-section {
-    gap: 0;
-
-    color: var(--tutu-ins-text);
-    background: #fff;
-
-    border: 1px solid var(--tutu-ins-border);
-    border-radius: 8px;
-
-    overflow: visible;
+    padding: 14px;
+    background: var(--tutu-work-surface);
+    border: 1px solid var(--tutu-work-border);
+    border-radius: 6px;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-settings-title {
-    margin: 0;
-    padding: 16px 14px 10px;
+    margin: 0 0 5px;
+    padding-bottom: 9px;
 
-    color: var(--tutu-ins-text);
-
-    border-bottom:
-        1px solid var(--tutu-ins-border);
-
-    font-size: 1em;
+    color: var(--tutu-work-text);
+    border-bottom: 1px solid var(--tutu-work-border);
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-settings-title i {
+    color: var(--tutu-work-primary);
+}
+
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-settings-label {
-    margin: 0;
-    padding: 12px 14px 5px;
-
-    color: var(--tutu-ins-text);
+    color: var(--tutu-work-text);
     opacity: 1;
-
-    font-size: 0.86em;
 }
 
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-settings-section > .text_pole,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-settings-section >
-.tutu-model-select-row,
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-settings-section >
-.tutu-api-preset-row {
-    margin-right: 14px;
-    margin-left: 14px;
-}
-
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-api-help {
-    margin: 8px 14px;
-    color: var(--tutu-ins-muted);
+    color: var(--tutu-work-muted);
     opacity: 1;
 }
 
-/* 删除类操作使用 Instagram 红色 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-favorite-delete-btn,
-#tutu_theater_panel[data-tutu-theme="instagram"]
+/* 次要强调色，用于危险操作 */
+#tutu_theater_panel[data-tutu-theme="breeze"]
 .tutu-delete-script-btn,
-#tutu_theater_panel[data-tutu-theme="instagram"]
+#tutu_theater_panel[data-tutu-theme="breeze"]
+.tutu-favorite-delete-btn,
+#tutu_theater_panel[data-tutu-theme="breeze"]
 #tutu_clear_favorites_btn {
-    color: var(--tutu-ins-danger);
+    color: var(--tutu-work-danger);
 }
 
-/* 空状态 */
-#tutu_theater_panel[data-tutu-theme="instagram"]
-.tutu-empty-library {
-    color: var(--tutu-ins-muted);
-}
-
-/* 移动端模拟 Instagram 底部导航 */
-@media (max-width: 600px) {
-    #tutu_theater_panel[data-tutu-theme="instagram"] {
-        border-radius: 0 !important;
-        border: 0;
-    }
-
-    #tutu_theater_panel[data-tutu-theme="instagram"]
+/* 移动端恢复横向顶部导航 */
+@media (max-width: 700px) {
+    #tutu_theater_panel[data-tutu-theme="breeze"]
     .tutu-icon-toolbar {
-        position: sticky;
-        top: 0;
-        z-index: 15;
+        position: static;
 
-        width: calc(100% + 24px);
-        margin: 0 -12px;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
 
-        background: rgba(255, 255, 255, 0.97);
+        width: 100%;
+        padding: 5px;
+
+        border-radius: 5px;
     }
 
-    #tutu_theater_panel[data-tutu-theme="instagram"]
+    #tutu_theater_panel[data-tutu-theme="breeze"]
+    .tutu-icon-tab {
+        justify-content: center;
+        width: 100%;
+        padding: 0;
+    }
+
+    #tutu_theater_panel[data-tutu-theme="breeze"]
+    .tutu-icon-tab span {
+        display: none !important;
+    }
+
+    #tutu_theater_panel[data-tutu-theme="breeze"]
+    .tutu-icon-tab::after {
+        top: auto;
+        right: 12px;
+        bottom: -5px;
+        left: 12px;
+
+        width: auto;
+        height: 3px;
+
+        transform: scaleX(0);
+    }
+
+    #tutu_theater_panel[data-tutu-theme="breeze"]
+    .tutu-icon-tab.active::after {
+        transform: scaleX(1);
+    }
+
+    #tutu_theater_panel[data-tutu-theme="breeze"]
+    .tutu-tab-content {
+        width: 100%;
+        margin-left: 0;
+        padding-right: 0;
+    }
+
+    #tutu_theater_panel[data-tutu-theme="breeze"]
     .tutu-category-dropzone {
         grid-template-columns: 1fr;
-    }
-
-    #tutu_theater_panel[data-tutu-theme="instagram"]
-    .tutu-prompt-row::before {
-        width: 34px;
-        min-width: 34px;
-        height: 34px;
-    }
-
-    #tutu_theater_panel[data-tutu-theme="instagram"]
-    .tutu-result-toolbar {
-        align-items: stretch;
     }
 }
 
