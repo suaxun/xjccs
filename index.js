@@ -1663,7 +1663,22 @@ localStorage.setItem(
                 <i class="fa-solid fa-rotate-left"></i>
                 清空
             </button>
-            
+                <button
+        type="button"
+        id="tutu_save_manager_style_btn"
+        class="menu_button">
+        <i class="fa-solid fa-floppy-disk"></i>
+        保存样式
+    </button>
+
+    <button
+        type="button"
+        id="tutu_delete_manager_style_btn"
+        class="menu_button">
+        <i class="fa-solid fa-trash"></i>
+        删除样式
+    </button>
+
     <!-- 在这里添加样式导入导出 -->
     <div class="tutu-appearance-actions">
         <button
@@ -7707,12 +7722,154 @@ $(document).on(
         );
     }
 );
-const record = saveTutuStylePreset(
-    'manager',
-    $('#tutu_manager_style_name').val(),
-    $('#tutu_ui_custom_css').val(),
-    $('#tutu_manager_style_preset').val()
+/*
+ * 保存或更新管理器自定义样式
+ */
+$(document).on(
+    'click',
+    '#tutu_save_manager_style_btn',
+    function () {
+        try {
+            const record = saveTutuStylePreset(
+                'manager',
+                $('#tutu_manager_style_name').val(),
+                $('#tutu_ui_custom_css').val(),
+                $('#tutu_manager_style_preset').val()
+            );
+
+            tutuSettings.stylePresetIds.manager = record.id;
+            tutuSettings.uiTheme = 'custom';
+            tutuSettings.uiCustomCss = record.css;
+
+            localStorage.setItem(
+                SETTINGS_KEY,
+                JSON.stringify(tutuSettings)
+            );
+
+            $('#tutu_ui_theme').val('custom');
+
+            renderTutuStylePresetSelects();
+
+            $('#tutu_manager_style_preset').val(record.id);
+            $('#tutu_manager_style_name').val(record.name);
+            $('#tutu_ui_custom_css').val(record.css);
+
+            applyTutuUiTheme('custom', record.css);
+
+            toastr.success(
+                `管理器样式「${record.name}」已保存`
+            );
+        } catch (error) {
+            toastr.warning(
+                error.message || '保存管理器样式失败'
+            );
+        }
+    }
 );
+
+/*
+ * 删除当前选中的管理器样式
+ */
+$(document).on(
+    'click',
+    '#tutu_delete_manager_style_btn',
+    function () {
+        const id = String(
+            $('#tutu_manager_style_preset').val() || ''
+        );
+
+        if (!id) {
+            toastr.warning('请先选择要删除的管理器样式');
+            return;
+        }
+
+        const preset = tutuStyleLibrary.manager.find(
+            item => item.id === id
+        );
+
+        if (!preset) {
+            toastr.error('找不到要删除的管理器样式');
+            return;
+        }
+
+        if (
+            !confirm(
+                `确定删除管理器样式「${preset.name}」吗？`
+            )
+        ) {
+            return;
+        }
+
+        deleteTutuStylePreset('manager', id);
+
+        if (
+            tutuSettings.stylePresetIds.manager === id
+        ) {
+            tutuSettings.stylePresetIds.manager = '';
+            tutuSettings.uiCustomCss = '';
+            tutuSettings.uiTheme = 'classic';
+        }
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+
+        $('#tutu_manager_style_name').val('');
+        $('#tutu_ui_custom_css').val('');
+        $('#tutu_ui_theme').val('classic');
+
+        renderTutuStylePresetSelects();
+        applyTutuUiTheme('classic', '');
+
+        toastr.success(
+            `管理器样式「${preset.name}」已删除`
+        );
+    }
+);
+
+/*
+ * 选择已保存的管理器样式
+ */
+$(document).on(
+    'change',
+    '#tutu_manager_style_preset',
+    function () {
+        const id = String($(this).val() || '');
+
+        const preset = tutuStyleLibrary.manager.find(
+            item => item.id === id
+        );
+
+        $('#tutu_manager_style_name').val(
+            preset?.name || ''
+        );
+
+        $('#tutu_ui_custom_css').val(
+            preset?.css || ''
+        );
+
+        tutuSettings.stylePresetIds.manager = id;
+
+        if (preset) {
+            tutuSettings.uiTheme = 'custom';
+            tutuSettings.uiCustomCss = preset.css;
+
+            $('#tutu_ui_theme').val('custom');
+
+            applyTutuUiTheme(
+                'custom',
+                preset.css
+            );
+        }
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+    }
+);
+
 
 tutuSettings.stylePresetIds.manager = record.id;
 tutuSettings.uiCustomCss = record.css;
