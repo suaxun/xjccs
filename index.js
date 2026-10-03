@@ -1449,7 +1449,7 @@ localStorage.setItem(
         <option value="cream">奶油手账</option>
         <option value="neumorphic">新拟态</option>
         <option value="editorial">编辑部</option>
-<option value="breeze">清透工作台</option>
+<option value="sakura">樱花奶茶</option>
         <option value="archive">纸张档案</option>
         <option value="custom">自定义 CSS</option>
     </select>
@@ -1492,11 +1492,10 @@ localStorage.setItem(
 <button
     type="button"
     class="tutu-theme-preview"
-    data-theme="breeze">
-    <span class="tutu-theme-preview-swatch breeze"></span>
-    <span>清透</span>
+    data-theme="sakura">
+    <span class="tutu-theme-preview-swatch sakura"></span>
+    <span>樱花</span>
 </button>
-
 
         <button
             type="button"
@@ -5715,7 +5714,7 @@ const TUTU_UI_THEMES = new Set([
     'cream',
     'neumorphic',
     'editorial',
-    'breeze',
+    'sakura',
     'archive',
     'custom',
 ]);
@@ -5729,20 +5728,21 @@ function normalizeTutuUiTheme(theme) {
     let value = String(theme || '').trim();
 
     /*
-     * 已删除的旧主题统一迁移到清透工作台，
-     * 防止旧 LocalStorage 导致主题无法加载。
+     * 已删除的旧主题统一迁移到樱花奶茶
      */
     if (
         value === 'terminal' ||
-        value === 'instagram'
+        value === 'instagram' ||
+        value === 'breeze'
     ) {
-        value = 'breeze';
+        value = 'sakura';
     }
 
     return TUTU_UI_THEMES.has(value)
         ? value
         : 'classic';
 }
+
 
 
 
