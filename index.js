@@ -7750,11 +7750,8 @@ $(document).on(
 
             renderTutuStylePresetSelects();
 
-            $('#tutu_manager_style_preset').val(record.id);
             $('#tutu_manager_style_name').val(record.name);
-            $('#tutu_ui_custom_css').val(record.css);
 
-            applyTutuUiTheme('custom', record.css);
 
             toastr.success(
                 `管理器样式「${record.name}」已保存`
@@ -7871,11 +7868,8 @@ $(document).on(
 );
 
 
-tutuSettings.stylePresetIds.manager = record.id;
-tutuSettings.uiCustomCss = record.css;
-saveTutuSettings();
-renderTutuStylePresetSelects();
-applyTutuUiTheme('custom', record.css);
+
+
 const id = $('#tutu_manager_style_preset').val();
 
 if (id && confirm('确定删除这个管理器样式吗？')) {
