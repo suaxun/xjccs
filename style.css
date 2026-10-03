@@ -3141,41 +3141,43 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     border-radius: 0;
 }
 
-.tutu-theme-preview-swatch.sakura {
+.tutu-theme-preview-swatch.polaroid {
     position: relative;
     overflow: hidden;
     background:
         linear-gradient(
-            135deg,
-            #fff5f8 0%,
-            #ffe8f0 100%
+            180deg,
+            #2a2a2a 0%,
+            #2a2a2a 65%,
+            #f5f5f0 65%,
+            #f5f5f0 100%
         );
-    border: 2px solid #ffc7db;
-    box-shadow:
-        inset 0 0 0 1px rgba(255, 182, 209, 0.3);
+    border: 2px solid #1a1a1a;
 }
 
-.tutu-theme-preview-swatch.sakura::before {
-    content: "♡";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: #ff8ba7;
-    font-size: 1.3em;
-}
-
-.tutu-theme-preview-swatch.sakura::after {
+.tutu-theme-preview-swatch.polaroid::before {
     content: "";
     position: absolute;
-    top: -2px;
-    right: -2px;
-    width: 10px;
-    height: 10px;
-    background: #ffd4e3;
-    border-radius: 50%;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 18px;
+    height: 14px;
+    background: #4a9fd8;
+    border-radius: 2px 2px 0 0;
     box-shadow:
-        0 0 8px rgba(255, 139, 167, 0.5);
+        0 0 0 2px #333,
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.tutu-theme-preview-swatch.polaroid::after {
+    content: "●";
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    color: #e74c3c;
+    font-size: 0.6em;
+    text-shadow: 0 0 3px rgba(231, 76, 60, 0.8);
 }
 
 
@@ -3523,538 +3525,664 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         inset -2px -2px 6px var(--tutu-neu-light);
 }
 
+
 /* =========================================================
-   樱花奶茶 - 韩系少女风
+   拍立得相机 - 仿真复古相机面板
    ========================================================= */
 
-#tutu_theater_panel[data-tutu-theme="sakura"] {
-    --tutu-sakura-pink: #ffb6d2;
-    --tutu-sakura-light: #fff5f8;
-    --tutu-sakura-soft: #ffe8f0;
-    --tutu-sakura-cream: #fffbf7;
-    --tutu-sakura-border: #ffd4e3;
-    --tutu-sakura-text: #5a4a50;
-    --tutu-sakura-muted: #b89ba3;
-    --tutu-sakura-accent: #ff8ba7;
-    --tutu-sakura-peach: #ffc7a8;
-    --tutu-sakura-lavender: #e8c9f0;
+#tutu_theater_panel[data-tutu-theme="polaroid"] {
+    --polaroid-body: #2a2a2a;
+    --polaroid-dark: #1a1a1a;
+    --polaroid-lens: #4a9fd8;
+    --polaroid-paper: #f5f5f0;
+    --polaroid-shadow: #e8e6d8;
+    --polaroid-text: #2c2c2c;
+    --polaroid-muted: #6a6a6a;
+    --polaroid-red: #e74c3c;
+    --polaroid-green: #27ae60;
+    --polaroid-frame: #ddd8c5;
 
-    color: var(--tutu-sakura-text);
+    color: var(--polaroid-text);
+    
     background:
-        radial-gradient(
-            circle at 15% 20%,
-            rgba(255, 230, 240, 0.5) 0%,
-            transparent 50%
-        ),
-        radial-gradient(
-            circle at 85% 80%,
-            rgba(255, 199, 168, 0.3) 0%,
-            transparent 50%
-        ),
         linear-gradient(
             135deg,
-            #fff9fb 0%,
-            #fff5f8 100%
+            #2a2a2a 0%,
+            #323232 50%,
+            #2a2a2a 100%
         );
 
-    border: 2px solid var(--tutu-sakura-pink);
-    border-radius: 18px;
+    border: 3px solid var(--polaroid-dark);
+    border-radius: 6px;
 
     box-shadow:
-        0 20px 50px rgba(255, 139, 167, 0.25),
-        0 0 0 1px rgba(255, 182, 209, 0.3) inset,
-        0 8px 24px rgba(255, 199, 218, 0.4);
+        0 20px 50px rgba(0, 0, 0, 0.6),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -2px 8px rgba(0, 0, 0, 0.3);
 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: none;
 
     font-family:
-        "Apple SD Gothic Neo",
-        "Noto Sans KR",
-        "Malgun Gothic",
-        -apple-system,
-        "PingFang SC",
-        sans-serif;
+        "Courier New",
+        Courier,
+        "SF Mono",
+        Monaco,
+        monospace;
 }
 
-/* 标题栏 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
+/* 顶部相机控制区 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 > div:first-child {
-    min-height: 48px;
-    padding: 12px 18px;
-    margin-bottom: 0 !important;
+    position: relative;
+    min-height: 72px;
+    padding: 14px 18px;
+    margin: -18px -18px 0 !important;
 
     background:
         linear-gradient(
-            90deg,
-            rgba(255, 245, 248, 0.95) 0%,
-            rgba(255, 232, 240, 0.95) 100%
+            180deg,
+            #2a2a2a 0%,
+            #222 100%
         );
 
-    border-bottom: 2px solid var(--tutu-sakura-pink);
-    border-radius: 16px 16px 0 0;
+    border-bottom: 2px solid var(--polaroid-dark);
+    border-radius: 4px 4px 0 0;
+
+    box-shadow:
+        inset 0 -3px 8px rgba(0, 0, 0, 0.4);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+/* 相机品牌 Logo */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 > div:first-child h3 {
-    color: var(--tutu-sakura-accent);
-    font-size: 1.2em !important;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    color: #fff !important;
+    font-family:
+        "SF Compact Display",
+        -apple-system,
+        sans-serif !important;
+    font-size: 1.15em !important;
     font-weight: 700;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 > div:first-child h3::before {
-    content: "🌸 ";
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 28px;
+
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #6eb8e8 0%,
+            #4a9fd8 45%,
+            #2871a8 100%
+        );
+
+    border: 3px solid #333;
+    border-radius: 4px;
+
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.2),
+        inset 0 1px 3px rgba(255, 255, 255, 0.4),
+        0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+/* 电源指示灯 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+> div:first-child::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    right: 72px;
+
+    width: 8px;
+    height: 8px;
+
+    background: var(--polaroid-red);
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 8px var(--polaroid-red),
+        0 0 14px rgba(231, 76, 60, 0.6),
+        inset 0 1px 2px rgba(255, 255, 255, 0.3);
+
+    animation: polaroid-blink 2s ease-in-out infinite;
+}
+
+@keyframes polaroid-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* 关闭按钮改为相机电源键 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 #tutu_close {
     display: inline-flex;
     align-items: center;
     justify-content: center;
 
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
 
-    color: var(--tutu-sakura-muted);
-    background: rgba(255, 255, 255, 0.7);
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #444 0%,
+            #2a2a2a 60%,
+            #1a1a1a 100%
+        );
 
-    border: 2px solid var(--tutu-sakura-border);
+    border: 2px solid #111;
     border-radius: 50%;
 
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow:
+        0 4px 8px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.15),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+
+    font-size: 1.1em;
+    cursor: pointer;
+
+    transition: all 0.2s ease;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 #tutu_close:hover {
-    color: #fff;
-    background: var(--tutu-sakura-accent);
-    border-color: var(--tutu-sakura-accent);
-    transform: rotate(90deg) scale(1.08);
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #e74c3c 0%,
+            #c0392b 60%,
+            #a93226 100%
+        );
+    box-shadow:
+        0 0 12px rgba(231, 76, 60, 0.6),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
 }
 
-/* 导航栏 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+#tutu_close:active {
+    transform: scale(0.92);
+}
+
+/* 功能按钮改为相机模式旋钮 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-icon-toolbar {
-    padding: 8px 12px 16px;
+    position: relative;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+
+    padding: 16px 12px;
+    margin: 0 -18px;
 
     background:
         linear-gradient(
-            90deg,
-            rgba(255, 245, 248, 0.8) 0%,
-            rgba(255, 251, 247, 0.8) 100%
+            180deg,
+            #2a2a2a 0%,
+            #1f1f1f 100%
         );
 
     border: 0;
-    border-bottom: 2px dashed var(--tutu-sakura-border);
-    border-radius: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 2px solid #111;
+
+    box-shadow:
+        inset 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+/* 模式刻度线 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-toolbar::before {
+    content: "";
+    position: absolute;
+    top: 8px;
+    left: 20px;
+    right: 20px;
+    height: 2px;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.1) 0,
+            rgba(255, 255, 255, 0.1) 2px,
+            transparent 2px,
+            transparent 12px
+        );
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-icon-tab {
     position: relative;
 
-    width: 52px;
-    height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 54px;
+    height: 54px;
     padding: 0;
 
-    color: var(--tutu-sakura-muted);
+    color: #999;
     background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(255, 245, 248, 0.9) 100%
+        radial-gradient(
+            circle at 35% 35%,
+            #3a3a3a 0%,
+            #2a2a2a 50%,
+            #1f1f1f 100%
         );
 
-    border: 2px solid var(--tutu-sakura-border);
-    border-radius: 16px;
+    border: 3px solid #1a1a1a;
+    border-radius: 50%;
 
     box-shadow:
-        0 4px 12px rgba(255, 139, 167, 0.15);
+        0 4px 10px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.08),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.4);
 
     opacity: 1;
-
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab i {
-    font-size: 1.42em;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab:hover {
-    color: var(--tutu-sakura-accent);
-    background:
-        linear-gradient(
-            135deg,
-            #fff 0%,
-            var(--tutu-sakura-soft) 100%
-        );
-    border-color: var(--tutu-sakura-pink);
-    transform: translateY(-3px) scale(1.05);
-    box-shadow:
-        0 8px 20px rgba(255, 139, 167, 0.3);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab:hover i {
-    transform: scale(1.12);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab.active {
-    color: #fff;
-    background:
-        linear-gradient(
-            135deg,
-            var(--tutu-sakura-accent) 0%,
-            #ff6f8e 100%
-        );
-    border-color: var(--tutu-sakura-accent);
-    box-shadow:
-        0 8px 24px rgba(255, 139, 167, 0.45),
-        0 0 0 3px rgba(255, 139, 167, 0.2);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab.active i {
-    transform: scale(1.18);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-tab::after {
-    display: none;
-}
-
-/* 输入框 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.text_pole {
-    color: var(--tutu-sakura-text);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(255, 251, 247, 0.95) 100%
-        ) !important;
-
-    border: 2px solid var(--tutu-sakura-border) !important;
-    border-radius: 12px !important;
-
-    box-shadow:
-        0 2px 8px rgba(255, 182, 209, 0.12),
-        inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
-
-    transition: all 0.25s ease;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.text_pole:hover {
-    border-color: var(--tutu-sakura-pink) !important;
-    box-shadow:
-        0 4px 14px rgba(255, 139, 167, 0.2),
-        inset 0 1px 2px rgba(255, 255, 255, 0.8) !important;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.text_pole:focus {
-    border-color: var(--tutu-sakura-accent) !important;
-    outline: none;
-    box-shadow:
-        0 0 0 4px rgba(255, 139, 167, 0.15),
-        0 6px 18px rgba(255, 139, 167, 0.25),
-        inset 0 1px 2px rgba(255, 255, 255, 0.9) !important;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.text_pole::placeholder {
-    color: var(--tutu-sakura-muted);
-}
-
-/* 生成工作区 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-compact-control-panel {
-    padding: 14px;
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.9) 0%,
-            rgba(255, 245, 248, 0.9) 100%
-        );
-
-    border: 2px solid var(--tutu-sakura-pink);
-    border-radius: 16px;
-
-    box-shadow:
-        0 6px 20px rgba(255, 139, 167, 0.18);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-prompt-row textarea#tutu_prompt {
-    min-height: 48px;
-    padding: 12px 15px !important;
-}
-
-/* 操作按钮 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-action,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.menu_button,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-mode-btn {
-    color: var(--tutu-sakura-text);
-
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.95) 0%,
-            rgba(255, 245, 248, 0.95) 100%
-        );
-
-    border: 2px solid var(--tutu-sakura-border);
-    border-radius: 12px;
-
-    box-shadow:
-        0 4px 12px rgba(255, 182, 209, 0.15);
+    cursor: pointer;
 
     transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-action:hover,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.menu_button:hover,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-mode-btn:hover {
-    color: var(--tutu-sakura-accent);
-    background:
-        linear-gradient(
-            135deg,
-            #fff 0%,
-            var(--tutu-sakura-soft) 100%
-        );
-    border-color: var(--tutu-sakura-pink);
-    transform: translateY(-2px);
-    box-shadow:
-        0 8px 20px rgba(255, 139, 167, 0.28);
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab i {
+    font-size: 1.35em;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-action.primary {
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab:hover {
     color: #fff;
     background:
-        linear-gradient(
-            135deg,
-            var(--tutu-sakura-accent) 0%,
-            #ff6f8e 100%
+        radial-gradient(
+            circle at 35% 35%,
+            #444 0%,
+            #333 50%,
+            #2a2a2a 100%
         );
-    border-color: var(--tutu-sakura-accent);
+    transform: translateY(-2px) rotate(8deg);
     box-shadow:
-        0 6px 18px rgba(255, 139, 167, 0.4),
-        0 0 0 3px rgba(255, 139, 167, 0.15);
+        0 6px 14px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.12);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-icon-action.primary:hover {
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab:hover i {
+    transform: scale(1.1);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab.active {
     color: #fff;
     background:
-        linear-gradient(
-            135deg,
-            #ff6f8e 0%,
-            #ff5577 100%
+        radial-gradient(
+            circle at 35% 35%,
+            #27ae60 0%,
+            #229954 50%,
+            #1e8449 100%
         );
-    transform: translateY(-3px) scale(1.03);
-    box-shadow:
-        0 10px 26px rgba(255, 85, 119, 0.5),
-        0 0 0 4px rgba(255, 139, 167, 0.2);
-}
 
-/* 自动状态 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_auto_status.tutu-auto-status {
-    border: 2px dashed var(--tutu-sakura-border);
-    background: rgba(255, 255, 255, 0.7);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_auto_status.tutu-auto-status i {
-    color: var(--tutu-sakura-muted);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_auto_status.tutu-auto-status.enabled {
-    border-color: var(--tutu-sakura-accent);
-    border-style: solid;
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 139, 167, 0.15) 0%,
-            rgba(255, 182, 209, 0.15) 100%
-        );
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_auto_status.tutu-auto-status.enabled i {
-    color: var(--tutu-sakura-accent);
-}
-
-/* 结果区 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-box {
-    padding: 0;
-
-    color: var(--tutu-sakura-text);
-    background: rgba(255, 255, 255, 0.92);
-
-    border: 2px solid var(--tutu-sakura-pink);
-    border-radius: 16px;
+    border-color: #196f3d;
 
     box-shadow:
-        0 8px 24px rgba(255, 139, 167, 0.2);
+        0 0 16px rgba(39, 174, 96, 0.6),
+        0 6px 14px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2);
 
-    overflow: hidden;
+    transform: rotate(12deg);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-toolbar {
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab.active i {
+    transform: scale(1.15);
+}
+
+/* 指示灯 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab::after {
+    content: "";
+    position: absolute;
+    top: 2px;
+    right: 4px;
+
+    width: 6px;
+    height: 6px;
+
+    background: transparent;
+    border-radius: 50%;
+
+    transform: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-tab.active::after {
+    background: var(--polaroid-green);
+    box-shadow:
+        0 0 6px var(--polaroid-green),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
+/* 照片输出槽 - 生成工作区 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-compact-control-panel {
+    position: relative;
+    padding: 14px;
+
+    background: var(--polaroid-body);
+    border: 2px solid var(--polaroid-dark);
+    border-radius: 4px;
+
+    box-shadow:
+        inset 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-prompt-row textarea#tutu_prompt {
     min-height: 52px;
-    padding: 10px 14px;
-    margin: 0;
+    padding: 12px 14px !important;
 
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255, 245, 248, 0.95) 0%,
-            rgba(255, 251, 247, 0.95) 100%
-        );
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper) !important;
 
-    border-bottom: 2px solid var(--tutu-sakura-border);
+    border: 2px solid var(--polaroid-frame) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        0 2px 6px rgba(0, 0, 0, 0.15),
+        inset 0 1px 2px rgba(0, 0, 0, 0.08) !important;
+
+    font-family: inherit;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_result_status {
-    color: var(--tutu-sakura-text);
-    font-size: 0.88em;
+/* 输入框和下拉框 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.text_pole {
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper) !important;
+
+    border: 2px solid var(--polaroid-frame) !important;
+    border-radius: 3px !important;
+
+    box-shadow:
+        0 2px 5px rgba(0, 0, 0, 0.12),
+        inset 0 1px 2px rgba(0, 0, 0, 0.06) !important;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.text_pole:focus {
+    border-color: var(--polaroid-lens) !important;
+    outline: none;
+    box-shadow:
+        0 0 0 3px rgba(74, 159, 216, 0.2),
+        0 3px 8px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* 相机控制按钮 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-mode-btn {
+    color: #eee;
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #444 0%,
+            #333 50%,
+            #2a2a2a 100%
+        );
+
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+
+    box-shadow:
+        0 3px 8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 2px rgba(255, 255, 255, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3);
+
     font-weight: 600;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-preview {
-    color: var(--tutu-sakura-text);
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-source {
-    color: var(--tutu-sakura-text);
-    background: var(--tutu-sakura-light);
-    border-radius: 0;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-result-mode-btn.active {
-    color: #fff;
-    background:
-        linear-gradient(
-            135deg,
-            var(--tutu-sakura-accent) 0%,
-            #ff6f8e 100%
-        );
-    border-color: var(--tutu-sakura-accent);
-    box-shadow:
-        0 4px 14px rgba(255, 139, 167, 0.35);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-#tutu_favorite_current_btn.active {
-    color: #fff;
-    background:
-        linear-gradient(
-            135deg,
-            #ff6f8e 0%,
-            #ff5577 100%
-        );
-    border-color: #ff5577;
-    box-shadow:
-        0 4px 14px rgba(255, 85, 119, 0.4);
-}
-
-/* 剧本库 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-library-toolbar,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-toolbar {
-    padding-bottom: 12px;
-    border-bottom: 2px dashed var(--tutu-sakura-border);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-library-title {
-    color: var(--tutu-sakura-accent);
-    font-weight: 700;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-category-section,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-group {
-    padding: 0;
-
-    background: rgba(255, 255, 255, 0.88);
-    border: 2px solid var(--tutu-sakura-pink);
-    border-radius: 16px;
-
-    box-shadow:
-        0 6px 18px rgba(255, 139, 167, 0.18);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-category-header,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-group-header {
-    min-height: 50px;
-    padding: 10px 14px;
-
-    color: var(--tutu-sakura-text);
-
-    background:
-        linear-gradient(
-            90deg,
-            rgba(255, 245, 248, 0.95) 0%,
-            rgba(255, 232, 240, 0.95) 100%
-        );
-
-    border-bottom: 2px solid var(--tutu-sakura-border);
-    border-radius: 14px 14px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 
     transition: all 0.22s ease;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-action:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.menu_button:hover,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-mode-btn:hover {
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #555 0%,
+            #444 50%,
+            #333 100%
+        );
+    transform: translateY(-1px);
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.5),
+        inset 0 1px 2px rgba(255, 255, 255, 0.15);
+}
+
+/* 快门按钮 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-action.primary {
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #e74c3c 0%,
+            #c0392b 50%,
+            #a93226 100%
+        );
+
+    border-color: #922b21;
+
+    box-shadow:
+        0 0 12px rgba(231, 76, 60, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.5),
+        inset 0 2px 4px rgba(255, 255, 255, 0.2),
+        inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-action.primary:hover {
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #ec7063 0%,
+            #e74c3c 50%,
+            #c0392b 100%
+        );
+    transform: translateY(-2px);
+    box-shadow:
+        0 0 18px rgba(231, 76, 60, 0.6),
+        0 6px 14px rgba(0, 0, 0, 0.6);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-icon-action.primary:active {
+    transform: translateY(0) scale(0.96);
+}
+
+/* 自动模式指示 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+#tutu_auto_status.tutu-auto-status {
+    color: #999;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px dashed #444;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+#tutu_auto_status.tutu-auto-status.enabled {
+    color: var(--polaroid-green);
+    background: rgba(39, 174, 96, 0.15);
+    border-color: var(--polaroid-green);
+    border-style: solid;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+#tutu_auto_status.tutu-auto-status.enabled i {
+    color: var(--polaroid-green);
+    animation: polaroid-blink 1.5s ease-in-out infinite;
+}
+
+/* 拍立得照片输出区 - 结果展示 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-box {
+    position: relative;
+    padding: 0;
+
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper);
+
+    border: 3px solid var(--polaroid-frame);
+    border-radius: 4px;
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.3),
+        0 2px 6px rgba(0, 0, 0, 0.2);
+
+    overflow: hidden;
+}
+
+/* 照片顶部留白 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-box::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 16px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(232, 230, 216, 0.8) 0%,
+            transparent 100%
+        );
+
+    pointer-events: none;
+    z-index: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-toolbar {
+    min-height: 48px;
+    padding: 8px 12px;
+    margin: 0;
+
+    background: rgba(245, 245, 240, 0.95);
+    border-bottom: 2px solid var(--polaroid-shadow);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+#tutu_result_status {
+    color: var(--polaroid-muted);
+    font-size: 0.82em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-preview {
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper);
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-source {
+    color: var(--polaroid-text);
+    background: #e8e6d8;
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background:
+        radial-gradient(
+            circle at 30% 30%,
+            #4a9fd8 0%,
+            #2e7ba8 50%,
+            #1e5c7a 100%
+        );
+    border-color: #1a4d66;
+    box-shadow:
+        0 0 12px rgba(74, 159, 216, 0.4),
+        0 3px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* 相册与档案 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-group {
+    padding: 0;
+
+    background: var(--polaroid-paper);
+    border: 3px solid var(--polaroid-frame);
+    border-radius: 4px;
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-group-header {
+    min-height: 46px;
+    padding: 10px 12px;
+
+    color: var(--polaroid-text);
+    background:
+        linear-gradient(
+            180deg,
+            #e8e6d8 0%,
+            #ddd8c5 100%
+        );
+
+    border-bottom: 2px solid var(--polaroid-shadow);
+    border-radius: 2px 2px 0 0;
+
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-category-header:hover,
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-favorite-group-header:hover {
     background:
         linear-gradient(
-            90deg,
-            rgba(255, 232, 240, 0.98) 0%,
-            rgba(255, 212, 227, 0.98) 100%
+            180deg,
+            #eeede5 0%,
+            #e8e6d8 100%
         );
     filter: none;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-category-title > i,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-group-title > i {
-    color: var(--tutu-sakura-accent);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-category-dropzone {
     display: flex;
     flex-direction: column;
@@ -4062,178 +4190,190 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
     padding: 12px;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+/* 拍立得照片卡片 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-script-card {
-    padding: 14px;
-
-    color: var(--tutu-sakura-text);
-    background:
-        linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.98) 0%,
-            rgba(255, 251, 247, 0.98) 100%
-        );
-
-    border: 2px solid var(--tutu-sakura-border);
-    border-radius: 12px;
-
-    box-shadow:
-        0 3px 10px rgba(255, 182, 209, 0.12);
-
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-script-card:hover {
-    background:
-        linear-gradient(
-            135deg,
-            #fff 0%,
-            var(--tutu-sakura-soft) 100%
-        );
-    border-color: var(--tutu-sakura-pink);
-    transform: translateY(-3px);
-    box-shadow:
-        0 8px 22px rgba(255, 139, 167, 0.25);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-script-name,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-title {
-    color: var(--tutu-sakura-accent);
-    font-weight: 700;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-script-desc {
-    color: var(--tutu-sakura-muted);
-    opacity: 1;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-script-actions {
-    padding-top: 10px;
-    border-top: 2px dashed var(--tutu-sakura-border);
-}
-
-/* 收藏 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-group-list {
+    position: relative;
     padding: 12px;
-}
+    padding-top: 16px;
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-card {
-    padding: 14px;
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper);
 
-    color: var(--tutu-sakura-text);
-    background: rgba(255, 255, 255, 0.95);
-
-    border: 2px solid var(--tutu-sakura-border);
-    border-radius: 12px;
+    border: 2px solid var(--polaroid-frame);
+    border-radius: 3px;
 
     box-shadow:
-        0 4px 12px rgba(255, 182, 209, 0.15);
+        0 3px 10px rgba(0, 0, 0, 0.2),
+        inset 0 1px 2px rgba(255, 255, 255, 0.5);
 
     transition: all 0.25s ease;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-card:hover {
-    transform: translateY(-2px);
+/* 照片顶部留白效果 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-script-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(232, 230, 216, 0.6) 0%,
+            transparent 100%
+        );
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-script-card:hover {
+    transform: translateY(-3px) rotate(-0.5deg);
     box-shadow:
-        0 8px 20px rgba(255, 139, 167, 0.25);
+        0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-preview {
-    color: var(--tutu-sakura-text);
-    background: var(--tutu-sakura-light);
-    border: 2px solid #ffeef5;
-    border-radius: 10px;
-}
-
-/* 设置页 */
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-settings-section {
-    padding: 16px;
-
-    background: rgba(255, 255, 255, 0.88);
-    border: 2px solid var(--tutu-sakura-pink);
-    border-radius: 16px;
-
-    box-shadow:
-        0 6px 18px rgba(255, 139, 167, 0.15);
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-settings-title {
-    margin: 0 0 10px;
-    padding-bottom: 10px;
-
-    color: var(--tutu-sakura-accent);
-    border-bottom: 2px dashed var(--tutu-sakura-border);
-
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-title {
+    color: var(--polaroid-text);
     font-weight: 700;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-settings-title i {
-    color: var(--tutu-sakura-accent);
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-script-desc {
+    color: var(--polaroid-muted);
+    opacity: 1;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-script-actions {
+    padding-top: 8px;
+    border-top: 1px dashed var(--polaroid-shadow);
+}
+
+/* 收藏 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-group-list {
+    padding: 12px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-card {
+    position: relative;
+    padding: 12px;
+    padding-top: 16px;
+
+    color: var(--polaroid-text);
+    background: var(--polaroid-paper);
+
+    border: 2px solid var(--polaroid-frame);
+    border-radius: 3px;
+
+    box-shadow:
+        0 3px 10px rgba(0, 0, 0, 0.2);
+
+    transition: all 0.22s ease;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+
+    background:
+        linear-gradient(
+            180deg,
+            rgba(232, 230, 216, 0.6) 0%,
+            transparent 100%
+        );
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-card:hover {
+    transform: translateY(-2px) rotate(0.5deg);
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-favorite-preview {
+    color: var(--polaroid-text);
+    background: #f9f8f2;
+    border: 1px solid var(--polaroid-shadow);
+    border-radius: 2px;
+}
+
+/* 设置面板 */
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-settings-section {
+    padding: 14px;
+
+    background: var(--polaroid-paper);
+    border: 3px solid var(--polaroid-frame);
+    border-radius: 4px;
+
+    box-shadow:
+        0 6px 16px rgba(0, 0, 0, 0.25);
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
+.tutu-settings-title {
+    margin: 0 0 8px;
+    padding-bottom: 8px;
+
+    color: var(--polaroid-text);
+    border-bottom: 2px solid var(--polaroid-shadow);
+
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-settings-label {
-    color: var(--tutu-sakura-text);
+    color: var(--polaroid-text);
     opacity: 1;
     font-weight: 600;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-api-help {
-    color: var(--tutu-sakura-muted);
+    color: var(--polaroid-muted);
     opacity: 1;
 }
 
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-delete-script-btn,
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 .tutu-favorite-delete-btn,
-#tutu_theater_panel[data-tutu-theme="sakura"]
+#tutu_theater_panel[data-tutu-theme="polaroid"]
 #tutu_clear_favorites_btn {
-    color: #ff6f8e;
-}
-
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-category-count,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-group-count,
-#tutu_theater_panel[data-tutu-theme="sakura"]
-.tutu-favorite-time {
-    color: var(--tutu-sakura-muted);
-    opacity: 1;
+    color: var(--polaroid-red);
 }
 
 /* 移动端 */
 @media (max-width: 600px) {
-    #tutu_theater_panel[data-tutu-theme="sakura"] {
-        border-radius: 12px;
-    }
-
-    #tutu_theater_panel[data-tutu-theme="sakura"]
+    #tutu_theater_panel[data-tutu-theme="polaroid"]
     .tutu-icon-tab {
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
+        width: 48px;
+        height: 48px;
     }
 
-    #tutu_theater_panel[data-tutu-theme="sakura"]
+    #tutu_theater_panel[data-tutu-theme="polaroid"]
     .tutu-script-actions {
         flex-wrap: wrap;
         justify-content: center;
     }
 }
+
 
 
 /* =========================================================
@@ -4405,5 +4545,477 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
 .tutu-favorite-card:hover {
     transform: translateY(-2px);
     box-shadow: 3px 3px 0 rgba(85, 71, 45, 0.5);
+}
+/* =========================================================
+   编辑部
+   ========================================================= */
+
+#tutu_theater_panel[data-tutu-theme="editorial"] {
+    color: #111;
+    background: #f6f4ef;
+
+    border: 4px solid #111;
+    border-radius: 0;
+
+    box-shadow:
+        14px 14px 0 #111,
+        15px 15px 0 rgba(17, 17, 17, 0.2);
+
+    backdrop-filter: none;
+
+    font-family:
+        Georgia,
+        "Noto Serif SC",
+        "Songti SC",
+        serif;
+}
+
+/* 标题栏 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+> div:first-child {
+    min-height: 52px;
+    padding: 14px 18px;
+    margin: -18px -18px 0 !important;
+
+    background:
+        repeating-linear-gradient(
+            90deg,
+            #fff 0,
+            #fff 1px,
+            transparent 1px,
+            transparent 3px
+        ),
+        #111;
+
+    border-bottom: 4px solid #111;
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+> div:first-child h3 {
+    color: #fff !important;
+    font-size: 1.3em !important;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+#tutu_close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    height: 38px;
+
+    color: #fff;
+    background: #c83d35;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 4px 4px 0 #111;
+
+    font-weight: 900;
+
+    transition: all 0.15s ease;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+#tutu_close:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+#tutu_close:active {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 #111;
+}
+
+/* 标签导航 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-toolbar {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0;
+
+    padding: 0;
+    margin: 0 -18px;
+
+    background: #fff;
+    border: 3px solid #111;
+    border-left: 0;
+    border-right: 0;
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab {
+    flex: 1;
+
+    width: auto;
+    height: 48px;
+    padding: 0;
+
+    color: #111;
+    background: #fff;
+
+    border: 0;
+    border-right: 2px solid #111;
+    border-radius: 0;
+
+    opacity: 1;
+
+    font-weight: 700;
+    text-transform: uppercase;
+
+    transition: all 0.12s ease;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab:last-child {
+    border-right: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab:hover {
+    background: #f0f0f0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab:hover i {
+    transform: scale(1.08);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab.active {
+    color: #fff;
+    background: #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab.active i {
+    transform: scale(1.15);
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-tab::after {
+    display: none;
+}
+
+/* 输入框 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.text_pole {
+    color: #111;
+    background: #fff !important;
+
+    border: 3px solid #111 !important;
+    border-radius: 0 !important;
+
+    box-shadow: none !important;
+
+    font-family: inherit;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.text_pole:focus {
+    outline: 3px solid #c83d35;
+    outline-offset: 2px;
+}
+
+/* 按钮 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.menu_button,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-mode-btn {
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 4px 4px 0 #111;
+
+    font-weight: 700;
+    text-transform: uppercase;
+
+    transition: all 0.12s ease;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.menu_button:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-mode-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action:active,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.menu_button:active {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-icon-action.primary,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-mode-btn.active {
+    color: #fff;
+    background: #c83d35;
+}
+
+/* 结果区 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-box {
+    padding: 0;
+
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 6px 6px 0 #111;
+
+    overflow: hidden;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-toolbar {
+    min-height: 50px;
+    padding: 10px 14px;
+    margin: 0;
+
+    background: #f6f4ef;
+    border-bottom: 3px solid #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+#tutu_result_status {
+    color: #111;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-preview {
+    color: #111;
+    background: #fff;
+    border-radius: 0;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-result-source {
+    color: #111;
+    background: #f6f4ef;
+    border-radius: 0;
+}
+
+/* 剧本库 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-section,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-group {
+    padding: 0;
+
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 5px 5px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-header,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-group-header {
+    min-height: 48px;
+    padding: 12px 14px;
+
+    color: #fff;
+    background: #111;
+
+    border-bottom: 3px solid #111;
+    border-radius: 0;
+
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-header:hover,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-group-header:hover {
+    background: #222;
+    filter: none;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-category-dropzone {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-card {
+    position: relative;
+    padding: 14px;
+
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 3px 3px 0 #111;
+
+    transition: all 0.12s ease;
+}
+
+/* 装饰菱形 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-name::before,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-title::before {
+    content: "◆";
+    margin-right: 8px;
+    color: #c83d35;
+    font-size: 0.8em;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-name,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-title {
+    color: #c83d35;
+    font-weight: 700;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-desc {
+    color: #555;
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-script-actions {
+    padding-top: 10px;
+    border-top: 2px solid #ddd;
+}
+
+/* 收藏 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-group-list {
+    padding: 14px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-card {
+    padding: 14px;
+
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 3px 3px 0 #111;
+
+    transition: all 0.12s ease;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-preview {
+    color: #111;
+    background: #f6f4ef;
+    border: 2px solid #ddd;
+    border-radius: 0;
+}
+
+/* 设置 */
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-settings-section {
+    padding: 14px;
+
+    color: #111;
+    background: #fff;
+
+    border: 3px solid #111;
+    border-radius: 0;
+
+    box-shadow: 5px 5px 0 #111;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-settings-title {
+    margin: 0 0 10px;
+    padding-bottom: 10px;
+
+    color: #111;
+    border-bottom: 3px solid #111;
+
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-settings-label {
+    color: #111;
+    opacity: 1;
+    font-weight: 700;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-api-help {
+    color: #555;
+    opacity: 1;
+}
+
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-delete-script-btn,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+.tutu-favorite-delete-btn,
+#tutu_theater_panel[data-tutu-theme="editorial"]
+#tutu_clear_favorites_btn {
+    color: #c83d35;
+}
+
+/* 移动端 */
+@media (max-width: 600px) {
+    #tutu_theater_panel[data-tutu-theme="editorial"] {
+        box-shadow: 8px 8px 0 #111;
+    }
+
+    #tutu_theater_panel[data-tutu-theme="editorial"]
+    .tutu-script-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
 }
 
