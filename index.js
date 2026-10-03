@@ -666,13 +666,24 @@ function renderTutuFavorites() {
      *
      * 没有记录时，默认全部折叠
      */
-    const expandedGroups =
-        loadTutuFavoriteExpandedGroups();
+const expandedGroups =
+    loadTutuFavoriteExpandedGroups();
 
-    groupedFavorites.forEach(
-        (items, characterName) => {
-            const isExpanded =
-                expandedGroups.has(characterName);
+/*
+ * 没有任何展开状态记录时，默认展开全部分组。
+ * 用户操作过分组后，再按照保存的状态恢复。
+ */
+const hasSavedExpandedState =
+    localStorage.getItem(
+        FAVORITES_EXPANDED_KEY
+    ) !== null;
+
+groupedFavorites.forEach(
+    (items, characterName) => {
+        const isExpanded =
+            !hasSavedExpandedState ||
+            expandedGroups.has(characterName);
+
 
             const $group = $(`
                 <div class="tutu-favorite-group">
@@ -917,7 +928,6 @@ outputMode: 'panel',
 // 界面外观
 uiTheme: 'classic',
 uiCustomCss: '',
-embedTheme: 'classic',
 
 stylePresetIds: {
     manager: '',
@@ -1731,52 +1741,7 @@ localStorage.setItem(
 <label class="tutu-settings-label">
     嵌入楼层默认状态
 </label>
-<label class="tutu-settings-label">
-    折叠条样式
-</label>
 
-<select id="tutu_embed_theme" class="text_pole">
-    <option value="classic">经典</option>
-    <option value="minimal">极简</option>
-    <option value="paper">信纸</option>
-    <option value="neon">霓虹</option>
-    <option value="custom">自定义 CSS</option>
-</select>
-
-<div id="tutu_embed_custom_style_box" style="display:none;">
-    <input
-        id="tutu_embed_style_name"
-        class="text_pole"
-        placeholder="样式名称">
-
-    <select
-        id="tutu_embed_style_preset"
-        class="text_pole">
-        <option value="">选择已保存样式</option>
-    </select>
-
-    <textarea
-        id="tutu_embed_custom_css"
-        class="text_pole tutu-ui-custom-css"
-        rows="10"
-        placeholder="{{root}} {
-    border-radius: 4px;
-}
-
-{{root}} .tutu-theater-embed-header {
-    background: #222;
-}"></textarea>
-
-    <div class="tutu-appearance-actions">
-        <button id="tutu_save_embed_style" class="menu_button">
-            保存
-        </button>
-
-        <button id="tutu_delete_embed_style" class="menu_button">
-            删除
-        </button>
-    </div>
-</div>
 
 <select id="tutu_embed_default_state" class="text_pole">
     <option value="expanded">
@@ -1987,8 +1952,6 @@ localStorage.setItem(
             保存设置
         </div>
     </div>
-
-</div>
 <!-- TAB 5: 我的收藏 -->
 <div id="tutu_tab_favorites" class="tutu-tab-content">
 
@@ -3417,12 +3380,8 @@ function appendTheaterToDOM(
         Boolean(tutuSettings.embedDefaultCollapsed);
 
 const details = document.createElement('details');
-const embedTheme =
-    tutuSettings.embedTheme || 'classic';
 
-details.className =
-    `tutu-theater-embed tutu-embed-theme-${embedTheme}`;
-
+details.className = 'tutu-theater-embed';
 details.open = !isCollapsed;
 
 /*
@@ -3448,7 +3407,8 @@ titleSpan.textContent = '🐰 兔兔小剧场';
 
 const toggleSpan = document.createElement('span');
 toggleSpan.className = 'tutu-theater-embed-toggle';
-toggleSpan.textContent = '点击展开/折叠';
+toggleSpan.textContent = '';
+toggleSpan.setAttribute('aria-hidden', 'true');
 
 const embedActions = document.createElement('span');
 embedActions.className = 'tutu-theater-embed-actions';
@@ -3592,34 +3552,6 @@ function installTutuTargetCss(target, css) {
         .replaceAll('{{root}}', rootMap[target]);
 }
 
-function applyTutuEmbedStyle() {
-    const theme = tutuSettings.embedTheme || 'classic';
-
-    document
-        .querySelectorAll('.tutu-theater-embed')
-        .forEach(element => {
-            element.classList.remove(
-                'tutu-embed-theme-classic',
-                'tutu-embed-theme-minimal',
-                'tutu-embed-theme-paper',
-                'tutu-embed-theme-neon',
-                'tutu-embed-theme-custom'
-            );
-
-            element.classList.add(
-                `tutu-embed-theme-${theme}`
-            );
-        });
-
-    const id = tutuSettings.stylePresetIds.embed;
-    const preset = tutuStyleLibrary.embed
-        .find(item => item.id === id);
-
-    installTutuTargetCss(
-        'embed',
-        theme === 'custom' ? preset?.css || '' : ''
-    );
-}
 
 
 // ==========================================
@@ -5994,8 +5926,6 @@ uiCustomCss:
     String(
         $('#tutu_ui_custom_css').val() || ''
     ),
-embedTheme:
-    $('#tutu_embed_theme').val() || 'classic',
 
 stylePresetIds: {
     ...tutuSettings.stylePresetIds,
@@ -6223,14 +6153,10 @@ $('#tutu_ui_theme').val(
 $('#tutu_ui_custom_css').val(
     tutuSettings.uiCustomCss || ''
 );
-$('#tutu_embed_theme')
-    .val(tutuSettings.embedTheme || 'classic');
 
-$('#tutu_embed_custom_style_box')
-    .toggle(tutuSettings.embedTheme === 'custom');
 
 renderTutuStylePresetSelects();
-applyTutuEmbedStyle();
+
 applyTutuUiTheme(
     tutuSettings.uiTheme,
     tutuSettings.uiCustomCss
@@ -7265,11 +7191,6 @@ function renderTutuStylePresetSelects() {
     );
 
     renderTutuStylePresetSelect(
-        'embed',
-        '#tutu_embed_style_preset'
-    );
-
-    renderTutuStylePresetSelect(
         'quote',
         '#tutu_quote_style_preset'
     );
@@ -7669,19 +7590,7 @@ $(document).on('change', '#tutu_import_styles_file', async function () {
     );
 });
 
-    $(document).on('change', '#tutu_embed_theme', function () {
-    tutuSettings.embedTheme = $(this).val() || 'classic';
 
-    $('#tutu_embed_custom_style_box')
-        .toggle(tutuSettings.embedTheme === 'custom');
-
-    localStorage.setItem(
-        SETTINGS_KEY,
-        JSON.stringify(tutuSettings)
-    );
-
-    applyTutuEmbedStyle();
-});
 
     $(document).on(
     'change',
