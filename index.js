@@ -1449,7 +1449,7 @@ localStorage.setItem(
         <option value="cream">奶油手账</option>
         <option value="neumorphic">新拟态</option>
         <option value="editorial">编辑部</option>
-        <option value="terminal">终端控制台</option>
+        <option value="instagram">Instagram 主页</option>
         <option value="archive">纸张档案</option>
         <option value="custom">自定义 CSS</option>
     </select>
@@ -1489,14 +1489,13 @@ localStorage.setItem(
             <span class="tutu-theme-preview-swatch editorial"></span>
             <span>编辑部</span>
         </button>
-
-        <button
-            type="button"
-            class="tutu-theme-preview"
-            data-theme="terminal">
-            <span class="tutu-theme-preview-swatch terminal"></span>
-            <span>终端</span>
-        </button>
+<button
+    type="button"
+    class="tutu-theme-preview"
+    data-theme="instagram">
+    <span class="tutu-theme-preview-swatch instagram"></span>
+    <span>Ins</span>
+</button>
 
         <button
             type="button"
@@ -5715,21 +5714,31 @@ const TUTU_UI_THEMES = new Set([
     'cream',
     'neumorphic',
     'editorial',
-    'terminal',
+    'instagram',
     'archive',
     'custom',
 ]);
+
 
 const TUTU_CUSTOM_STYLE_ID =
     'tutu_theater_user_custom_style';
 
 function normalizeTutuUiTheme(theme) {
-    const value = String(theme || '').trim();
+    let value = String(theme || '').trim();
+
+    /*
+     * 旧版 terminal 主题已移除，
+     * 自动迁移到新的 Instagram 主题。
+     */
+    if (value === 'terminal') {
+        value = 'instagram';
+    }
 
     return TUTU_UI_THEMES.has(value)
         ? value
         : 'classic';
 }
+
 
 function installTutuCustomCss(css) {
     let styleElement =
