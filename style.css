@@ -1792,6 +1792,55 @@
                 padding: 9px 10px;
             }
         }
+        .tutu-embed-theme-minimal {
+    border: 0;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+    border-bottom: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 0;
+    background: transparent;
+}
+
+.tutu-embed-theme-minimal .tutu-theater-embed-header {
+    color: var(--SmartThemeBodyColor);
+    background: transparent;
+    border-left: 3px solid var(--SmartThemeQuoteColor);
+}
+
+.tutu-embed-theme-paper {
+    color: #3c342c;
+    background: #fffaf0;
+    border: 1px solid #d8c49d;
+    border-radius: 4px;
+    box-shadow: 4px 4px 0 rgba(170, 140, 95, 0.3);
+}
+
+.tutu-embed-theme-paper .tutu-theater-embed-header {
+    color: #3c342c;
+    background: #ead8b7;
+}
+
+.tutu-embed-theme-paper .tutu-theater-embed-body {
+    color: #3c342c;
+}
+
+.tutu-embed-theme-neon {
+    background: #101417;
+    border: 1px solid #38d8c7;
+    box-shadow:
+        0 0 12px rgba(56, 216, 199, 0.25),
+        inset 0 0 16px rgba(56, 216, 199, 0.08);
+}
+
+.tutu-embed-theme-neon .tutu-theater-embed-header {
+    color: #eafffc;
+    background: #182326;
+    border-bottom: 1px solid #38d8c7;
+}
+
+.tutu-embed-theme-neon .tutu-theater-embed-body {
+    color: #e4f4f1;
+}
+
         /* ==========================================
    收藏功能
    ========================================== */
