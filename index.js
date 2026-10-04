@@ -230,13 +230,19 @@ function createTutuStyleId() {
             .slice(2)}`;
 }
 
-function saveTutuStylePreset(target, name, css, oldId = '') {
+function saveTutuStylePreset(
+    target,
+    name,
+    css,
+    selectedId = ''
+) {
     if (!['manager', 'embed', 'quote'].includes(target)) {
         throw new Error('未知样式类型');
     }
 
     name = String(name || '').trim();
     css = String(css || '').trim();
+    selectedId = String(selectedId || '').trim();
 
     if (!name) {
         throw new Error('请输入样式名称');
@@ -247,24 +253,59 @@ function saveTutuStylePreset(target, name, css, oldId = '') {
     }
 
     const list = tutuStyleLibrary[target];
-    const index = list.findIndex(item => item.id === oldId);
+
+    /*
+     * 保存规则：
+     *
+     * 1. 当前选择的样式名称没有变化：更新当前样式。
+     * 2. 输入了不同名称：创建一个新样式。
+     * 3. 新名称已经存在：更新对应的同名样式。
+     */
+    const selectedPreset =
+        list.find(item => item.id === selectedId);
+
+    const sameNamePreset =
+        list.find(item => item.name === name);
+
+    let existingPreset = null;
+
+    if (
+        selectedPreset &&
+        selectedPreset.name === name
+    ) {
+        existingPreset = selectedPreset;
+    } else if (sameNamePreset) {
+        existingPreset = sameNamePreset;
+    }
 
     const record = {
-        id: index >= 0 ? list[index].id : createTutuStyleId(),
+        id:
+            existingPreset?.id ||
+            createTutuStyleId(),
+
         name,
         css,
         updatedAt: Date.now(),
     };
 
-    if (index >= 0) {
+    if (existingPreset) {
+        const index = list.findIndex(
+            item => item.id === existingPreset.id
+        );
+
         list[index] = record;
     } else {
+        /*
+         * 新样式放在列表最前面。
+         */
         list.unshift(record);
     }
 
     saveTutuStyleLibrary();
+
     return record;
 }
+
 
 function deleteTutuStylePreset(target, id) {
     tutuStyleLibrary[target] =
@@ -7405,13 +7446,12 @@ function renderTutuStylePresetSelect(target, selector) {
 
     const current =
         tutuSettings.stylePresetIds[target] || '';
-
-    $select.empty().append(
-        $('<option>', {
-            value: '',
-            text: '选择已保存样式',
-        })
-    );
+$select.empty().append(
+    $('<option>', {
+        value: '',
+        text: '新建样式 / 选择已保存样式',
+    })
+);
 
     tutuStyleLibrary[target].forEach(item => {
         $select.append(
