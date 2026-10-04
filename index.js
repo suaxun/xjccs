@@ -1745,7 +1745,6 @@ function getTutuSvgIcon(name) {
             <code>#tutu_theater_panel</code> 开头，避免影响酒馆其他界面。
         </div>
     </div>
-</div>
         <div class="tutu-settings-title">
             <i class="fa-solid fa-robot"></i>
             小剧场生成 API
