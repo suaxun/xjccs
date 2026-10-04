@@ -2545,100 +2545,160 @@ body.tutu-fullscreen-open {
     }
 }
 /* ==========================================
-   自定义标签捕捉样式
+   自定义标签捕捉操作栏
    ========================================== */
 
+/*
+ * 不再给整个被捕捉元素强制添加边框。
+ * 避免 details、blockquote 等元素出现双边框和多余横线。
+ */
 .tutu-captured-element {
     position: relative;
-    border: 1px solid var(--SmartThemeQuoteColor, #7b68ee) !important;
-    border-radius: 8px !important;
-    overflow: visible;
+    border-color: transparent !important;
+    box-shadow: none !important;
 }
 
+/*
+ * 操作栏自身承担视觉分组，不延伸到内容外边缘。
+ */
 .tutu-capture-actions-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
 
-    padding: 6px 10px;
-    margin-bottom: 6px;
+    width: auto;
+    min-height: 34px;
+    margin: 6px 8px 8px;
+    padding: 4px 6px 4px 10px;
+    box-sizing: border-box;
 
+    color: var(--SmartThemeBodyColor, #eee);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 22%,
+        var(--SmartThemeBlurTintColor, #222)
+    );
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 45%,
+        transparent
+    );
     border-radius: 6px;
+    box-shadow: none;
 
-    background: var(--SmartThemeQuoteColor, #7b68ee);
-    color: #fff;
+    font-size: 0.82em;
+    font-weight: 600;
+    line-height: 1;
+}
 
-    font-size: 0.84em;
-    font-weight: bold;
+/*
+ * details 的 summary 下面不再使用额外上边框或贯穿横线。
+ */
+details.tutu-captured-element > .tutu-capture-actions-bar {
+    margin-top: 6px;
+    border-top: 1px solid color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 45%,
+        transparent
+    );
+}
+
+/*
+ * blockquote 通常自带左侧边框。
+ * 保留原主题样式，只让操作栏在内容区内显示。
+ */
+blockquote.tutu-captured-element {
+    border-top: 0 !important;
+    border-right: 0 !important;
+    border-bottom: 0 !important;
 }
 
 .tutu-capture-label {
-    flex-shrink: 0;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .tutu-capture-buttons {
-    display: flex;
+    display: inline-flex;
     align-items: center;
+    justify-content: flex-end;
     gap: 4px;
     flex-shrink: 0;
 }
 
 .tutu-capture-action-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    display: inline-grid;
+    place-items: center;
 
-    width: 26px;
-    height: 26px;
+    width: 27px;
+    height: 27px;
     padding: 0;
+    flex: 0 0 27px;
 
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    color: var(--SmartThemeBodyColor, #eee);
+    background: rgba(0, 0, 0, 0.14);
+
+    border: 1px solid color-mix(
+        in srgb,
+        var(--SmartThemeBodyColor, #eee) 18%,
+        transparent
+    );
     border-radius: 5px;
 
-    background: rgba(0, 0, 0, 0.18);
-    color: #fff;
-
     cursor: pointer;
-    font-size: 0.82em;
+    font-size: 0.8em;
 
     transition:
         background 0.18s ease,
-        transform 0.18s ease;
+        border-color 0.18s ease;
 }
 
 .tutu-capture-action-btn:hover {
-    background: rgba(255, 255, 255, 0.22);
-    transform: translateY(-1px);
+    color: #fff;
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 55%,
+        transparent
+    );
+    border-color: var(--SmartThemeQuoteColor, #7b68ee);
+    transform: none;
 }
 
 .tutu-capture-action-btn:active {
-    transform: translateY(0);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor, #7b68ee) 70%,
+        transparent
+    );
+    transform: none;
 }
 
-/*
- * 如果捕捉的是 <details> 标签，
- * 让按钮栏显示在 summary 和内容之间
- */
-details.tutu-captured-element > .tutu-capture-actions-bar {
-    margin-top: 6px;
-}
-
-/*
- * 手机端适配
- */
 @media (max-width: 600px) {
     .tutu-capture-actions-bar {
-        padding: 5px 8px;
-        font-size: 0.8em;
+        gap: 5px;
+        margin: 5px 4px 7px;
+        padding: 4px 5px 4px 8px;
+    }
+
+    .tutu-capture-label {
+        font-size: 0.78em;
+    }
+
+    .tutu-capture-buttons {
+        gap: 3px;
     }
 
     .tutu-capture-action-btn {
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
+        flex-basis: 26px;
     }
 }
+
 /* ==========================================
    书摘图片编辑器
    ========================================== */
