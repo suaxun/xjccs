@@ -1044,6 +1044,30 @@ localStorage.setItem(
         </style>
     `;
     $('head').append(tutuStyle);
+function getTutuSvgIcon(name) {
+    const icons = {
+        apply: '<path d="M20 6 9 17l-5-5"/>',
+        clear: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/>',
+        save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2Z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
+        delete: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/>',
+        export: '<path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/>',
+        import: '<path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M5 3h14"/>',
+    };
+
+    return `
+        <svg
+            class="tutu-toolbar-svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true">
+            ${icons[name] || ''}
+        </svg>
+    `;
+}
 
 
 
@@ -1665,62 +1689,54 @@ localStorage.setItem(
     border-radius: 4px;
 }"></textarea>
 
-        <div class="tutu-appearance-actions">
-            <button
-                type="button"
-                id="tutu_apply_custom_css_btn"
-                class="menu_button">
-                <i class="fa-solid fa-check"></i>
-                应用 CSS
-            </button>
+<div
+    class="tutu-style-icon-toolbar"
+    role="toolbar"
+    aria-label="管理器样式操作">
 
-            <button
-                type="button"
-                id="tutu_reset_custom_css_btn"
-                class="menu_button">
-                <i class="fa-solid fa-rotate-left"></i>
-                清空
-            </button>
-                <button
-        type="button"
-        id="tutu_save_manager_style_btn"
-        class="menu_button">
-        <i class="fa-solid fa-floppy-disk"></i>
-        保存样式
+    <button type="button" id="tutu_apply_custom_css_btn"
+        class="menu_button tutu-style-icon-btn"
+        title="应用 CSS" aria-label="应用 CSS">
+        ${getTutuSvgIcon('apply')}
     </button>
 
-    <button
-        type="button"
-        id="tutu_delete_manager_style_btn"
-        class="menu_button">
-        <i class="fa-solid fa-trash"></i>
-        删除样式
+    <button type="button" id="tutu_reset_custom_css_btn"
+        class="menu_button tutu-style-icon-btn"
+        title="清空 CSS" aria-label="清空 CSS">
+        ${getTutuSvgIcon('clear')}
     </button>
 
-    <!-- 在这里添加样式导入导出 -->
-    <div class="tutu-appearance-actions">
-        <button
-            type="button"
-            id="tutu_export_styles_btn"
-            class="menu_button">
-            <i class="fa-solid fa-file-export"></i>
-            导出全部样式
-        </button>
+    <span class="tutu-style-toolbar-separator"></span>
 
-        <button
-            type="button"
-            id="tutu_import_styles_btn"
-            class="menu_button">
-            <i class="fa-solid fa-file-import"></i>
-            导入样式
-        </button>
+    <button type="button" id="tutu_save_manager_style_btn"
+        class="menu_button tutu-style-icon-btn"
+        title="保存管理器样式" aria-label="保存管理器样式">
+        ${getTutuSvgIcon('save')}
+    </button>
 
-        <input
-            id="tutu_import_styles_file"
-            type="file"
-            accept=".json,application/json"
-            style="display:none;">
-    </div>
+    <button type="button" id="tutu_delete_manager_style_btn"
+        class="menu_button tutu-style-icon-btn danger"
+        title="删除管理器样式" aria-label="删除管理器样式">
+        ${getTutuSvgIcon('delete')}
+    </button>
+
+    <span class="tutu-style-toolbar-separator"></span>
+
+    <button type="button" id="tutu_export_styles_btn"
+        class="menu_button tutu-style-icon-btn"
+        title="导出全部样式" aria-label="导出全部样式">
+        ${getTutuSvgIcon('export')}
+    </button>
+
+    <button type="button" id="tutu_import_styles_btn"
+        class="menu_button tutu-style-icon-btn"
+        title="导入样式" aria-label="导入样式">
+        ${getTutuSvgIcon('import')}
+    </button>
+
+    <input id="tutu_import_styles_file" type="file"
+        accept=".json,application/json" hidden>
+</div>
 </div>
         </div>
 
@@ -2121,6 +2137,111 @@ async function importTutuStyles(file) {
 
     saveTutuStyleLibrary();
     renderTutuStylePresetSelects();
+}
+const QUOTE_STYLE_PACKAGE_TYPE = 'tutu-theater-quote-style';
+const QUOTE_STYLE_PACKAGE_VERSION = 1;
+
+function exportTutuQuoteStyle() {
+    const css = String($('#tutu_qe_custom_css').val() || '').trim();
+    const selectedId = String($('#tutu_quote_style_preset').val() || '');
+    const preset = tutuStyleLibrary.quote.find(item => item.id === selectedId);
+    const name = String(
+        $('#tutu_quote_style_name').val() ||
+        preset?.name ||
+        '书摘自定义样式'
+    ).trim();
+
+    if (!css) {
+        toastr.warning('当前没有可以导出的书摘 CSS');
+        return;
+    }
+
+    const data = {
+        type: QUOTE_STYLE_PACKAGE_TYPE,
+        version: QUOTE_STYLE_PACKAGE_VERSION,
+        exportedAt: new Date().toISOString(),
+        style: {
+            id: preset?.id || '',
+            name,
+            css,
+        },
+    };
+
+    downloadTutuBlob(
+        new Blob([JSON.stringify(data, null, 2)], {
+            type: 'application/json;charset=utf-8',
+        }),
+        `${sanitizeTutuFilename(name)}.json`
+    );
+
+    toastr.success(`书摘样式「${name}」已导出`);
+}
+
+async function importTutuQuoteStyle(file) {
+    if (!file) {
+        throw new Error('没有选择文件');
+    }
+
+    if (file.size > 1024 * 1024) {
+        throw new Error('书摘样式文件不能超过 1MB');
+    }
+
+    const raw = await file.text();
+    let name;
+    let css;
+
+    if (/\.css$/i.test(file.name)) {
+        name = file.name.replace(/\.css$/i, '').trim();
+        css = raw.trim();
+    } else {
+        let data;
+
+        try {
+            data = JSON.parse(raw);
+        } catch {
+            throw new Error('书摘样式 JSON 格式不正确');
+        }
+
+        if (
+            data?.type !== QUOTE_STYLE_PACKAGE_TYPE ||
+            typeof data?.style?.css !== 'string'
+        ) {
+            throw new Error('这不是兔兔小剧场书摘样式文件');
+        }
+
+        name = String(data.style.name || '导入的书摘样式').trim();
+        css = data.style.css.trim();
+    }
+
+    if (!css) {
+        throw new Error('导入文件中的 CSS 为空');
+    }
+
+    const existing = tutuStyleLibrary.quote.find(item =>
+        item.name === name
+    );
+
+    const record = saveTutuStylePreset(
+        'quote',
+        name,
+        css,
+        existing?.id || ''
+    );
+
+    tutuSettings.stylePresetIds.quote = record.id;
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(tutuSettings)
+    );
+
+    $('#tutu_quote_style_name').val(record.name);
+    $('#tutu_qe_custom_css').val(record.css);
+
+    renderTutuStylePresetSelects();
+    $('#tutu_quote_style_preset').val(record.id);
+
+    return record;
 }
 
 
@@ -3905,15 +4026,41 @@ function openTutuQuoteEditor(content, characterName) {
     <option value="">选择已保存样式</option>
 </select>
 
-<div class="tutu-appearance-actions">
-    <button id="tutu_save_quote_style" class="menu_button">
-        保存样式
+<div
+    class="tutu-style-icon-toolbar"
+    role="toolbar"
+    aria-label="书摘样式操作">
+
+    <button type="button" id="tutu_save_quote_style"
+        class="menu_button tutu-style-icon-btn"
+        title="保存书摘样式" aria-label="保存书摘样式">
+        ${getTutuSvgIcon('save')}
     </button>
 
-    <button id="tutu_delete_quote_style" class="menu_button">
-        删除样式
+    <button type="button" id="tutu_delete_quote_style"
+        class="menu_button tutu-style-icon-btn danger"
+        title="删除书摘样式" aria-label="删除书摘样式">
+        ${getTutuSvgIcon('delete')}
     </button>
+
+    <span class="tutu-style-toolbar-separator"></span>
+
+    <button type="button" id="tutu_export_quote_style"
+        class="menu_button tutu-style-icon-btn"
+        title="导出书摘样式" aria-label="导出书摘样式">
+        ${getTutuSvgIcon('export')}
+    </button>
+
+    <button type="button" id="tutu_import_quote_style"
+        class="menu_button tutu-style-icon-btn"
+        title="导入书摘样式" aria-label="导入书摘样式">
+        ${getTutuSvgIcon('import')}
+    </button>
+
+    <input id="tutu_import_quote_style_file" type="file"
+        accept=".json,.css,application/json,text/css" hidden>
 </div>
+
                         <textarea id="tutu_qe_custom_css" class="text_pole tutu-custom-css-textarea"
                             rows="8"
                             placeholder=".quote-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }&#10;.quote-title { color: white; }&#10;.quote-content { color: #f0f0f0; }"></textarea>
@@ -7684,6 +7831,86 @@ $(document).on('change', '#tutu_import_styles_file', async function () {
         JSON.stringify(tutuSettings)
     );
 });
+$(document).on('click', '#tutu_save_quote_style', function () {
+    try {
+        const record = saveTutuStylePreset(
+            'quote',
+            $('#tutu_quote_style_name').val(),
+            $('#tutu_qe_custom_css').val(),
+            $('#tutu_quote_style_preset').val()
+        );
+
+        tutuSettings.stylePresetIds.quote = record.id;
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+
+        renderTutuStylePresetSelects();
+        $('#tutu_quote_style_preset').val(record.id);
+        $('#tutu_quote_style_name').val(record.name);
+
+        toastr.success(`书摘样式「${record.name}」已保存`);
+    } catch (error) {
+        toastr.warning(error.message || '保存书摘样式失败');
+    }
+});
+
+$(document).on('click', '#tutu_delete_quote_style', function () {
+    const id = String($('#tutu_quote_style_preset').val() || '');
+    const preset = tutuStyleLibrary.quote.find(item => item.id === id);
+
+    if (!preset) {
+        toastr.warning('请先选择要删除的书摘样式');
+        return;
+    }
+
+    if (!confirm(`确定删除书摘样式「${preset.name}」吗？`)) {
+        return;
+    }
+
+    deleteTutuStylePreset('quote', id);
+    tutuSettings.stylePresetIds.quote = '';
+
+    localStorage.setItem(
+        SETTINGS_KEY,
+        JSON.stringify(tutuSettings)
+    );
+
+    $('#tutu_quote_style_name').val('');
+    $('#tutu_qe_custom_css').val('');
+
+    renderTutuStylePresetSelects();
+    toastr.success(`书摘样式「${preset.name}」已删除`);
+});
+
+$(document).on(
+    'click',
+    '#tutu_export_quote_style',
+    exportTutuQuoteStyle
+);
+
+$(document).on('click', '#tutu_import_quote_style', function () {
+    $('#tutu_import_quote_style_file')
+        .val('')
+        .trigger('click');
+});
+
+$(document).on(
+    'change',
+    '#tutu_import_quote_style_file',
+    async function () {
+        try {
+            const record = await importTutuQuoteStyle(this.files?.[0]);
+            toastr.success(`书摘样式「${record.name}」已导入`);
+        } catch (error) {
+            toastr.error(error.message || '导入书摘样式失败');
+        } finally {
+            $(this).val('');
+        }
+    }
+);
 
 
 
@@ -7870,20 +8097,6 @@ $(document).on(
         );
     }
 );
-
-
-
-
-const id = $('#tutu_manager_style_preset').val();
-
-if (id && confirm('确定删除这个管理器样式吗？')) {
-    deleteTutuStylePreset('manager', id);
-    tutuSettings.stylePresetIds.manager = '';
-    tutuSettings.uiCustomCss = '';
-    saveTutuSettings();
-    renderTutuStylePresetSelects();
-    installTutuCustomCss('');
-}
 
 $(document).on(
     'click',
