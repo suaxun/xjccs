@@ -4665,5 +4665,44 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         min-height: 280px;
     }
 }
+/* ==========================================
+   捕捉栏和收藏栏的书摘按钮
+   ========================================== */
 
+.tutu-capture-buttons,
+.tutu-favorite-actions {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 5px;
+    flex-wrap: wrap;
+}
 
+.tutu-capture-action-btn,
+.tutu-favorite-actions .menu_button {
+    flex: 0 0 auto;
+}
+
+.tutu-favorite-quote-btn:hover,
+.tutu-capture-action-btn:hover {
+    color: #fff;
+    background: var(
+        --SmartThemeQuoteColor,
+        #7b68ee
+    );
+}
+
+@media (max-width: 600px) {
+    .tutu-capture-actions-bar {
+        align-items: flex-start;
+    }
+
+    .tutu-capture-buttons {
+        max-width: 145px;
+    }
+
+    .tutu-favorite-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
+}
