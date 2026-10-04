@@ -793,7 +793,15 @@ const preview =
     title="导出">
     <i class="fa-solid fa-download"></i>
 </div>
-
+<div
+    class="
+        menu_button
+        margin0
+        tutu-favorite-quote-btn
+    "
+    title="制作书摘图片">
+    <i class="fa-solid fa-image"></i>
+</div>
 <div
     class="
         menu_button
@@ -2299,6 +2307,85 @@ function isProbablyHtml(text) {
         /<(div|section|article|main|body|style|table|h1|h2|p|img|button|form)[\s>]/i.test(value)
     );
 }
+/**
+ * 将纯文本或 HTML 内容转换成适合制作书摘的文字。
+ */
+function getTutuQuoteText(content) {
+    const text = String(content || '').trim();
+
+    if (!text) {
+        return '';
+    }
+
+    if (!isProbablyHtml(text)) {
+        return text;
+    }
+
+    try {
+        const documentNode =
+            new DOMParser().parseFromString(
+                text,
+                'text/html'
+            );
+
+        /*
+         * 不把脚本和样式内容写入书摘。
+         * DOMParser 不会执行这里面的脚本。
+         */
+        documentNode
+            .querySelectorAll(
+                'script, style, noscript, template'
+            )
+            .forEach(element => element.remove());
+
+        const body = documentNode.body;
+
+        if (!body) {
+            return '';
+        }
+
+        return String(
+            body.innerText ||
+            body.textContent ||
+            ''
+        )
+            .replace(/\r/g, '')
+            .replace(/\n[ \t]+\n/g, '\n\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    } catch (error) {
+        console.error(
+            '提取书摘文字失败：',
+            error
+        );
+
+        return text;
+    }
+}
+
+/**
+ * 从任意小剧场内容打开书摘编辑器。
+ *
+ * HTML 内容会先提取可见文字。
+ */
+function openTutuQuoteEditorForContent(
+    content,
+    characterName = 'AI'
+) {
+    const quoteText =
+        getTutuQuoteText(content);
+
+    if (!quoteText) {
+        toastr.warning('没有可以制作书摘的文字内容');
+        return;
+    }
+
+    openTutuQuoteEditor(
+        quoteText,
+        String(characterName || 'AI').trim() || 'AI'
+    );
+}
+
 function cleanGeneratedContent(content) {
     let text = String(content || '').trim();
 
@@ -5454,19 +5541,27 @@ function attachTutuCaptureActions(element) {
             );
         }
     );
-
-    const exportBtn = createCaptureButton(
-        'fa-solid fa-file-export',
-        '导出小剧场',
-        () => {
-            exportTutuContent(
-                element._tutuCapturedContent,
-                element._tutuCapturedCharacter
-            );
-        }
-    );
-
-    const fullscreenBtn = createCaptureButton(
+const exportBtn = createCaptureButton(
+    'fa-solid fa-file-export',
+    '导出小剧场',
+    () => {
+        exportTutuContent(
+            element._tutuCapturedContent,
+            element._tutuCapturedCharacter
+        );
+    }
+);
+const quoteBtn = createCaptureButton(
+    'fa-solid fa-image',
+    '制作书摘图片',
+    () => {
+        openTutuQuoteEditorForContent(
+            element._tutuCapturedContent,
+            element._tutuCapturedCharacter
+        );
+    }
+);
+const fullscreenBtn = createCaptureButton(
         'fa-solid fa-expand',
         '全屏查看',
         () => {
@@ -5477,10 +5572,10 @@ function attachTutuCaptureActions(element) {
         }
     );
 
-    buttonsContainer.appendChild(favoriteBtn);
-    buttonsContainer.appendChild(exportBtn);
-    buttonsContainer.appendChild(fullscreenBtn);
-
+buttonsContainer.appendChild(favoriteBtn);
+buttonsContainer.appendChild(exportBtn);
+buttonsContainer.appendChild(quoteBtn);
+buttonsContainer.appendChild(fullscreenBtn);
     actionsBar.appendChild(label);
     actionsBar.appendChild(buttonsContainer);
 
@@ -8158,6 +8253,7 @@ $(document).on(
     'click',
     '.tutu-favorite-export-btn',
     function (event) {
+        event.preventDefault();
         event.stopPropagation();
 
         const id = String(
@@ -8167,46 +8263,52 @@ $(document).on(
         );
 
         const favorite =
-            loadTutuFavorites()
-                .find(item => item.id === id);
+            loadTutuFavorites().find(
+                item => String(item.id) === id
+            );
 
         if (!favorite) {
             toastr.error('找不到这条收藏');
             return;
         }
 
-        const characterName =
-            favorite.characterName || 'AI';
-
-        if (favorite.type === 'html') {
-            exportTutuHtmlFile(
-                favorite.content,
-                characterName
-            );
-        } else {
-            const exportFormat =
-                $('#tutu_export_format').val() ||
-                'text';
-
-            if (exportFormat === 'text') {
-                exportTutuTextFile(
-                    favorite.content,
-                    characterName
-                );
-            } else {
-                const styleName =
-                    $('#tutu_export_style').val() ||
-                    'classic';
-
-                exportTutuQuoteImage(
-                    favorite.content,
-                    characterName,
-                    styleName
-                );
-            }
-        }
+        exportTutuContent(
+            favorite.content,
+            favorite.characterName || 'AI'
+        );
     }
 );
+
+$(document).on(
+    'click',
+    '.tutu-favorite-quote-btn',
+    function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const id = String(
+            $(this)
+                .closest('.tutu-favorite-card')
+                .data('id')
+        );
+
+        const favorite =
+            loadTutuFavorites().find(
+                item => String(item.id) === id
+            );
+
+        if (!favorite) {
+            toastr.error('找不到这条收藏');
+            return;
+        }
+
+        openTutuQuoteEditorForContent(
+            favorite.content,
+            favorite.characterName || 'AI'
+        );
+    }
+);
+
 $(document).on(
     'click',
     '.tutu-favorite-fullscreen-btn',
