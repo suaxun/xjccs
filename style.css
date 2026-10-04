@@ -4766,3 +4766,71 @@ blockquote.tutu-captured-element {
         justify-content: flex-end;
     }
 }
+/* 自定义 CSS 样式工具栏 */
+.tutu-style-icon-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin: 10px 0;
+}
+
+.tutu-style-icon-btn.menu_button {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 36px;
+    width: 36px;
+    min-width: 36px;
+    height: 36px;
+    padding: 0;
+    margin: 0;
+    border-radius: 6px;
+}
+
+.tutu-toolbar-svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+    pointer-events: none;
+}
+
+.tutu-style-icon-btn.danger {
+    color: #e06a75;
+}
+
+.tutu-style-icon-btn.danger:hover {
+    color: #fff;
+    background: #b94855;
+    border-color: #b94855;
+}
+
+.tutu-style-toolbar-separator {
+    width: 1px;
+    height: 24px;
+    margin: 0 2px;
+    background: var(
+        --SmartThemeBorderColor,
+        rgba(255, 255, 255, 0.16)
+    );
+}
+
+.tutu-custom-css-group > .tutu-style-icon-toolbar {
+    justify-content: flex-end;
+}
+
+@media (max-width: 600px) {
+    .tutu-style-icon-toolbar {
+        gap: 6px;
+    }
+
+    .tutu-style-icon-btn.menu_button {
+        flex-basis: 34px;
+        width: 34px;
+        min-width: 34px;
+        height: 34px;
+    }
+
+    .tutu-style-toolbar-separator {
+        height: 22px;
+    }
+}
