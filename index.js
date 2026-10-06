@@ -1068,7 +1068,7 @@ tutuSettings = {
     model: '',
     activeJailbreakPromptId: '',
     activeStylePromptId: '',
-
+    auxPromptsEnabled: false,
     autoGenerateEnabled: false,
 
     embedDefaultCollapsed: false,
@@ -1105,6 +1105,12 @@ tutuSettings.stylePresetIds = {
 
 if (typeof tutuSettings.embedDefaultCollapsed !== 'boolean') {
     tutuSettings.embedDefaultCollapsed = false;
+}
+if (typeof tutuSettings.auxPromptsEnabled !== 'boolean') {
+    tutuSettings.auxPromptsEnabled = Boolean(
+        tutuSettings.activeJailbreakPromptId ||
+        tutuSettings.activeStylePromptId
+    );
 }
 
 
@@ -1768,7 +1774,15 @@ localStorage.setItem(
                 导入为文风
             </option>
         </select>
+<select
+    id="tutu_import_category"
+    class="text_pole"
+    title="选择导入剧本的分类">
 
+    <option value="">
+        请选择剧本分类
+    </option>
+</select>
         <select
             id="tutu_preset_file"
             class="text_pole">
@@ -1793,14 +1807,16 @@ localStorage.setItem(
             </span>
         </label>
 
-        <div
-            id="tutu_import_selected_btn"
-            class="menu_button margin0">
+<div
+    id="tutu_import_selected_btn"
+    class="menu_button margin0 tutu-native-import-icon-btn"
+    role="button"
+    tabindex="0"
+    aria-label="导入所选项"
+    title="导入所选项">
 
-            <i class="fa-solid fa-download"></i>
-            导入所选项
-        </div>
-
+    <i class="fa-solid fa-download"></i>
+</div>
     </div>
 
     <!-- 预设或世界书条目列表 -->
@@ -2164,105 +2180,161 @@ localStorage.setItem(
         破限与文风
     </div>
 
-    <div class="tutu-api-help">
-        这里保存的提示词会在生成小剧场时自动加入请求。
-        破限和文风可以分别选择一个启用，也可以选择“不使用”。
-    </div>
-
-    <label class="tutu-settings-label">
-        当前启用的破限
-    </label>
-
-    <select
-        id="tutu_active_jailbreak_prompt"
-        class="text_pole">
-        <option value="">不使用破限</option>
-    </select>
-
-    <label class="tutu-settings-label">
-        当前启用的文风
-    </label>
-
-    <select
-        id="tutu_active_style_prompt"
-        class="text_pole">
-        <option value="">不使用文风</option>
-    </select>
-
-    <div class="tutu-aux-editor">
-
-        <label class="tutu-settings-label">
-            编辑类型
-        </label>
-
-        <select
-            id="tutu_aux_prompt_type"
-            class="text_pole">
-            <option value="jailbreak">
-                破限提示词
-            </option>
-            <option value="style">
-                文风提示词
-            </option>
-        </select>
-
-        <label class="tutu-settings-label">
-            已保存条目
-        </label>
-
-        <select
-            id="tutu_aux_prompt_preset"
-            class="text_pole">
-            <option value="">新建提示词</option>
-        </select>
-
-        <label class="tutu-settings-label">
-            名称
-        </label>
-
+    <label class="tutu-switch-row tutu-aux-master-switch">
         <input
-            id="tutu_aux_prompt_name"
-            class="text_pole"
-            type="text"
-            placeholder="例如：通用破限、细腻文风">
+            type="checkbox"
+            id="tutu_aux_prompts_enabled">
 
-        <label class="tutu-settings-label">
-            提示词正文
-        </label>
+        <span>
+            启用破限与文风提示词
+        </span>
+    </label>
 
-        <textarea
-            id="tutu_aux_prompt_content"
-            class="text_pole tutu-aux-prompt-content"
-            rows="10"
-            placeholder="请输入破限或文风提示词……"></textarea>
+    <div
+        id="tutu_aux_prompt_settings_body"
+        class="tutu-aux-prompt-settings-body"
+        style="display:none;">
 
-        <div class="tutu-appearance-actions">
+        <div class="tutu-api-help">
+            破限和文风都不是必选项，可以分别选择一个，
+            也可以选择“不使用”。
+        </div>
 
-            <button
-                type="button"
-                id="tutu_new_aux_prompt_btn"
-                class="menu_button">
-                <i class="fa-solid fa-plus"></i>
-                新建
-            </button>
+        <div class="tutu-aux-active-selects">
 
-            <button
-                type="button"
-                id="tutu_save_aux_prompt_btn"
-                class="menu_button">
-                <i class="fa-solid fa-floppy-disk"></i>
-                保存
-            </button>
+            <div class="tutu-aux-active-item">
+                <label class="tutu-settings-label">
+                    当前启用的破限
+                </label>
 
-            <button
-                type="button"
-                id="tutu_delete_aux_prompt_btn"
-                class="menu_button">
-                <i class="fa-solid fa-trash"></i>
-                删除
-            </button>
+                <select
+                    id="tutu_active_jailbreak_prompt"
+                    class="text_pole">
+                    <option value="">不使用破限</option>
+                </select>
+            </div>
+
+            <div class="tutu-aux-active-item">
+                <label class="tutu-settings-label">
+                    当前启用的文风
+                </label>
+
+                <select
+                    id="tutu_active_style_prompt"
+                    class="text_pole">
+                    <option value="">不使用文风</option>
+                </select>
+            </div>
 
         </div>
+
+        <details
+            id="tutu_aux_prompt_editor_details"
+            class="tutu-aux-editor-details">
+
+            <summary class="tutu-aux-editor-summary">
+                <span>
+                    <i class="fa-solid fa-pen-to-square"></i>
+                    管理已保存的破限与文风
+                </span>
+
+                <i class="fa-solid fa-chevron-down tutu-aux-editor-arrow"></i>
+            </summary>
+
+            <div class="tutu-aux-editor">
+
+                <label class="tutu-settings-label">
+                    编辑类型
+                </label>
+
+                <select
+                    id="tutu_aux_prompt_type"
+                    class="text_pole">
+
+                    <option value="jailbreak">
+                        破限提示词
+                    </option>
+
+                    <option value="style">
+                        文风提示词
+                    </option>
+                </select>
+
+                <label class="tutu-settings-label">
+                    已保存条目
+                </label>
+
+                <select
+                    id="tutu_aux_prompt_preset"
+                    class="text_pole">
+
+                    <option value="">
+                        新建提示词
+                    </option>
+                </select>
+
+                <div
+                    id="tutu_aux_edit_status"
+                    class="tutu-aux-edit-status">
+                    当前正在新建提示词
+                </div>
+
+                <label class="tutu-settings-label">
+                    名称
+                </label>
+
+                <input
+                    id="tutu_aux_prompt_name"
+                    class="text_pole"
+                    type="text"
+                    placeholder="例如：通用破限、细腻文风">
+
+                <label class="tutu-settings-label">
+                    提示词正文
+                </label>
+
+                <textarea
+                    id="tutu_aux_prompt_content"
+                    class="text_pole tutu-aux-prompt-content"
+                    rows="8"
+                    placeholder="请输入破限或文风提示词……"></textarea>
+
+                <div class="tutu-appearance-actions">
+
+                    <button
+                        type="button"
+                        id="tutu_new_aux_prompt_btn"
+                        class="menu_button">
+
+                        <i class="fa-solid fa-plus"></i>
+                        新建
+                    </button>
+
+                    <button
+                        type="button"
+                        id="tutu_save_aux_prompt_btn"
+                        class="menu_button">
+
+                        <i class="fa-solid fa-floppy-disk"></i>
+
+                        <span id="tutu_save_aux_prompt_btn_text">
+                            保存新提示词
+                        </span>
+                    </button>
+
+                    <button
+                        type="button"
+                        id="tutu_delete_aux_prompt_btn"
+                        class="menu_button">
+
+                        <i class="fa-solid fa-trash"></i>
+                        删除
+                    </button>
+
+                </div>
+
+            </div>
+        </details>
 
     </div>
 </div>
@@ -5045,11 +5117,18 @@ function buildTutuContextPrompt(userScenario) {
         : '用户没有选择任何世界书条目。';
 
     const historyText = getTutuHistoryText();
+const auxPromptsEnabled =
+    Boolean(tutuSettings.auxPromptsEnabled);
+
 const jailbreakPrompt =
-    getActiveTutuJailbreakPrompt();
+    auxPromptsEnabled
+        ? getActiveTutuJailbreakPrompt()
+        : null;
 
 const stylePrompt =
-    getActiveTutuStylePrompt();
+    auxPromptsEnabled
+        ? getActiveTutuStylePrompt()
+        : null;
 
 const jailbreakText =
     jailbreakPrompt?.content || '';
@@ -6335,12 +6414,14 @@ function saveTutuSettings() {
 
         autoSequenceIndexes:
             tutuSettings.autoSequenceIndexes || {},
-        activeJailbreakPromptId:
+auxPromptsEnabled:
+    $('#tutu_aux_prompts_enabled').is(':checked'),
+
+activeJailbreakPromptId:
     $('#tutu_active_jailbreak_prompt').val() || '',
 
 activeStylePromptId:
     $('#tutu_active_style_prompt').val() || '',
-
 outputMode:
     $('#tutu_output_mode').val() || 'panel',
 
@@ -6494,16 +6575,77 @@ function renderTutuActiveAuxPromptSelects() {
         }
     }
 }
+function updateTutuAuxPromptVisibility() {
+    const enabled =
+        $('#tutu_aux_prompts_enabled').is(':checked');
+
+    const $body =
+        $('#tutu_aux_prompt_settings_body');
+
+    if (!$body.length) {
+        return;
+    }
+
+    if (enabled) {
+        $body.stop(true, true).slideDown(160);
+    } else {
+        $body.stop(true, true).slideUp(160);
+    }
+}
+
+function updateTutuAuxPromptEditorStatus() {
+    const type =
+        String(
+            $('#tutu_aux_prompt_type').val() ||
+            'jailbreak'
+        );
+
+    const id =
+        String(
+            $('#tutu_aux_prompt_preset').val() ||
+            ''
+        );
+
+    const label =
+        getTutuAuxPromptTypeLabel(type);
+
+    const record =
+        id
+            ? findTutuAuxPrompt(type, id)
+            : null;
+
+    if (record) {
+        $('#tutu_aux_edit_status').text(
+            `正在修改${label}提示词：「${record.name}」`
+        );
+
+        $('#tutu_save_aux_prompt_btn_text').text(
+            '保存修改'
+        );
+    } else {
+        $('#tutu_aux_edit_status').text(
+            `当前正在新建${label}提示词`
+        );
+
+        $('#tutu_save_aux_prompt_btn_text').text(
+            '保存新提示词'
+        );
+    }
+}
 
 function renderTutuAuxPromptManager() {
     renderTutuAuxPromptPresetSelect();
     renderTutuActiveAuxPromptSelects();
+    updateTutuAuxPromptEditorStatus();
 }
+
 
 function clearTutuAuxPromptEditor() {
     $('#tutu_aux_prompt_preset').val('');
     $('#tutu_aux_prompt_name').val('');
     $('#tutu_aux_prompt_content').val('');
+
+    updateTutuAuxPromptEditorStatus();
 }
 
 function loadTutuAuxPromptIntoEditor(type, id) {
@@ -6513,6 +6655,8 @@ function loadTutuAuxPromptIntoEditor(type, id) {
     if (!record) {
         $('#tutu_aux_prompt_name').val('');
         $('#tutu_aux_prompt_content').val('');
+
+        updateTutuAuxPromptEditorStatus();
         return;
     }
 
@@ -6521,9 +6665,9 @@ function loadTutuAuxPromptIntoEditor(type, id) {
 
     $('#tutu_aux_prompt_content')
         .val(record.content);
+
+    updateTutuAuxPromptEditorStatus();
 }
-
-
 
 function renderApiPresetDropdown() {
     const $select = $('#tutu_api_preset_select');
@@ -6735,14 +6879,18 @@ $('#tutu_ui_theme').val(
 $('#tutu_ui_custom_css').val(
     tutuSettings.uiCustomCss || ''
 );
-
-
-renderTutuStylePresetSelects();
+$('#tutu_aux_prompts_enabled')
+    .prop(
+        'checked',
+        Boolean(tutuSettings.auxPromptsEnabled)
+    );
 
 applyTutuUiTheme(
     tutuSettings.uiTheme,
     tutuSettings.uiCustomCss
 );
+renderTutuStylePresetSelects();
+updateTutuAuxPromptVisibility();
 
 renderTutuAuxPromptManager();
     updateSecondaryApiVisibility();
@@ -7100,13 +7248,74 @@ function getTutuScenarioCategories() {
         a.localeCompare(b, 'zh-CN')
     );
 }
+function renderTutuImportCategorySelect() {
+    const $select =
+        $('#tutu_import_category');
+
+    if (!$select.length) {
+        return;
+    }
+
+    const previous =
+        String($select.val() || '');
+
+    const categories =
+        getAllTutuCategories();
+
+    $select.empty();
+
+    if (!categories.length) {
+        $select.append(
+            $('<option>', {
+                value: '',
+                text: '没有可用分类',
+            })
+        );
+
+        return;
+    }
+
+    categories.forEach(category => {
+        $select.append(
+            $('<option>', {
+                value: category,
+                text: category,
+            })
+        );
+    });
+
+    if (categories.includes(previous)) {
+        $select.val(previous);
+    } else if (categories.includes('未分类')) {
+        $select.val('未分类');
+    } else {
+        $select.prop('selectedIndex', 0);
+    }
+}
+
+function updateTutuImportCategoryVisibility() {
+    const target =
+        String(
+            $('#tutu_import_target').val() ||
+            'scenario'
+        );
+
+    if (target === 'scenario') {
+        renderTutuImportCategorySelect();
+
+        $('#tutu_import_category')
+            .show();
+    } else {
+        $('#tutu_import_category')
+            .hide();
+    }
+}
 
 function renderTutuCategorySelects() {
     const categories = getTutuScenarioCategories();
 
     renderTutuExportCategorySelect();
-
-
+    renderTutuImportCategorySelect();
 
 
     const currentAutoCategory =
@@ -8329,6 +8538,34 @@ catch (error) {
     // 4. 事件绑定
     // ==========================================
     $(document).on(
+    'change',
+    '#tutu_import_target',
+    function () {
+        updateTutuImportCategoryVisibility();
+    }
+);
+    $(document).on(
+    'change',
+    '#tutu_aux_prompts_enabled',
+    function () {
+        tutuSettings.auxPromptsEnabled =
+            $(this).is(':checked');
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(tutuSettings)
+        );
+
+        updateTutuAuxPromptVisibility();
+
+        toastr.info(
+            tutuSettings.auxPromptsEnabled
+                ? '已启用破限与文风提示词'
+                : '已停用破限与文风提示词'
+        );
+    }
+);
+    $(document).on(
     'click',
     '#tutu_batch_manage_btn',
     function () {
@@ -8446,8 +8683,25 @@ $(document).on(
             type,
             id
         );
+
+        /*
+         * 选中了已有条目时自动展开编辑器。
+         */
+        if (id) {
+            const details =
+                document.getElementById(
+                    'tutu_aux_prompt_editor_details'
+                );
+
+            if (details) {
+                details.open = true;
+            }
+        }
+
+        updateTutuAuxPromptEditorStatus();
     }
 );
+
 
 $(document).on(
     'click',
@@ -8485,15 +8739,22 @@ $(document).on(
                     oldId
                 );
 
-            renderTutuAuxPromptManager();
+renderTutuAuxPromptManager();
 
-            $('#tutu_aux_prompt_preset')
-                .val(record.id);
+$('#tutu_aux_prompt_type')
+    .val(type);
 
-            loadTutuAuxPromptIntoEditor(
-                type,
-                record.id
-            );
+renderTutuAuxPromptPresetSelect();
+
+$('#tutu_aux_prompt_preset')
+    .val(record.id);
+
+loadTutuAuxPromptIntoEditor(
+    type,
+    record.id
+);
+
+updateTutuAuxPromptEditorStatus();
 
             toastr.success(
                 `${getTutuAuxPromptTypeLabel(type)}提示词「${record.name}」已保存`
@@ -9777,11 +10038,14 @@ $(document).on(
 );
 
 
-
 loadTutuSettingsToUI();
 renderTutuCategorySelects();
+renderTutuImportCategorySelect();
+updateTutuImportCategoryVisibility();
+
 renderLibrary();
 renderTutuFavorites();
+
 
 
 initTutuAutoGenerationListener();
@@ -9896,6 +10160,9 @@ $(document).on('click', '#option_tutu_theater', function() {
         extensionsMenu.style.display = 'none';
     }
 renderTutuCategorySelects();
+renderTutuImportCategorySelect();
+updateTutuImportCategoryVisibility();
+
 renderLibrary();
 updatePresetFileDropdown();
 
@@ -9977,7 +10244,19 @@ $('#tutu_import_selected_btn').on(
                 $('#tutu_import_target').val() ||
                 'scenario'
             );
+const importCategory =
+    String(
+        $('#tutu_import_category').val() ||
+        ''
+    ).trim();
 
+if (
+    importTarget === 'scenario' &&
+    !importCategory
+) {
+    toastr.warning('请选择要导入到的剧本分类');
+    return;
+}
         let importedCount = 0;
         let firstImportedId = '';
 
@@ -10013,30 +10292,27 @@ $('#tutu_import_selected_btn').on(
             /*
              * 导入为普通剧本
              */
-            if (importTarget === 'scenario') {
-                const importedCategory =
-                    '未分类';
+if (importTarget === 'scenario') {
+    tutuScenarios.push({
+        name,
+        desc: '从系统预设或世界书导入',
+        category: importCategory,
+        prompt: content,
+    });
 
-                tutuScenarios.push({
-                    name,
-                    desc: '从系统预设或世界书导入',
-                    category: importedCategory,
-                    prompt: content,
-                });
+    if (
+        !tutuCategories.includes(
+            importCategory
+        )
+    ) {
+        tutuCategories.push(
+            importCategory
+        );
+    }
 
-                if (
-                    !tutuCategories.includes(
-                        importedCategory
-                    )
-                ) {
-                    tutuCategories.push(
-                        importedCategory
-                    );
-                }
-
-                importedCount++;
-                return;
-            }
+    importedCount++;
+    return;
+}
 
             /*
              * 导入为破限或文风
@@ -10066,13 +10342,17 @@ $('#tutu_import_selected_btn').on(
             );
             return;
         }
+if (importTarget === 'scenario') {
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(tutuScenarios)
+    );
 
-        if (importTarget === 'scenario') {
-            localStorage.setItem(
-                STORAGE_KEY,
-                JSON.stringify(tutuScenarios)
-            );
+    tutuExpandedCategories.add(
+        importCategory
+    );
 
+    saveTutuExpandedCategories();
             saveTutuCategories();
 
             renderLibrary();
