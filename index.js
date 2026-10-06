@@ -508,12 +508,17 @@ function saveTutuTheaterContent(mesIndex, content) {
     const key =
         getTutuTheaterStorageKey(mesIndex);
 
-    stored[key] = {
-        content: String(content || ''),
-        characterName:
-            getCurrentTutuCharacterName(),
-        savedAt: Date.now(),
-    };
+stored[key] = {
+    content: String(content || ''),
+
+    characterName:
+        getCurrentTutuCharacterName(),
+
+    characterAvatar:
+        getCurrentTutuCharacterAvatar(),
+
+    savedAt: Date.now(),
+};
 
     /*
      * 只保留最近 100 条。
@@ -550,26 +555,41 @@ function getTutuStoredTheaterContent(mesIndex) {
     /*
      * 兼容旧版本以前直接保存字符串的格式。
      */
-    if (typeof value === 'string') {
-        return {
-            content: value,
-            characterName:
-                getCurrentTutuCharacterName(),
-        };
-    }
+if (typeof value === 'string') {
+    return {
+        content: value,
+
+        characterName:
+            getCurrentTutuCharacterName(),
+
+        characterAvatar:
+            getCurrentTutuCharacterAvatar(),
+    };
+}
+
 
     if (!value || typeof value !== 'object') {
         return null;
     }
 
-    return {
-        content: String(value.content || ''),
-        characterName:
-            String(
-                value.characterName ||
-                getCurrentTutuCharacterName()
-            ),
-    };
+return {
+    content: String(value.content || ''),
+
+    characterName:
+        String(
+            value.characterName ||
+            getCurrentTutuCharacterName()
+        ),
+
+    characterAvatar:
+        String(
+            value.characterAvatar ||
+            findTutuCharacterAvatarByName(
+                value.characterName
+            ) ||
+            ''
+        ),
+};
 }
 
 function loadTutuFavorites() {
@@ -591,12 +611,201 @@ function getCurrentTutuCharacterName() {
         'AI'
     ).trim() || 'AI';
 }
+/**
+ * 获取当前 SillyTavern 角色的头像文件名
+ */
+function getCurrentTutuCharacterAvatar() {
+    try {
+        const context = SillyTavern.getContext();
+
+        const character =
+            context.characterId !== undefined &&
+            context.characters?.[context.characterId]
+                ? context.characters[context.characterId]
+                : null;
+
+        return String(
+            character?.avatar ||
+            character?.data?.avatar ||
+            ''
+        ).trim();
+    } catch (error) {
+        console.warn(
+            '[兔兔小剧场] 获取当前角色头像失败：',
+            error
+        );
+
+        return '';
+    }
+}
+
+/**
+ * 根据角色名称从 SillyTavern 角色列表中寻找头像。
+ *
+ * 主要用于兼容旧收藏：
+ * 旧收藏里没有 characterAvatar 字段，
+ * 可以尝试按照角色名称补找。
+ */
+function findTutuCharacterAvatarByName(characterName) {
+    const targetName =
+        String(characterName || '').trim();
+
+    if (!targetName) {
+        return '';
+    }
+
+    try {
+        const context = SillyTavern.getContext();
+
+        const characters =
+            Array.isArray(context.characters)
+                ? context.characters
+                : [];
+
+        const character = characters.find(item => {
+            const name = String(
+                item?.name ||
+                item?.data?.name ||
+                ''
+            ).trim();
+
+            return name === targetName;
+        });
+
+        return String(
+            character?.avatar ||
+            character?.data?.avatar ||
+            ''
+        ).trim();
+    } catch (error) {
+        console.warn(
+            '[兔兔小剧场] 按角色名称查找头像失败：',
+            error
+        );
+
+        return '';
+    }
+}
+
+/**
+ * 获取收藏记录对应的头像文件名
+ */
+function getTutuFavoriteCharacterAvatar(
+    favorite,
+    characterName = ''
+) {
+    const savedAvatar = String(
+        favorite?.characterAvatar || ''
+    ).trim();
+
+    if (savedAvatar) {
+        return savedAvatar;
+    }
+
+    return findTutuCharacterAvatarByName(
+        characterName ||
+        favorite?.characterName ||
+        ''
+    );
+}
+
+/**
+ * 将 SillyTavern 角色头像文件名转换成图片地址。
+ *
+ * SillyTavern 通常通过：
+ * /thumbnail?type=avatar&file=文件名
+ * 提供角色头像缩略图。
+ */
+function getTutuCharacterAvatarUrl(avatar) {
+    const value = String(avatar || '').trim();
+
+    if (!value) {
+        return '';
+    }
+
+    /*
+     * 兼容已经是完整地址的情况。
+     */
+    if (
+        /^(?:https?:|data:|blob:)/i.test(value) ||
+        value.startsWith('/')
+    ) {
+        return value;
+    }
+
+    return (
+        '/thumbnail?type=avatar&file=' +
+        encodeURIComponent(value)
+    );
+}
+
+/**
+ * 给收藏分组中的头像节点设置图片。
+ *
+ * 如果缩略图接口加载失败，会尝试 /characters/文件名；
+ * 再失败则显示默认用户图标。
+ */
+function setTutuFavoriteAvatar(
+    $container,
+    avatar
+) {
+    const value = String(avatar || '').trim();
+
+    const $image =
+        $container.find(
+            '.tutu-favorite-character-avatar'
+        );
+
+    const $fallback =
+        $container.find(
+            '.tutu-favorite-character-avatar-fallback'
+        );
+
+    if (!value || !$image.length) {
+        $image.hide();
+        $fallback.show();
+        return;
+    }
+
+    const thumbnailUrl =
+        getTutuCharacterAvatarUrl(value);
+
+    const characterFileUrl =
+        /^(?:https?:|data:|blob:|\/)/i.test(value)
+            ? value
+            : `/characters/${encodeURIComponent(value)}`;
+
+    let triedCharacterFile = false;
+
+    $fallback.hide();
+
+    $image
+        .off('error.tutuAvatar')
+        .on('error.tutuAvatar', function () {
+            if (
+                !triedCharacterFile &&
+                characterFileUrl !== thumbnailUrl
+            ) {
+                triedCharacterFile = true;
+                this.src = characterFileUrl;
+                return;
+            }
+
+            $(this).hide();
+            $fallback.show();
+        })
+        .attr('src', thumbnailUrl)
+        .show();
+}
 
 function createTutuFavoriteRecord(content, title = '') {
     const text = String(content || '').trim();
 
     const characterName =
         getCurrentTutuCharacterName();
+    const characterAvatar =
+        getCurrentTutuCharacterAvatar();
+
 
     const cleanTitle =
         String(title || '').trim() ||
@@ -619,6 +828,7 @@ function createTutuFavoriteRecord(content, title = '') {
             : 'text',
 
         characterName,
+        characterAvatar,
 
         createdAt: Date.now(),
     };
@@ -841,10 +1051,25 @@ groupedFavorites.forEach(
             const $group = $(`
                 <div class="tutu-favorite-group">
                     <div class="tutu-favorite-group-header">
-                        <div class="tutu-favorite-group-title">
-                            <i class="fa-solid fa-user"></i>
-                            <span class="tutu-favorite-character-name"></span>
-                        </div>
+<div class="tutu-favorite-group-title">
+    <span class="tutu-favorite-character-avatar-box">
+        <img
+            class="tutu-favorite-character-avatar"
+            alt=""
+            loading="lazy">
+
+        <i
+            class="
+                fa-solid
+                fa-user
+                tutu-favorite-character-avatar-fallback
+            ">
+        </i>
+    </span>
+
+    <span class="tutu-favorite-character-name"></span>
+</div>
+
 
                         <div class="tutu-favorite-group-right">
                             <span class="tutu-favorite-group-count">
@@ -871,14 +1096,38 @@ groupedFavorites.forEach(
              * 使用 .text() 设置角色名，
              * 避免角色名中包含 HTML 造成注入。
              */
-            $group
-                .find('.tutu-favorite-character-name')
-                .text(characterName);
+$group
+    .find('.tutu-favorite-character-name')
+    .text(characterName);
 
-            const $groupList =
-                $group.find(
-                    '.tutu-favorite-group-list'
-                );
+/*
+ * 优先从这个分组的收藏记录中读取头像。
+ * 如果是旧收藏没有保存头像，则按照角色名从
+ * SillyTavern 的角色列表中补找。
+ */
+const avatarItem =
+    items.find(item =>
+        String(
+            item?.characterAvatar || ''
+        ).trim()
+    );
+
+const characterAvatar =
+    getTutuFavoriteCharacterAvatar(
+        avatarItem || items[0],
+        characterName
+    );
+
+setTutuFavoriteAvatar(
+    $group,
+    characterAvatar
+);
+
+const $groupList =
+    $group.find(
+        '.tutu-favorite-group-list'
+    );
+
 
             items.forEach(item => {
                 const content =
@@ -912,18 +1161,32 @@ const preview =
                         data-id="${escapeHtml(item.id)}">
 
                         <div class="tutu-favorite-card-header">
-                            <div class="tutu-favorite-card-info">
-                                <div class="
-                                    tutu-favorite-title
-                                "></div>
+<div class="tutu-favorite-card-info">
+    <div class="tutu-favorite-card-title-row">
+        <span class="tutu-favorite-card-avatar-box">
+            <img
+                class="tutu-favorite-card-avatar"
+                alt=""
+                loading="lazy">
 
-                                <div class="
-                                    tutu-favorite-time
-                                ">
-                                    ${time}
-                                </div>
-                            </div>
+            <i
+                class="
+                    fa-solid
+                    fa-user
+                    tutu-favorite-card-avatar-fallback
+                ">
+            </i>
+        </span>
 
+        <div class="tutu-favorite-card-title-content">
+            <div class="tutu-favorite-title"></div>
+
+            <div class="tutu-favorite-time">
+                ${time}
+            </div>
+        </div>
+    </div>
+</div>
                             <div class="
                                 tutu-favorite-actions
                             ">
@@ -1005,7 +1268,61 @@ const preview =
 $card
     .find('.tutu-favorite-title')
     .text(title);
+const itemAvatar =
+    getTutuFavoriteCharacterAvatar(
+        item,
+        characterName
+    );
 
+const $cardAvatar =
+    $card.find(
+        '.tutu-favorite-card-avatar'
+    );
+
+const $cardAvatarFallback =
+    $card.find(
+        '.tutu-favorite-card-avatar-fallback'
+    );
+
+if (itemAvatar && $cardAvatar.length) {
+    const thumbnailUrl =
+        getTutuCharacterAvatarUrl(
+            itemAvatar
+        );
+
+    const originalUrl =
+        /^(?:https?:|data:|blob:|\/)/i.test(
+            itemAvatar
+        )
+            ? itemAvatar
+            : `/characters/${encodeURIComponent(
+                itemAvatar
+            )}`;
+
+    let triedOriginal = false;
+
+    $cardAvatarFallback.hide();
+
+    $cardAvatar
+        .on('error', function () {
+            if (
+                !triedOriginal &&
+                originalUrl !== thumbnailUrl
+            ) {
+                triedOriginal = true;
+                this.src = originalUrl;
+                return;
+            }
+
+            $(this).hide();
+            $cardAvatarFallback.show();
+        })
+        .attr('src', thumbnailUrl)
+        .show();
+} else {
+    $cardAvatar.hide();
+    $cardAvatarFallback.show();
+}
 /*
  * HTML 收藏不直接拼进模板，
  * 而是使用 iframe.srcdoc 安全地设置预览内容。
@@ -3791,10 +4108,11 @@ if (!$messageBlock.length) {
 // 保存小剧场内容，以便切换聊天后恢复
 saveTutuTheaterContent(lastAiIndex, content);
 
-        appendTheaterToDOM(
+appendTheaterToDOM(
     lastAiIndex,
     content,
-    getCurrentTutuCharacterName()
+    getCurrentTutuCharacterName(),
+    getCurrentTutuCharacterAvatar()
 );
     } catch (error) {
         console.error('嵌入小剧场到聊天失败：', error);
@@ -3805,7 +4123,8 @@ saveTutuTheaterContent(lastAiIndex, content);
 function appendTheaterToDOM(
     mesId,
     content,
-    characterName = ''
+    characterName = '',
+    characterAvatar = ''
 ) {
     const $messageBlock = $(`.mes[mesid="${mesId}"]`);
 
@@ -3850,8 +4169,15 @@ details._tutuTheaterCharacter =
         getCurrentTutuCharacterName() ||
         'AI'
     ).trim() || 'AI';
-
-
+details._tutuTheaterAvatar =
+    String(
+        characterAvatar ||
+        findTutuCharacterAvatarByName(
+            details._tutuTheaterCharacter
+        ) ||
+        getCurrentTutuCharacterAvatar() ||
+        ''
+    ).trim();
 const summary = document.createElement('summary');
 summary.className = 'tutu-theater-embed-header';
 
@@ -3899,10 +4225,12 @@ const embedFavoriteButton =
         'fa-regular fa-heart',
         '收藏小剧场',
         () => {
-            favoriteTutuContent(
-                details._tutuTheaterContent,
-                details._tutuTheaterCharacter
-            );
+favoriteTutuContent(
+    details._tutuTheaterContent,
+    details._tutuTheaterCharacter,
+    '',
+    details._tutuTheaterAvatar
+);
         }
     );
 
@@ -4012,7 +4340,12 @@ function installTutuTargetCss(target, css) {
 // 小剧场收藏、导出、全屏查看通用函数
 // ==========================================
 
-function favoriteTutuContent(content, characterName, title = '') {
+function favoriteTutuContent(
+    content,
+    characterName,
+    title = '',
+    characterAvatar = ''
+) {
     const text = String(content || '').trim();
 
     if (!text) {
@@ -4022,6 +4355,24 @@ function favoriteTutuContent(content, characterName, title = '') {
 
     const finalCharacterName =
         String(characterName || 'AI').trim() || 'AI';
+
+    /*
+     * 优先使用调用方传入的头像。
+     * 如果没有传入，则按照角色名称从 SillyTavern 中查找。
+     *
+     * 如果收藏的是当前角色，也会自动拿到当前角色头像。
+     */
+    const finalCharacterAvatar =
+        String(characterAvatar || '').trim() ||
+        findTutuCharacterAvatarByName(
+            finalCharacterName
+        ) ||
+        (
+            finalCharacterName ===
+            getCurrentTutuCharacterName()
+                ? getCurrentTutuCharacterAvatar()
+                : ''
+        );
 
     const titleInput = window.prompt(
         '请输入这个小剧场的收藏名称：',
@@ -4033,7 +4384,8 @@ function favoriteTutuContent(content, characterName, title = '') {
     }
 
     const finalTitle =
-        String(titleInput || '').trim() || '未命名小剧场';
+        String(titleInput || '').trim() ||
+        '未命名小剧场';
 
     const favorites = loadTutuFavorites();
 
@@ -4055,6 +4407,11 @@ function favoriteTutuContent(content, characterName, title = '') {
 
         characterName: finalCharacterName,
 
+        /*
+         * 新增：保存角色卡头像文件名
+         */
+        characterAvatar: finalCharacterAvatar,
+
         createdAt: Date.now(),
     };
 
@@ -4069,6 +4426,7 @@ function favoriteTutuContent(content, characterName, title = '') {
         '兔兔小剧场'
     );
 }
+
 
 function exportTutuContent(
     content,
@@ -5823,11 +6181,12 @@ function restoreAllTutuTheaterEmbeds() {
             return;
         }
 
-        appendTheaterToDOM(
-            index,
-            storedTheater.content,
-            storedTheater.characterName
-        );
+appendTheaterToDOM(
+    index,
+    storedTheater.content,
+    storedTheater.characterName,
+    storedTheater.characterAvatar
+);
     });
 }
 
