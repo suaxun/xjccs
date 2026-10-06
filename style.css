@@ -2545,160 +2545,100 @@ body.tutu-fullscreen-open {
     }
 }
 /* ==========================================
-   自定义标签捕捉操作栏
+   自定义标签捕捉样式
    ========================================== */
 
-/*
- * 不再给整个被捕捉元素强制添加边框。
- * 避免 details、blockquote 等元素出现双边框和多余横线。
- */
 .tutu-captured-element {
     position: relative;
-    border-color: transparent !important;
-    box-shadow: none !important;
+    border: 1px solid var(--SmartThemeQuoteColor, #7b68ee) !important;
+    border-radius: 8px !important;
+    overflow: visible;
 }
 
-/*
- * 操作栏自身承担视觉分组，不延伸到内容外边缘。
- */
 .tutu-capture-actions-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
 
-    width: auto;
-    min-height: 34px;
-    margin: 6px 8px 8px;
-    padding: 4px 6px 4px 10px;
-    box-sizing: border-box;
+    padding: 6px 10px;
+    margin-bottom: 6px;
 
-    color: var(--SmartThemeBodyColor, #eee);
-    background: color-mix(
-        in srgb,
-        var(--SmartThemeQuoteColor, #7b68ee) 22%,
-        var(--SmartThemeBlurTintColor, #222)
-    );
-
-    border: 1px solid color-mix(
-        in srgb,
-        var(--SmartThemeQuoteColor, #7b68ee) 45%,
-        transparent
-    );
     border-radius: 6px;
-    box-shadow: none;
 
-    font-size: 0.82em;
-    font-weight: 600;
-    line-height: 1;
-}
+    background: var(--SmartThemeQuoteColor, #7b68ee);
+    color: #fff;
 
-/*
- * details 的 summary 下面不再使用额外上边框或贯穿横线。
- */
-details.tutu-captured-element > .tutu-capture-actions-bar {
-    margin-top: 6px;
-    border-top: 1px solid color-mix(
-        in srgb,
-        var(--SmartThemeQuoteColor, #7b68ee) 45%,
-        transparent
-    );
-}
-
-/*
- * blockquote 通常自带左侧边框。
- * 保留原主题样式，只让操作栏在内容区内显示。
- */
-blockquote.tutu-captured-element {
-    border-top: 0 !important;
-    border-right: 0 !important;
-    border-bottom: 0 !important;
+    font-size: 0.84em;
+    font-weight: bold;
 }
 
 .tutu-capture-label {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    flex-shrink: 0;
     white-space: nowrap;
 }
 
 .tutu-capture-buttons {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: flex-end;
     gap: 4px;
     flex-shrink: 0;
 }
 
 .tutu-capture-action-btn {
-    display: inline-grid;
-    place-items: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 
-    width: 27px;
-    height: 27px;
+    width: 26px;
+    height: 26px;
     padding: 0;
-    flex: 0 0 27px;
 
-    color: var(--SmartThemeBodyColor, #eee);
-    background: rgba(0, 0, 0, 0.14);
-
-    border: 1px solid color-mix(
-        in srgb,
-        var(--SmartThemeBodyColor, #eee) 18%,
-        transparent
-    );
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 5px;
 
+    background: rgba(0, 0, 0, 0.18);
+    color: #fff;
+
     cursor: pointer;
-    font-size: 0.8em;
+    font-size: 0.82em;
 
     transition:
         background 0.18s ease,
-        border-color 0.18s ease;
+        transform 0.18s ease;
 }
 
 .tutu-capture-action-btn:hover {
-    color: #fff;
-    background: color-mix(
-        in srgb,
-        var(--SmartThemeQuoteColor, #7b68ee) 55%,
-        transparent
-    );
-    border-color: var(--SmartThemeQuoteColor, #7b68ee);
-    transform: none;
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-1px);
 }
 
 .tutu-capture-action-btn:active {
-    background: color-mix(
-        in srgb,
-        var(--SmartThemeQuoteColor, #7b68ee) 70%,
-        transparent
-    );
-    transform: none;
+    transform: translateY(0);
 }
 
+/*
+ * 如果捕捉的是 <details> 标签，
+ * 让按钮栏显示在 summary 和内容之间
+ */
+details.tutu-captured-element > .tutu-capture-actions-bar {
+    margin-top: 6px;
+}
+
+/*
+ * 手机端适配
+ */
 @media (max-width: 600px) {
     .tutu-capture-actions-bar {
-        gap: 5px;
-        margin: 5px 4px 7px;
-        padding: 4px 5px 4px 8px;
-    }
-
-    .tutu-capture-label {
-        font-size: 0.78em;
-    }
-
-    .tutu-capture-buttons {
-        gap: 3px;
+        padding: 5px 8px;
+        font-size: 0.8em;
     }
 
     .tutu-capture-action-btn {
-        width: 26px;
-        height: 26px;
-        flex-basis: 26px;
+        width: 24px;
+        height: 24px;
     }
 }
-
 /* ==========================================
    书摘图片编辑器
    ========================================== */
@@ -4725,112 +4665,212 @@ blockquote.tutu-captured-element {
         min-height: 280px;
     }
 }
-/* ==========================================
-   捕捉栏和收藏栏的书摘按钮
-   ========================================== */
+/* =========================================================
+   破限与文风管理器
+   ========================================================= */
 
-.tutu-capture-buttons,
-.tutu-favorite-actions {
+.tutu-aux-prompt-section {
+    padding: 14px;
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 10px;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.tutu-aux-editor {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    margin-top: 8px;
+    padding: 12px;
+
+    border: 1px dashed var(--SmartThemeBorderColor);
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.tutu-aux-prompt-content {
+    width: 100%;
+    min-height: 180px;
+    box-sizing: border-box;
+
+    resize: vertical;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+
+    font-family:
+        Consolas,
+        Monaco,
+        "Courier New",
+        monospace;
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   剧本批量分类管理
+   ========================================================= */
+
+.tutu-batch-manage-panel {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 5px;
-    flex-wrap: wrap;
-}
+    justify-content: space-between;
+    gap: 12px;
 
-.tutu-capture-action-btn,
-.tutu-favorite-actions .menu_button {
-    flex: 0 0 auto;
-}
+    padding: 10px 12px;
+    margin-bottom: 10px;
 
-.tutu-favorite-quote-btn:hover,
-.tutu-capture-action-btn:hover {
-    color: #fff;
-    background: var(
-        --SmartThemeQuoteColor,
-        #7b68ee
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 9px;
+
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor) 10%,
+        var(--SmartThemeBlurTintColor)
     );
 }
 
-@media (max-width: 600px) {
-    .tutu-capture-actions-bar {
-        align-items: flex-start;
-    }
-
-    .tutu-capture-buttons {
-        max-width: 145px;
-    }
-
-    .tutu-favorite-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
-}
-/* 自定义 CSS 样式工具栏 */
-.tutu-style-icon-toolbar {
+.tutu-batch-manage-left,
+.tutu-batch-manage-right {
     display: flex;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 7px;
-    margin: 10px 0;
+    gap: 9px;
 }
 
-.tutu-style-icon-btn.menu_button {
-    display: inline-grid;
-    place-items: center;
-    flex: 0 0 36px;
-    width: 36px;
-    min-width: 36px;
-    height: 36px;
-    padding: 0;
+.tutu-batch-manage-left {
+    flex-shrink: 0;
+}
+
+.tutu-batch-manage-right {
+    flex: 1;
+    justify-content: flex-end;
+    min-width: 0;
+}
+
+.tutu-batch-select-all-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tutu-batch-select-all-label input {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+
+#tutu_batch_selected_count {
+    font-size: 0.85em;
+    opacity: 0.75;
+    white-space: nowrap;
+}
+
+#tutu_batch_target_category {
+    width: auto;
+    min-width: 130px;
+    max-width: 220px;
     margin: 0;
-    border-radius: 6px;
 }
 
-.tutu-toolbar-svg {
-    display: block;
+#tutu_batch_manage_btn.active {
+    color: #fff;
+    background: var(--SmartThemeQuoteColor);
+}
+
+
+/* 默认不显示卡片多选框 */
+.tutu-batch-script-selector {
+    display: none;
+    flex-shrink: 0;
+
+    align-items: flex-start;
+    justify-content: center;
+
+    padding-top: 3px;
+    cursor: pointer;
+}
+
+/* 进入批量管理模式后显示 */
+#tutu_library_list.tutu-batch-mode
+.tutu-batch-script-selector {
+    display: flex;
+}
+
+.tutu-batch-script-checkbox {
     width: 18px;
     height: 18px;
-    pointer-events: none;
+    margin: 0;
+    cursor: pointer;
 }
 
-.tutu-style-icon-btn.danger {
-    color: #e06a75;
+/* 批量模式禁用拖动手势 */
+#tutu_library_list.tutu-batch-mode
+.tutu-script-card {
+    cursor: default;
+    touch-action: auto;
 }
 
-.tutu-style-icon-btn.danger:hover {
-    color: #fff;
-    background: #b94855;
-    border-color: #b94855;
-}
-
-.tutu-style-toolbar-separator {
-    width: 1px;
-    height: 24px;
-    margin: 0 2px;
-    background: var(
-        --SmartThemeBorderColor,
-        rgba(255, 255, 255, 0.16)
+#tutu_library_list.tutu-batch-mode
+.tutu-script-card:has(
+    .tutu-batch-script-checkbox:checked
+) {
+    border-color: var(--SmartThemeQuoteColor);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor) 12%,
+        var(--SmartThemeBlurTintColor)
     );
 }
 
-.tutu-custom-css-group > .tutu-style-icon-toolbar {
-    justify-content: flex-end;
+
+/* =========================================================
+   移动端
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .tutu-batch-manage-panel {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .tutu-batch-manage-left,
+    .tutu-batch-manage-right {
+        width: 100%;
+    }
+
+    .tutu-batch-manage-right {
+        flex-wrap: wrap;
+        justify-content: stretch;
+    }
+
+    #tutu_batch_target_category {
+        flex: 1 1 100%;
+        width: 100%;
+        max-width: none;
+    }
+
+    #tutu_batch_move_btn,
+    #tutu_batch_cancel_btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .tutu-aux-editor
+    .tutu-appearance-actions {
+        flex-wrap: wrap;
+    }
+
+    .tutu-aux-editor
+    .tutu-appearance-actions
+    .menu_button {
+        flex: 1;
+        justify-content: center;
+    }
 }
 
-@media (max-width: 600px) {
-    .tutu-style-icon-toolbar {
-        gap: 6px;
-    }
 
-    .tutu-style-icon-btn.menu_button {
-        flex-basis: 34px;
-        width: 34px;
-        min-width: 34px;
-        height: 34px;
-    }
-
-    .tutu-style-toolbar-separator {
-        height: 22px;
-    }
-}
