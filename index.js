@@ -1731,53 +1731,92 @@ localStorage.setItem(
 </div>
 
 
-            <!-- TAB 3: 多选批量导入系统预设 -->
-<div style="
-    display:flex;
-    gap:10px;
-    margin-bottom:10px;
-    flex-wrap:wrap;
-">
+<!-- TAB 3: 多选批量导入系统预设 -->
+<div
+    id="tutu_tab_import"
+    class="tutu-tab-content">
 
-    <select
-        id="tutu_preset_type"
-        class="text_pole"
-        style="flex:1; margin:0; min-width:180px;">
+    <!-- 导入来源和目标 -->
+    <div class="tutu-native-import-toolbar">
 
-        <option value="openai" selected>
-            对话补全预设
-        </option>
+        <select
+            id="tutu_preset_type"
+            class="text_pole">
 
-        <option value="worldbook">
-            世界书
-        </option>
-    </select>
+            <option value="openai" selected>
+                对话补全预设
+            </option>
 
-    <select
-        id="tutu_import_target"
-        class="text_pole"
-        style="flex:1; margin:0; min-width:140px;">
+            <option value="worldbook">
+                世界书
+            </option>
+        </select>
 
-        <option value="scenario">
-            导入为剧本
-        </option>
+        <select
+            id="tutu_import_target"
+            class="text_pole">
 
-        <option value="jailbreak">
-            导入为破限
-        </option>
+            <option value="scenario">
+                导入为剧本
+            </option>
 
-        <option value="style">
-            导入为文风
-        </option>
-    </select>
+            <option value="jailbreak">
+                导入为破限
+            </option>
 
-    <select
-        id="tutu_preset_file"
-        class="text_pole"
-        style="flex:2; margin:0; min-width:180px;">
-    </select>
+            <option value="style">
+                导入为文风
+            </option>
+        </select>
+
+        <select
+            id="tutu_preset_file"
+            class="text_pole">
+
+            <option value="">
+                请选择预设或世界书
+            </option>
+        </select>
+
+    </div>
+
+    <!-- 全选和导入按钮 -->
+    <div class="tutu-native-import-actions">
+
+        <label class="tutu-native-select-all">
+            <input
+                type="checkbox"
+                id="tutu_select_all">
+
+            <span>
+                全选
+            </span>
+        </label>
+
+        <div
+            id="tutu_import_selected_btn"
+            class="menu_button margin0">
+
+            <i class="fa-solid fa-download"></i>
+            导入所选项
+        </div>
+
+    </div>
+
+    <!-- 预设或世界书条目列表 -->
+    <div
+        id="tutu_native_prompts_list"
+        class="tutu-native-prompts-list">
+
+        <div class="tutu-native-import-placeholder">
+            请选择对话补全预设或世界书
+        </div>
+
+    </div>
 
 </div>
+
+
 <!-- TAB 4: 设置 -->
 <div id="tutu_tab_settings" class="tutu-tab-content">
 
