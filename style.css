@@ -4872,5 +4872,227 @@ details.tutu-captured-element > .tutu-capture-actions-bar {
         justify-content: center;
     }
 }
+/* =========================================================
+   破限与文风：紧凑、可折叠
+   ========================================================= */
+
+.tutu-aux-master-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 9px 10px;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor) 8%,
+        transparent
+    );
+
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.tutu-aux-master-switch input {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.tutu-aux-prompt-settings-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tutu-aux-active-selects {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.tutu-aux-active-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.tutu-aux-active-item .tutu-settings-label {
+    margin: 0;
+}
+
+.tutu-aux-active-item .text_pole {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.tutu-aux-editor-details {
+    overflow: hidden;
+
+    border: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 8px;
+
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.tutu-aux-editor-summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+
+    padding: 10px 12px;
+
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    font-weight: bold;
+}
+
+.tutu-aux-editor-summary::-webkit-details-marker {
+    display: none;
+}
+
+.tutu-aux-editor-summary::marker {
+    content: "";
+}
+
+.tutu-aux-editor-summary:hover {
+    background: rgba(255, 255, 255, 0.06);
+}
+
+.tutu-aux-editor-arrow {
+    transition: transform 0.2s ease;
+}
+
+.tutu-aux-editor-details[open]
+.tutu-aux-editor-arrow {
+    transform: rotate(180deg);
+}
+
+.tutu-aux-editor-details .tutu-aux-editor {
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--SmartThemeBorderColor);
+    border-radius: 0;
+}
+
+.tutu-aux-edit-status {
+    padding: 7px 9px;
+
+    color: var(--SmartThemeQuoteColor);
+    background: color-mix(
+        in srgb,
+        var(--SmartThemeQuoteColor) 9%,
+        transparent
+    );
+
+    border-left: 3px solid var(--SmartThemeQuoteColor);
+    border-radius: 4px;
+
+    font-size: 0.84em;
+}
+
+.tutu-aux-prompt-content {
+    min-height: 140px;
+}
+
+
+/* =========================================================
+   原生预设/世界书导入工具栏
+   ========================================================= */
+
+.tutu-native-import-toolbar {
+    display: grid;
+    grid-template-columns:
+        minmax(120px, 0.9fr)
+        minmax(120px, 0.9fr)
+        minmax(130px, 1fr)
+        minmax(160px, 1.4fr);
+    gap: 8px;
+    align-items: center;
+}
+
+.tutu-native-import-toolbar .text_pole {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+}
+
+.tutu-native-import-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    min-height: 38px;
+    padding: 4px 0;
+}
+
+.tutu-native-select-all {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+
+    margin: 0;
+    cursor: pointer;
+}
+
+.tutu-native-select-all input {
+    width: 17px;
+    height: 17px;
+    margin: 0;
+}
+
+#tutu_import_selected_btn.tutu-native-import-icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    padding: 0;
+    margin: 0;
+
+    border-radius: 50%;
+
+    color: #fff;
+    background: var(--SmartThemeQuoteColor);
+
+    cursor: pointer;
+}
+
+#tutu_import_selected_btn.tutu-native-import-icon-btn:hover {
+    filter: brightness(1.15);
+}
+
+
+/* =========================================================
+   移动端
+   ========================================================= */
+
+@media (max-width: 700px) {
+    .tutu-aux-active-selects {
+        grid-template-columns: 1fr;
+    }
+
+    .tutu-native-import-toolbar {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 460px) {
+    .tutu-native-import-toolbar {
+        grid-template-columns: 1fr;
+    }
+}
 
 
